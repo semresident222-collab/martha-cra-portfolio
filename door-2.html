@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KEYNOTE-991: A governance autopsy of a discontinued Phase III oncology trial. Rebuilt monitoring architecture for immunotherapy temporality.">
+  <title>Door 2 — KEYNOTE-991 | Martha CRA Portfolio</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/base.css">
+
+  <style>
+    /* ============================================================
+       DOOR 2 — KEYNOTE-991
+       Amber/charcoal, branching pathways, analytical cognition
+       ============================================================ */
+
+    .door-2 {
+      background: var(--bg-graphite);
+      min-height: 100vh;
+      color: var(--text-cream);
+    }
+
+    /* —— NAVIGATION BAR —— */
+    .nav-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: var(--space-md) var(--space-lg);
+      background: rgba(26, 26, 31, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(196, 149, 106, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-home {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--amber-intense);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-home:hover {
+      color: var(--text-cream);
+    }
+
+    .nav-title {
+      font-family: var(--font-accent);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav-download {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber-dim);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-download:hover {
+      color: var(--amber-intense);
+    }
+
+    /* —— HERO SECTION —— */
+    .hero {
+      padding: calc(var(--space-2xl) + 60px) 0 var(--space-2xl);
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-border), transparent);
+    }
+
+    .hero .section-number {
+      margin-bottom: var(--space-md);
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      letter-spacing: -0.02em;
+    }
+
+    .hero .trial-meta {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--amber-intense);
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero .hero-quote {
+      font-family: var(--font-accent);
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-style: italic;
+      color: var(--text-warm);
+      max-width: 700px;
+      margin: 0 auto var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .hero .hero-context {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* —— CONTENT SECTIONS —— */
+    .content-section {
+      padding: var(--space-2xl) 0;
+      position: relative;
+    }
+
+    .content-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196, 149, 106, 0.2), transparent);
+    }
+
+    .section-header {
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-header h2 {
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-header .section-context {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      line-height: 1.6;
+    }
+
+    /* —— DATA TABLE —— */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--space-lg) 0;
+      font-size: 0.9rem;
+    }
+
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--amber-intense);
+      text-align: left;
+      padding: var(--space-sm);
+      border-bottom: 1px solid var(--amber-border);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid rgba(196, 149, 106, 0.1);
+      color: var(--text-warm);
+      font-family: var(--font-body);
+    }
+
+    .data-table tr:hover td {
+      background: rgba(196, 149, 106, 0.03);
+    }
+
+    /* —— DIAGRAM SECTION —— */
+    .diagram-section {
+      padding: var(--space-2xl) 0;
+      position: relative;
+    }
+
+    .diagram-container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* The Hourglass Diagram */
+    .hourglass-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      padding: var(--space-lg);
+    }
+
+    /* Level 1: Root Failure */
+    .diagram-root {
+      background: var(--bg-charcoal);
+      border: 2px solid transparent;
+      padding: var(--space-md) var(--space-xl);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.6s ease, border-color 0.6s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .diagram-root.active {
+      border-color: var(--amber-intense);
+      opacity: 1;
+    }
+
+    .diagram-root .root-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber-intense);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+
+    .diagram-root .root-text {
+      font-family: var(--font-accent);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-cream);
+      line-height: 1.4;
+    }
+
+    /* Connecting spine */
+    .diagram-spine {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--amber-intense), var(--amber-dim));
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      position: relative;
+    }
+
+    .diagram-spine.active {
+      opacity: 1;
+    }
+
+    /* Branching lines */
+    .branch-container {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xl);
+      width: 100%;
+      max-width: 800px;
+      position: relative;
+    }
+
+    .branch-line {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: var(--amber-dim);
+      transform: translateX(-50%);
+    }
+
+    .branch-left, .branch-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      flex: 1;
+      max-width: 380px;
+    }
+
+    .branch-connector {
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+      margin-bottom: var(--space-sm);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .branch-connector.active {
+      opacity: 1;
+    }
+
+    /* Level 2: Cracks */
+    .diagram-crack {
+      background: var(--bg-charcoal);
+      border: 1px solid transparent;
+      padding: var(--space-md);
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.6s ease, border-color 0.6s ease;
+      position: relative;
+      border-trace: true;
+    }
+
+    .diagram-crack.active {
+      border-color: var(--amber-muted);
+      opacity: 1;
+    }
+
+    .diagram-crack .crack-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber-intense);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+
+    .diagram-crack .crack-title {
+      font-family: var(--font-accent);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-cream);
+      margin-bottom: var(--space-xs);
+    }
+
+    .diagram-crack .crack-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Level 3: Interventions */
+    .diagram-intervention {
+      background: var(--door2-amber-dark);
+      border: 1px solid var(--amber-intense);
+      padding: var(--space-md);
+      width: 100%;
+      margin-top: var(--space-md);
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      position: relative;
+    }
+
+    .diagram-intervention.active {
+      opacity: 1;
+    }
+
+    .diagram-intervention .int-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber-intense);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+
+    .diagram-intervention .int-title {
+      font-family: var(--font-accent);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-cream);
+      margin-bottom: var(--space-xs);
+    }
+
+    .diagram-intervention .int-desc {
+      font-size: 0.85rem;
+      color: var(--text-warm);
+      line-height: 1.5;
+    }
+
+    /* Level 4: Regulatory Anchors */
+    .diagram-regulatory {
+      background: var(--foundation-bg);
+      border: 1px solid var(--foundation-border);
+      padding: var(--space-sm) var(--space-md);
+      width: 100%;
+      margin-top: var(--space-sm);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .diagram-regulatory.active {
+      opacity: 1;
+    }
+
+    .diagram-regulatory .reg-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-slate);
+      line-height: 1.6;
+    }
+
+    /* Level 5: Foundation Bar */
+    .diagram-foundation {
+      background: var(--foundation-bg);
+      border-top: 2px solid var(--amber-intense);
+      padding: var(--space-md) var(--space-lg);
+      width: 100%;
+      max-width: 800px;
+      margin-top: var(--space-lg);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      position: relative;
+    }
+
+    .diagram-foundation.active {
+      opacity: 1;
+    }
+
+    .diagram-foundation .foundation-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-slate);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+
+    .diagram-foundation .foundation-text {
+      font-size: 0.85rem;
+      color: var(--text-slate);
+      line-height: 1.5;
+    }
+
+    /* Hover tooltips for diagram nodes */
+    .diagram-node {
+      position: relative;
+      cursor: help;
+    }
+
+    .diagram-node .node-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-charcoal);
+      border: 1px solid var(--amber-border);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text-warm);
+      max-width: 280px;
+      width: max-content;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition-fast), visibility var(--transition-fast);
+      z-index: 50;
+      border-radius: 2px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .diagram-node:hover .node-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hover lift effect */
+    .diagram-node.hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px var(--amber-glow);
+    }
+
+    /* —— INTERVENTION TABLES —— */
+    .intervention-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--space-lg) 0;
+      font-size: 0.85rem;
+    }
+
+    .intervention-table th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--amber-intense);
+      text-align: left;
+      padding: var(--space-sm);
+      border-bottom: 2px solid var(--amber-border);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .intervention-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid rgba(196, 149, 106, 0.1);
+      color: var(--text-warm);
+      vertical-align: top;
+    }
+
+    .intervention-table td:first-child {
+      font-weight: 500;
+      color: var(--text-cream);
+      width: 30%;
+    }
+
+    /* —— BLOCKQUOTE / CHARTER EXCERPTS —— */
+    .charter-excerpt {
+      background: var(--bg-charcoal);
+      border-left: 3px solid var(--amber-intense);
+      padding: var(--space-md) var(--space-lg);
+      margin: var(--space-lg) 0;
+      font-family: var(--font-accent);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-warm);
+      font-style: italic;
+    }
+
+    .charter-excerpt .excerpt-source {
+      display: block;
+      margin-top: var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber-dim);
+      font-style: normal;
+      letter-spacing: 0.05em;
+    }
+
+    /* —— CONFIDENCE SECTION —— */
+    .confidence-section {
+      background: linear-gradient(180deg, var(--bg-graphite) 0%, rgba(139, 105, 20, 0.05) 100%);
+    }
+
+    /* —— FOOTER —— */
+    .door-footer {
+      padding: var(--space-xl) 0;
+      text-align: center;
+      border-top: 1px solid rgba(196, 149, 106, 0.1);
+    }
+
+    .door-footer p {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-slate);
+    }
+
+    .door-footer .back-link {
+      color: var(--amber-dim);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .door-footer .back-link:hover {
+      color: var(--amber-intense);
+    }
+
+    /* —— DOWNLOAD PDF BUTTON (prominent) —— */
+    .download-section {
+      text-align: center;
+      padding: var(--space-xl) 0;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-xl);
+      background: var(--amber-intense);
+      color: var(--bg-deep);
+      font-family: var(--font-accent);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 2px solid var(--amber-intense);
+      transition: all var(--transition-base);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-download:hover {
+      background: transparent;
+      color: var(--amber-intense);
+      box-shadow: 0 0 30px var(--amber-glow);
+    }
+
+    /* —— RESPONSIVE —— */
+    @media (max-width: 768px) {
+      .branch-container {
+        flex-direction: column;
+        gap: var(--space-lg);
+      }
+
+      .branch-left, .branch-right {
+        max-width: 100%;
+      }
+
+      .diagram-root, .diagram-foundation {
+        max-width: 100%;
+      }
+
+      .nav-bar {
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      .nav-title {
+        display: none;
+      }
+
+      .hero {
+        padding-top: calc(var(--space-xl) + 50px);
+      }
+    }
+
+    /* Print */
+    @media print {
+      .nav-bar {
+        position: static;
+        background: none;
+        border: none;
+      }
+
+      .diagram-node .node-tooltip {
+        display: none;
+      }
+
+      .hourglass-diagram > * {
+        opacity: 1 !important;
+      }
+    }
+  </style>
+<base target="_blank">
+</head>
+<body class="door-2">
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-home">← Lobby</a>
+    <span class="nav-title">Door 2 — KEYNOTE-991</span>
+    <a href="#" class="nav-download btn-download" onclick="return false;">Download PDF</a>
+  </nav>
+
+  <main>
+    <!-- Hero: The Verdict -->
+    <section class="hero">
+      <div class="container">
+        <span class="section-number">01 — The Verdict</span>
+        <h1>KEYNOTE-991</h1>
+        <p class="trial-meta">Merck | Pembrolizumab + Enzalutamide | mCRPC | Phase III | ~1,200 Patients | Discontinued March 2023</p>
+        <p class="hero-quote">"The monitoring architecture was designed for a different kind of drug. Here is the system I would have built instead."</p>
+        <p class="hero-context">This trial did not fail because the science was absurd. It failed because the trial was built for a different kind of drug. The monitoring architecture — the system designed to ask "is this working?" — was calibrated for therapies that show their hand early. Pembrolizumab does not show its hand early. It never has.</p>
+      </div>
+    </section>
+
+    <!-- Section 02: What Happened -->
+    <section class="content-section" id="what-happened">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-number">02 — What Happened</span>
+          <h2>The Trial Architecture</h2>
+          <p class="section-context">Pembrolizumab is an immune checkpoint inhibitor. It blocks the PD-1 pathway — the biological mechanism tumours exploit to hide from the immune system. That logic had worked dramatically in melanoma, some lung cancers, MSI-high tumours. Cancers that were immunologically present — inflamed, mutation-heavy, full of T-cell activity.</p>
+        </header>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <p>Prostate cancer is different. It is immunologically cold. Fewer T-cell infiltrates. Less immune activation. A more suppressive tumour microenvironment. The immune system, in many mCRPC cases, had not been suppressed. It simply had not entered the room.</p>
+          <p>Merck's hypothesis was that enzalutamide might alter the tumour environment enough to make it more receptive to pembrolizumab. Weaken the tumour signalling, change the inflammatory conditions, possibly warm a cold tumour. There were preclinical signals and early clinical observations suggesting possible synergy. Keyword: possible.</p>
+          <p>March 2023. First interim analysis. The Data Monitoring Committee reviewed the data and recommended immediate discontinuation for futility. Both primary endpoints favoured placebo. Not neutrality — placebo.</p>
+        </div>
+
+        <div class="reveal" data-reveal-delay="0.3">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>Pembro + Enza</th>
+                <th>Placebo + Enza</th>
+                <th>Hazard Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>rPFS</td>
+                <td>10.9 months</td>
+                <td>12.2 months</td>
+                <td>1.20</td>
+              </tr>
+              <tr>
+                <td>OS</td>
+                <td>Not reached</td>
+                <td>Not reached</td>
+                <td>1.16</td>
+              </tr>
+              <tr>
+                <td>Time to PSA progression</td>
+                <td>10.9 months</td>
+                <td>12.2 months</td>
+                <td>1.20</td>
+              </tr>
+              <tr>
+                <td>Objective response rate</td>
+                <td>27.6%</td>
+                <td>23.5%</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Safety Endpoint</th>
+                <th>Pembrolizumab Arm</th>
+                <th>Placebo Arm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Grade ≥3 Adverse Events (any)</td>
+                <td>61.9%</td>
+                <td>38.1%</td>
+              </tr>
+              <tr>
+                <td>Treatment discontinuation</td>
+                <td>33.4%</td>
+                <td>8.2%</td>
+              </tr>
+              <tr>
+                <td>Treatment-related deaths</td>
+                <td>8 patients</td>
+                <td>2 patients</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top: var(--space-lg);">The trial stopped. No second interim. No extended follow-up. No conditional continuation. You might be thinking: the data looked bad, stopping seems reasonable. Yes. And I am not arguing the DMC was wrong to follow their charter. I am arguing the charter was written for the wrong drug.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 03: Where It Broke -->
+    <section class="content-section" id="where-it-broke">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-number">03 — Where It Broke</span>
+          <h2>Reading the Architecture, Not the Press Release</h2>
+          <p class="section-context">This is where we stop reading the press release and start reading the architecture. The fracture runs through two places. They look like separate problems. They are the same problem expressed twice. The problem is time.</p>
+        </header>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <h3>Crack 2 — The Futility Boundary That Could Not See Around the Corner</h3>
+          <p>The DMC stopped the trial at first interim because conditional power had fallen below 20%. Conditional power is the calculated probability that the trial will eventually succeed given what the data looks like now. Below 20%: the mathematics say continue is irrational. Stop.</p>
+          <p><strong>Mathematically correct. Structurally blind.</strong></p>
+          <p>Standard conditional power calculations assume constant hazard — that the rate at which the treatment effect emerges is stable across time. For cytotoxic chemotherapy, that assumption is reasonable. Pembrolizumab does not work that way. Immunotherapy survival curves show late separation — the tail of the curve, where benefit emerges months after the median, is where checkpoint inhibitors often prove themselves. This is well-documented in melanoma, lung cancer, and renal cell carcinoma.</p>
+          <p>By stopping at first interim — approximately 50% of events — the DMC assumed the second half of the trial would mirror the first half. In a disease where immunotherapy might require substantially longer follow-up to show OS benefit, that assumption is structurally hostile to the mechanism being tested.</p>
+        </div>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <h3>Crack 4 — Safety Monitoring That Forgot What Safety Was For</h3>
+          <p>Grade ≥3 adverse events: 61.9%. Treatment discontinuation: 33.4%. How are you claiming the treatment failed when a third of the patients couldn't stay on it long enough to fairly test it?</p>
+          <p>A third of the pembrolizumab arm exited before they had meaningful exposure. In immunotherapy — where response correlates with duration of exposure, where the mechanism requires time to activate — discontinuation is not a tolerability issue. It is an efficacy killer wearing a tolerability costume.</p>
+          <p>The monitoring plan saw safety. It did not see structure. The system recorded adverse events, serious adverse events, tolerability rates. Standard practice. But it did not ask the operational question underneath: are safety events removing patients from the efficacy denominator before efficacy can emerge?</p>
+          <p>There is a second layer the monitoring architecture missed entirely: the rechallenge question. When a patient discontinued due to an immune-related adverse event, the protocol treated that as a closed chapter. Patient exits. Data is censored. Move on. But Simonaggio et al. (JAMA Oncology, 2019) had already demonstrated that rechallenge resulted in a second adverse event in 55% of patients — with no increase in severity. That literature existed when KEYNOTE-991 was designed. The protocol did not build from it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIAGRAM: The Hourglass -->
+    <section class="diagram-section" id="diagram">
+      <div class="container">
+        <header class="section-header reveal" style="text-align: center;">
+          <span class="section-number">The Argument Assembles</span>
+          <h2>Unified Intervention Architecture</h2>
+          <p class="section-context" style="margin: 0 auto;">Both cracks are expressions of one underlying failure: the trial was designed with cytotoxic chemotherapy assumptions applied to immune checkpoint biology.</p>
+        </header>
+
+        <div class="diagram-container">
+          <div class="hourglass-diagram" id="hourglass-diagram">
+
+            <!-- Level 1: Root Failure -->
+            <div class="diagram-node diagram-root hover-lift">
+              <span class="root-label">Root Failure</span>
+              <p class="root-text">Cytotoxic chemotherapy assumptions applied to immune checkpoint biology</p>
+              <div class="node-tooltip">The trial was built for drugs that show their hand early. Pembrolizumab does not.</div>
+            </div>
+
+            <!-- Spine -->
+            <div class="diagram-spine"></div>
+
+            <!-- Branches -->
+            <div class="branch-container">
+              <div class="branch-left">
+                <div class="branch-connector"></div>
+
+                <!-- Crack 2 -->
+                <div class="diagram-node diagram-crack hover-lift">
+                  <span class="crack-label">Crack 2</span>
+                  <h4 class="crack-title">Futility Boundary Blind to Immunotherapy Temporality</h4>
+                  <p class="crack-desc">Standard conditional power assumed constant hazard. Immunotherapy does not live in constant time.</p>
+                  <div class="node-tooltip">Standard conditional power assumed constant hazard. Immunotherapy does not live in constant time.</div>
+                </div>
+
+                <!-- Intervention A -->
+                <div class="diagram-node diagram-intervention hover-lift">
+                  <span class="int-label">Intervention A</span>
+                  <h4 class="int-title">Adaptive Futility Boundary</h4>
+                  <p class="int-desc">Asymmetric boundaries. More patient early. Less forgiving late.</p>
+                  <div class="node-tooltip">Asymmetric futility boundaries. More patient early. Less forgiving late.</div>
+                </div>
+
+                <!-- Regulatory A -->
+                <div class="diagram-regulatory">
+                  <p class="reg-text">ICH E9 | ICH E9(R1)<br>FDA Adaptive Design Guidance</p>
+                </div>
+              </div>
+
+              <div class="branch-right">
+                <div class="branch-connector"></div>
+
+                <!-- Crack 4 -->
+                <div class="diagram-node diagram-crack hover-lift">
+                  <span class="crack-label">Crack 4</span>
+                  <h4 class="crack-title">Safety Monitoring Blind to Safety-as-Efficacy Modifier</h4>
+                  <p class="crack-desc">Discontinuation is not tolerability. It is efficacy erosion wearing a safety costume.</p>
+                  <div class="node-tooltip">Discontinuation is not tolerability. It is efficacy erosion wearing a safety costume.</div>
+                </div>
+
+                <!-- Intervention B -->
+                <div class="diagram-node diagram-intervention hover-lift">
+                  <span class="int-label">Intervention B</span>
+                  <h4 class="int-title">Integrated Safety-Efficacy Monitoring</h4>
+                  <p class="int-desc">Dose-intensity dashboard. IPCW-adjusted analysis. Rechallenge algorithm.</p>
+                  <div class="node-tooltip">Dose-intensity dashboard. IPCW-adjusted analysis. Rechallenge algorithm.</div>
+                </div>
+
+                <!-- Regulatory B -->
+                <div class="diagram-regulatory">
+                  <p class="reg-text">ICH E6(R2) §5.18 | ICH E2A<br>ICH E9(R1) Estimand Framework</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Foundation Bar -->
+            <div class="diagram-foundation">
+              <span class="foundation-label">Foundation</span>
+              <p class="foundation-text">Endpoint Hierarchy (Crack 1) | Biomarker Stratification (Crack 3) | Continuation Charter (Crack 5)</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 04: What I Built -->
+    <section class="content-section" id="what-i-built">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-number">04 — What I Built</span>
+          <h2>Rebuilding the Monitoring Architecture</h2>
+          <p class="section-context">My intervention rebuilds the monitoring architecture around immunotherapy's actual temporal logic. Two structures. One principle: Early uncertainty is acceptable. Permanent uncertainty is not.</p>
+        </header>
+
+        <!-- Intervention A -->
+        <div class="reveal" data-reveal-delay="0.2">
+          <h3>Intervention A — Adaptive Futility Boundary with Immunotherapy-Aware Conditional Power</h3>
+
+          <table class="intervention-table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Standard Design (KEYNOTE-991)</th>
+                <th>Adaptive Design</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Futility assessment timing</td>
+                <td>Single interim at ~50% events</td>
+                <td>Two interims: 40% events and 70% events</td>
+              </tr>
+              <tr>
+                <td>Conditional power threshold</td>
+                <td>&lt;20% = stop</td>
+                <td>&lt;15% at first interim; &lt;25% at second</td>
+              </tr>
+              <tr>
+                <td>Conditional power methodology</td>
+                <td>Constant hazard assumption</td>
+                <td>Time-varying hazard model — delayed effect parameter</td>
+              </tr>
+              <tr>
+                <td>Late-emerging signal provision</td>
+                <td>None</td>
+                <td>Extended follow-up trigger if HR &lt; 1.0 with wide CI at second interim</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>The asymmetric boundaries are intentional. More permissive early — because delayed benefit may be biologically normal in the first half of an immunotherapy trial. More stringent late — because eventually, the treatment must prove itself. The system becomes more patient early and less forgiving over time. That is not soft science. That is designed intelligence.</p>
+
+          <div class="charter-excerpt">
+            "For immunotherapy arms, the DMC shall apply a time-varying conditional power model with delayed effect parameter δ estimated from external immunotherapy trial data in solid tumours. Futility boundaries are asymmetric: more permissive at first interim (40% events), more stringent at second (70% events). If conditional power falls below threshold but point estimate HR &lt; 1.0, the DMC may recommend conditional continuation with pre-specified biomarker enrichment criteria, rather than automatic termination. Binary stop/go language is insufficient for immunotherapy temporal biology. This charter provides a third option: conditional continuation with defined governance."
+            <span class="excerpt-source">— DMC Charter Amendment</span>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Regulatory anchor: ICH E6(R2) §5.19 — DMC responsibilities and charter requirements. ICH E9 Statistical Principles — interim analysis and stopping rules. ICH E9(R1) — estimand framework for intercurrent events. FDA Adaptive Designs Guidance (2019) — pre-specification requirements for adaptive futility boundaries.</p>
+        </div>
+
+        <!-- Intervention B -->
+        <div class="reveal" data-reveal-delay="0.2">
+          <h3>Intervention B — Integrated Safety-Efficacy Monitoring</h3>
+
+          <table class="intervention-table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Standard Design (KEYNOTE-991)</th>
+                <th>Integrated Design</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Safety endpoint</td>
+                <td>Grade ≥3 AE rate, SAE rate</td>
+                <td>Dose-intensity-adjusted efficacy endpoint</td>
+              </tr>
+              <tr>
+                <td>Discontinuation handling</td>
+                <td>Censored at discontinuation</td>
+                <td>IPCW-adjusted survival analysis</td>
+              </tr>
+              <tr>
+                <td>irAE management</td>
+                <td>Standard CTCAE reporting</td>
+                <td>Grade-stratified rechallenge algorithm</td>
+              </tr>
+              <tr>
+                <td>Real-time trigger</td>
+                <td>None</td>
+                <td>Dose-intensity dashboard with escalation threshold</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p><strong>On IPCW:</strong> Standard analysis censors patients when they discontinue, treating their exit as random. It is not random. The sickest patients, the most toxicity-sensitive patients, exit earliest. The survival curves that remain are systematically optimistic about the patients who stayed. Inverse probability of censoring weights corrects for this by asking what the efficacy picture would look like if discontinuation had been random. When a third of your experimental arm has left before meaningful exposure, your survival curves are not telling the full truth. IPCW asks for the full truth.</p>
+
+          <p><strong>irAE Rechallenge Algorithm:</strong></p>
+          <ul style="color: var(--text-warm); margin-bottom: var(--space-md); padding-left: var(--space-lg);">
+            <li>Grade 2 irAE → hold treatment → resolve → rechallenge at full dose with enhanced monitoring</li>
+            <li>Grade 3 irAE → hold treatment → resolve → rechallenge at reduced dose with prophylactic immunosuppression</li>
+            <li>Grade 4 irAE → permanent discontinuation</li>
+          </ul>
+
+          <p>This is not speculative. Simonaggio (2019) and Pollack (2018) demonstrated that structured rechallenge is feasible and that severity does not increase on retry when managed carefully. The protocol should have built from that literature. It did not.</p>
+
+          <div class="charter-excerpt">
+            "Safety data shall be reviewed not as isolated adverse events but as structural efficacy modifiers. Monthly reports shall include: (1) dose-intensity distribution by arm, (2) efficacy outcomes stratified by exposure duration, (3) IPCW-adjusted survival curves, (4) irAE resolution and rechallenge outcomes. The Medical Monitor and Data Management Lead shall jointly review the dose-intensity dashboard on a weekly basis. Automatic escalation to Protocol Amendment Review is triggered if &gt;25% dose-intensity failure occurs in any calendar month. Discontinuation shall not be the default response to grade 2-3 irAEs in patients otherwise benefiting from treatment. The rechallenge algorithm is pre-specified, not improvised."
+            <span class="excerpt-source">— Monitoring Plan Amendment</span>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Regulatory anchor: ICH E6(R2) §5.18 — monitoring responsibilities and real-time data review. ICH E6(R2) §5.16 and ICH E2A — expedited safety reporting and SAE documentation. ICH E9(R1) — estimand framework governing IPCW analysis. Protocol amendment procedures: ICH E6(R2) §4.5 and §4.6.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 05: Why I Am Confident -->
+    <section class="content-section confidence-section" id="confidence">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-number">05 — Why I Am Confident</span>
+          <h2>The Guidelines Were Already There</h2>
+        </header>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <p>The irAE rechallenge literature existed before this trial enrolled its first patient. The time-varying hazard framework for immunotherapy conditional power existed. The concept of dose-intensity as an efficacy modifier existed in the pharmacokinetic literature. The field had already published the questions this trial failed to ask.</p>
+          <p>I am not proposing innovation. I am proposing that the people who designed this trial read the room they were already standing in.</p>
+          <p>My confidence is not arrogance. It is the quiet certainty that comes from following evidence to its logical operational conclusion.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 06: A Final Word -->
+    <section class="content-section" id="final-word">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-number">06 — A Final Word</span>
+        </header>
+
+        <div class="reveal" data-reveal-delay="0.2">
+          <p>You might be wondering why I did this. To impress you? Maybe. Ego? Possibly.</p>
+          <p>But there is something people tend to miss, and it matters more than the analysis. This is what I do on a quiet evening. Not because a job requires it. Because the moment I saw that a third of those patients exited before the treatment could fairly answer for itself, I could not leave the question alone. Because trial governance that speaks only in binary — stop or continue — is a system that has not thought carefully enough about what happens in the middle, where most of the truth actually lives.</p>
+          <p>The instinct to read the architecture — not just the results — is what I am building a career on.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download-section">
+      <div class="container">
+        <a href="#" class="btn-download" onclick="return false;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download Full Analysis (PDF)
+        </a>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: var(--space-sm);">Complete five-section autopsy with regulatory anchors and methodology references</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="door-footer">
+      <div class="container">
+        <p>
+          <a href="index.html" class="back-link">← Return to Lobby</a> · 
+          Martha · 2026
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <script src="scripts/core.js"></script>
+  <script>
+    // Initialize diagram sequence when scrolled into view
+    if (window.DiagramSequence) {
+      window.DiagramSequence.init('#hourglass-diagram');
+    }
+
+    // Initialize download buttons
+    if (window.initDownloadButtons) {
+      window.initDownloadButtons();
+    }
+  </script>
+</body>
+</html>
