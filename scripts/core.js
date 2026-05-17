@@ -1,137 +1,54 @@
 /* ============================================================
    MARTHA CRA PORTFOLIO — CORE SCRIPTS
-   Shared nervous system: scroll reveals, diagram sequences,
-   hover tooltips, graceful degradation
+   Shared nervous system: scroll reveals, hover expansions,
+   page transitions, graceful degradation
    ============================================================ */
 
 (function() {
   'use strict';
 
   // —— GRACEFUL DEGRADATION CHECK ——
-  // If JS fails or is disabled, add .no-js class for CSS fallbacks
   document.documentElement.classList.remove('no-js');
   document.documentElement.classList.add('js-enabled');
 
   // —— SCROLL-TRIGGERED REVEALS ——
   const revealElements = document.querySelectorAll('.reveal');
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Add small delay based on element's position for staggered effect
-        const delay = entry.target.dataset.revealDelay || 0;
-        setTimeout(() => {
-          entry.target.classList.add('revealed');
-        }, delay * 1000);
+  if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseFloat(entry.target.dataset.revealDelay) || 0;
+          setTimeout(() => {
+            entry.target.classList.add('revealed');
+          }, delay * 1000);
 
-        // Unobserve after revealing
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  revealElements.forEach(el => revealObserver.observe(el));
-
-  // —— DIAGRAM SEQUENCE SYSTEM (Door 2 Hourglass) ——
-  window.DiagramSequence = {
-    // Configuration for the 6-step reveal
-    steps: [
-      { selector: '.diagram-root', delay: 0, duration: 600 },
-      { selector: '.diagram-spine', delay: 500, duration: 800 },
-      { selector: '.diagram-crack', delay: 1000, duration: 600 },
-      { selector: '.diagram-intervention', delay: 1600, duration: 600 },
-      { selector: '.diagram-regulatory', delay: 2200, duration: 500 },
-      { selector: '.diagram-foundation', delay: 2800, duration: 800 }
-    ],
-
-    init(containerSelector) {
-      const container = document.querySelector(containerSelector);
-      if (!container) return;
-
-      // Check if already animated (don't re-run on scroll back)
-      if (container.dataset.animated === 'true') return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.play(container);
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.3 });
-
-      observer.observe(container);
-    },
-
-    play(container) {
-      container.dataset.animated = 'true';
-
-      this.steps.forEach(step => {
-        setTimeout(() => {
-          const elements = container.querySelectorAll(step.selector);
-          elements.forEach(el => {
-            el.classList.add('active');
-            el.style.opacity = '1';
-
-            // Special handling for border trace animation
-            if (el.classList.contains('border-trace')) {
-              el.style.animation = `traceBorder ${step.duration}ms ease forwards`;
-            }
-
-            // Special handling for line draw
-            if (el.classList.contains('line-draw')) {
-              el.style.animation = `drawLine ${step.duration}ms ease forwards`;
-            }
-          });
-        }, step.delay);
+          revealObserver.unobserve(entry.target);
+        }
       });
-
-      // Total sequence time ~4 seconds
-      console.log('Diagram sequence initiated');
-    }
-  };
-
-  // —— HOVER TOOLTIP ENHANCEMENTS ——
-  // Ensure tooltips stay within viewport
-  const tooltipTriggers = document.querySelectorAll('.tooltip-trigger');
-
-  tooltipTriggers.forEach(trigger => {
-    const tooltip = trigger.querySelector('.tooltip');
-    if (!tooltip) return;
-
-    trigger.addEventListener('mouseenter', () => {
-      const rect = tooltip.getBoundingClientRect();
-
-      // If tooltip goes off top of viewport, flip to bottom
-      if (rect.top < 10) {
-        tooltip.style.bottom = 'auto';
-        tooltip.style.top = 'calc(100% + 8px)';
-        tooltip.style.transform = 'translateX(-50%)';
-      }
-
-      // If tooltip goes off left/right, adjust
-      if (rect.left < 10) {
-        tooltip.style.left = '0';
-        tooltip.style.transform = 'translateX(0)';
-      } else if (rect.right > window.innerWidth - 10) {
-        tooltip.style.left = 'auto';
-        tooltip.style.right = '0';
-        tooltip.style.transform = 'translateX(0)';
-      }
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
     });
 
-    trigger.addEventListener('mouseleave', () => {
-      // Reset positioning for next hover
-      setTimeout(() => {
-        tooltip.style.bottom = '';
-        tooltip.style.top = '';
-        tooltip.style.left = '';
-        tooltip.style.right = '';
-        tooltip.style.transform = '';
-      }, 300);
+    revealElements.forEach(el => revealObserver.observe(el));
+  } else {
+    // Fallback for older browsers
+    revealElements.forEach(el => el.classList.add('revealed'));
+  }
+
+  // —— HOVER EXPANSIONS (Tree nodes) ——
+  // The CSS handles the visual expansion, but we add
+  // a subtle sound cue or haptic feedback if available
+  const treeNodes = document.querySelectorAll('.crack-node, .intervention-node');
+
+  treeNodes.forEach(node => {
+    node.addEventListener('mouseenter', () => {
+      // Optional: add a subtle glow pulse to parent branch
+      const branch = node.closest('.branch');
+      if (branch) {
+        branch.style.transition = 'filter 0.4s ease';
+      }
     });
   });
 
@@ -149,10 +66,9 @@
     });
   });
 
-  // —— NAVIGATION FADE TRANSITIONS ——
+  // —— PAGE TRANSITIONS ——
   window.PageTransition = {
     navigate(url) {
-      // Create overlay
       const overlay = document.createElement('div');
       overlay.style.cssText = `
         position: fixed;
@@ -165,12 +81,10 @@
       `;
       document.body.appendChild(overlay);
 
-      // Fade in
       requestAnimationFrame(() => {
         overlay.style.opacity = '1';
       });
 
-      // Navigate after fade
       setTimeout(() => {
         window.location.href = url;
       }, 400);
@@ -179,14 +93,12 @@
 
   // —— DOWNLOAD PDF BUTTON ——
   window.initDownloadButtons = function() {
-    document.querySelectorAll('.btn-download').forEach(btn => {
+    document.querySelectorAll('.btn-download, .nav-pdf').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        // If href is # or empty, show placeholder message
         const href = btn.getAttribute('href');
-        if (!href || href === '#') {
+        if (!href || href === '#' || href === '') {
           e.preventDefault();
 
-          // Create temporary notification
           const notice = document.createElement('div');
           notice.textContent = 'PDF coming soon — content in final review';
           notice.style.cssText = `
@@ -203,6 +115,7 @@
             z-index: 10000;
             border-radius: 2px;
             animation: fadeInUp 0.4s ease;
+            white-space: nowrap;
           `;
           document.body.appendChild(notice);
 
@@ -216,7 +129,7 @@
     });
   };
 
-  // Initialize download buttons on load
+  // Initialize download buttons
   window.initDownloadButtons();
 
   // —— LOBBY DOOR INTERACTIONS ——
@@ -232,7 +145,6 @@
         door.style.pointerEvents = 'none';
         door.style.cursor = 'not-allowed';
 
-        // Add "In Preparation" label
         const label = document.createElement('span');
         label.className = 'door-status';
         label.textContent = 'In Preparation';
@@ -249,7 +161,6 @@
         `;
         door.appendChild(label);
       } else if (link) {
-        // Active door - add hover glow
         door.classList.add('hover-lift');
 
         link.addEventListener('click', (e) => {
@@ -272,7 +183,7 @@
   }
 
   window.addEventListener('resize', handleResize);
-  handleResize(); // Initial check
+  handleResize();
 
   // —— CONSOLE EASTER EGG ——
   console.log('%c Martha CRA Portfolio ', 'background: #1a1a1f; color: #c4956a; font-size: 14px; font-weight: bold; padding: 4px 8px;');
