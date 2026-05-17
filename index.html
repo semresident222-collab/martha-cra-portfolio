@@ -6,20 +6,13 @@
   <meta name="description" content="CRA Portfolio: governance autopsies of discontinued oncology trials, with rebuilt monitoring architecture.">
   <title>Martha — CRA Portfolio</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="styles/base.css">
 
   <style>
-    /* ============================================================
-       LOBBY — TRIptych Door Layout
-       Dark graphite base, minimal geometric thresholds
-       ============================================================ */
-
     .lobby {
       min-height: 100vh;
       display: flex;
@@ -32,7 +25,6 @@
       overflow: hidden;
     }
 
-    /* Subtle background texture */
     .lobby::before {
       content: '';
       position: absolute;
@@ -43,7 +35,6 @@
       pointer-events: none;
     }
 
-    /* Header */
     .lobby-header {
       text-align: center;
       margin-bottom: var(--space-2xl);
@@ -75,7 +66,6 @@
       margin: var(--space-md) auto;
     }
 
-    /* Concept statement */
     .concept-statement {
       font-family: var(--font-accent);
       font-size: clamp(0.9rem, 2vw, 1.1rem);
@@ -90,7 +80,6 @@
       animation: fadeIn 1.2s ease 0.3s both;
     }
 
-    /* Triptych doors */
     .doors-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -120,11 +109,7 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(
-        180deg,
-        transparent 60%,
-        rgba(196, 149, 106, 0.05) 100%
-      );
+      background: linear-gradient(180deg, transparent 60%, rgba(196, 149, 106, 0.05) 100%);
       opacity: 0;
       transition: opacity var(--transition-base);
     }
@@ -139,7 +124,6 @@
       transform: translateY(-4px);
     }
 
-    /* Door number */
     .door-number {
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -150,7 +134,6 @@
       opacity: 0.7;
     }
 
-    /* Door title */
     .door-title {
       font-family: var(--font-accent);
       font-size: clamp(1rem, 2vw, 1.3rem);
@@ -160,7 +143,6 @@
       line-height: 1.3;
     }
 
-    /* Door subtitle */
     .door-subtitle {
       font-family: var(--font-body);
       font-size: 0.85rem;
@@ -169,7 +151,6 @@
       margin-bottom: var(--space-md);
     }
 
-    /* Door indicator line */
     .door-indicator {
       width: 30px;
       height: 1px;
@@ -183,7 +164,6 @@
       opacity: 1;
     }
 
-    /* Door status label (for preparing doors) */
     .door-status {
       position: absolute;
       bottom: var(--space-lg);
@@ -197,7 +177,6 @@
       opacity: 0.6;
     }
 
-    /* Door 2 active styling */
     .door-threshold[data-status="active"] {
       border-color: var(--amber-border);
     }
@@ -206,7 +185,6 @@
       opacity: 1;
     }
 
-    /* Footer */
     .lobby-footer {
       margin-top: var(--space-2xl);
       text-align: center;
@@ -232,7 +210,6 @@
       color: var(--amber-intense);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .doors-container {
         grid-template-columns: 1fr;
@@ -248,7 +225,6 @@
       }
     }
 
-    /* Print */
     @media print {
       .lobby {
         min-height: auto;
@@ -282,13 +258,13 @@
     </p>
 
     <section class="doors-container">
-      <!-- Door 1: Aduhelm -->
-      <article class="door-threshold" data-status="preparing" data-door="1">
+      <!-- Door 1: Aduhelm — ACTIVE -->
+      <a href="door-1.html" class="door-threshold" data-status="active" data-door="1">
         <div class="door-number">Door 01</div>
         <h2 class="door-title">Aduhelm</h2>
         <p class="door-subtitle">Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling.</p>
         <div class="door-indicator"></div>
-      </article>
+      </a>
 
       <!-- Door 2: KEYNOTE-991 — ACTIVE -->
       <a href="door-2.html" class="door-threshold" data-status="active" data-door="2">
@@ -298,7 +274,7 @@
         <div class="door-indicator"></div>
       </a>
 
-      <!-- Door 3: ADHD Biomarker -->
+      <!-- Door 3: ADHD Biomarker — PREPARING -->
       <article class="door-threshold" data-status="preparing" data-door="3">
         <div class="door-number">Door 03</div>
         <h2 class="door-title">ADHD Biomarker</h2>
@@ -317,7 +293,6 @@
 
   <script src="scripts/core.js"></script>
   <script>
-    // Initialize lobby doors
     if (window.initLobbyDoors) {
       window.initLobbyDoors();
     }
