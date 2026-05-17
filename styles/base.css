@@ -1,5 +1,6 @@
+
 /* ============================================================
-   MARTHA CRA PORTFOLIO — BASE STYLES
+   MARTHA CRA PORTFOLIO — BASE STYLES (UPDATED)
    Atmospheric foundation shared across all doors
    ============================================================ */
 
@@ -324,6 +325,29 @@ p {
 .btn-primary:hover {
   background: var(--amber-muted);
   box-shadow: 0 0 30px rgba(196, 149, 106, 0.2);
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--amber-intense);
+  color: var(--bg-deep);
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid var(--amber-intense);
+  transition: all var(--transition-base);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.btn-download:hover {
+  background: transparent;
+  color: var(--amber-intense);
+  box-shadow: 0 0 30px var(--amber-glow);
 }
 
 /* —— LAYOUT UTILITIES —— */
