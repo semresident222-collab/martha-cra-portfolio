@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aduhelm: A governance autopsy of accelerated approval collapse. The building that passed inspection while the foundation was already compromised.">
   <title>Door 1 — Aduhelm | Martha CRA Portfolio</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,66 +13,665 @@
   <link rel="stylesheet" href="styles/base.css">
 
   <style>
+    /* ============================================================
+       DOOR 1 — ADUHELM
+       Cold white, surgical blue, hairline fractures, controlled instability
+       The building that passed site inspection while the foundation
+       was already compromised. Asymptomatic until end-stage.
+       ============================================================ */
+
     .door-1 {
       background: var(--bg-graphite);
+      min-height: 100vh;
+      color: var(--text-cream);
+      overflow-x: hidden;
+    }
+
+    /* —— NAVIGATION —— */
+    .nav-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: var(--space-md) var(--space-xl);
+      background: rgba(18, 18, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(74, 122, 150, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-home {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--door1-surgical-blue);
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-home:hover { color: var(--door1-cold-white); }
+
+    .nav-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-slate);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-pdf {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--door1-surgical-blue);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(74, 122, 150, 0.3);
+      padding: 0.4rem 1rem;
+      transition: all var(--transition-fast);
+    }
+
+    .nav-pdf:hover {
+      background: rgba(74, 122, 150, 0.1);
+      border-color: var(--door1-surgical-blue);
+    }
+
+    /* —— HERO: The Verdict —— */
+    .hero {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: var(--space-xl);
+      padding: calc(var(--space-2xl) + 60px) var(--space-xl) var(--space-2xl);
+      position: relative;
     }
 
-    .door-1 h1 {
-      font-family: var(--font-accent);
-      font-size: clamp(2rem, 5vw, 3rem);
-      color: var(--text-cream);
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: var(--space-xl);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(180deg, var(--door1-surgical-blue), transparent);
+      opacity: 0.4;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--door1-surgical-blue);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       margin-bottom: var(--space-md);
     }
 
-    .door-1 .status {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--door1-surgical-blue);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: var(--space-lg);
+    .hero h1 {
+      font-family: var(--font-accent);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: var(--space-md);
+      color: var(--door1-cold-white);
     }
 
-    .door-1 .description {
-      font-size: 1rem;
+    .hero-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       color: var(--text-muted);
-      max-width: 500px;
-      line-height: 1.6;
+      letter-spacing: 0.05em;
       margin-bottom: var(--space-xl);
     }
 
-    .door-1 .back-link {
-      color: var(--amber-dim);
-      text-decoration: none;
+    .hero-thesis {
+      font-family: var(--font-accent);
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-style: italic;
+      color: var(--text-warm);
+      max-width: 650px;
+      line-height: 1.5;
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-data-point {
       font-family: var(--font-mono);
       font-size: 0.8rem;
-      transition: color var(--transition-fast);
+      color: var(--door1-surgical-blue);
+      border: 1px solid rgba(74, 122, 150, 0.3);
+      padding: var(--space-sm) var(--space-md);
+      margin-top: var(--space-md);
     }
 
-    .door-1 .back-link:hover {
-      color: var(--amber-intense);
+    .hero-data-point strong {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 0.2rem;
+      color: var(--door1-cold-white);
     }
 
-    .amber-line {
-      margin: var(--space-md) auto;
+    /* —— THE BUILDING —— */
+    .building-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-2xl) var(--space-xl);
+      position: relative;
+    }
+
+    .building-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-slate);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Building facade */
+    .building-facade {
+      width: 100%;
+      max-width: 700px;
+      position: relative;
+    }
+
+    /* Foundation: The root failure */
+    .building-foundation {
+      background: linear-gradient(180deg, rgba(36, 36, 43, 0.8), rgba(18, 18, 22, 0.6));
+      border: 2px solid var(--door1-surgical-blue);
+      border-bottom: none;
+      padding: var(--space-lg) var(--space-xl);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .building-foundation::before {
+      content: 'FOUNDATION';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-graphite);
+      padding: 0 var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--door1-surgical-blue);
+      letter-spacing: 0.15em;
+    }
+
+    .building-foundation p {
+      font-family: var(--font-accent);
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 600;
+      color: var(--door1-cold-white);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Hairline fractures */
+    .fracture-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--door1-surgical-blue), transparent);
+      opacity: 0.3;
+      margin: var(--space-xs) 0;
+      position: relative;
+    }
+
+    .fracture-line::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 30%;
+      width: 40%;
+      height: 1px;
+      background: var(--door1-surgical-blue);
+      opacity: 0.6;
+      animation: fracturePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes fracturePulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Building floors: The cracks */
+    .building-floors {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
+
+    .floor {
+      background: rgba(36, 36, 43, 0.4);
+      border: 1px solid rgba(74, 122, 150, 0.15);
+      border-top: none;
+      padding: var(--space-md);
+      text-align: center;
+      position: relative;
+      cursor: help;
+      transition: all var(--transition-base);
+    }
+
+    .floor:hover {
+      background: rgba(74, 122, 150, 0.05);
+      border-color: rgba(74, 122, 150, 0.3);
+    }
+
+    .floor-number {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--door1-surgical-blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: var(--space-xs);
+      opacity: 0.7;
+    }
+
+    .floor-title {
+      font-family: var(--font-accent);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-cream);
+      line-height: 1.3;
+    }
+
+    .floor-insight {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: var(--space-sm);
+      line-height: 1.5;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all var(--transition-base);
+    }
+
+    .floor:hover .floor-insight {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    /* Floor fractures */
+    .floor-fracture {
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--door1-surgical-blue), transparent);
+      opacity: 0.2;
+    }
+
+    .floor:nth-child(2) .floor-fracture { left: 35%; width: 30%; }
+    .floor:nth-child(3) .floor-fracture { left: 15%; width: 50%; }
+    .floor:nth-child(4) .floor-fracture { left: 45%; width: 25%; }
+    .floor:nth-child(5) .floor-fracture { left: 10%; width: 40%; }
+
+    /* Roof: The collapse */
+    .building-roof {
+      background: linear-gradient(180deg, rgba(74, 122, 150, 0.1), transparent);
+      border: 1px solid rgba(74, 122, 150, 0.2);
+      border-top: 2px solid var(--door1-surgical-blue);
+      padding: var(--space-lg) var(--space-xl);
+      text-align: center;
+      position: relative;
+      margin-top: var(--space-md);
+    }
+
+    .building-roof::before {
+      content: 'COLLAPSE';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-graphite);
+      padding: 0 var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--door1-surgical-blue);
+      letter-spacing: 0.15em;
+    }
+
+    .building-roof p {
+      font-family: var(--font-accent);
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--text-warm);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Interventions: The structural rebuild */
+    .rebuild-section {
+      padding: var(--space-2xl) var(--space-xl);
+      text-align: center;
+    }
+
+    .rebuild-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-slate);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xl);
+    }
+
+    .rebuild-container {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xl);
+      max-width: 800px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .rebuild-pillar {
+      background: linear-gradient(135deg, rgba(74, 122, 150, 0.15), rgba(74, 122, 150, 0.05));
+      border: 1px solid rgba(74, 122, 150, 0.3);
+      padding: var(--space-lg);
+      flex: 1;
+      min-width: 280px;
+      max-width: 380px;
+      text-align: center;
+      position: relative;
+      cursor: help;
+      transition: all var(--transition-base);
+    }
+
+    .rebuild-pillar:hover {
+      border-color: var(--door1-surgical-blue);
+      box-shadow: 0 0 30px rgba(74, 122, 150, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .rebuild-pillar .pillar-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--door1-surgical-blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+
+    .rebuild-pillar .pillar-title {
+      font-family: var(--font-accent);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--door1-cold-white);
+      line-height: 1.3;
+      margin-bottom: var(--space-sm);
+    }
+
+    .rebuild-pillar .pillar-insight {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all var(--transition-base);
+    }
+
+    .rebuild-pillar:hover .pillar-insight {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    /* Regulatory foundation */
+    .regulatory-foundation {
+      background: rgba(240, 235, 227, 0.03);
+      border: 1px solid rgba(74, 122, 150, 0.15);
+      padding: var(--space-md);
+      max-width: 700px;
+      margin: var(--space-xl) auto 0;
+      text-align: center;
+    }
+
+    .regulatory-foundation p {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-slate);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    /* —— CLOSING —— */
+    .closing {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-2xl) var(--space-xl);
+    }
+
+    .closing-quote {
+      font-family: var(--font-accent);
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--text-warm);
+      max-width: 650px;
+      line-height: 1.5;
+      margin-bottom: var(--space-xl);
+    }
+
+    .closing .btn-download {
+      font-size: 0.9rem;
+      padding: var(--space-md) var(--space-xl);
+      border-color: rgba(74, 122, 150, 0.4);
+      color: var(--door1-cold-white);
+    }
+
+    .closing .btn-download:hover {
+      background: rgba(74, 122, 150, 0.1);
+      border-color: var(--door1-surgical-blue);
+      box-shadow: 0 0 30px rgba(74, 122, 150, 0.1);
+    }
+
+    /* —— FOOTER —— */
+    .door-footer {
+      padding: var(--space-xl) var(--space-xl);
+      text-align: center;
+      border-top: 1px solid rgba(74, 122, 150, 0.08);
+    }
+
+    .door-footer p {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-slate);
+      letter-spacing: 0.05em;
+    }
+
+    /* —— RESPONSIVE —— */
+    @media (max-width: 768px) {
+      .rebuild-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .rebuild-pillar {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .nav-bar {
+        padding: var(--space-sm) var(--space-md);
+      }
+
+      .nav-title {
+        display: none;
+      }
+
+      .hero {
+        padding-top: calc(var(--space-xl) + 50px);
+      }
+    }
+
+    /* Print */
+    @media print {
+      .nav-bar {
+        position: static;
+        background: none;
+        border: none;
+      }
+
+      .floor .floor-insight,
+      .rebuild-pillar .pillar-insight {
+        opacity: 1;
+        max-height: none;
+      }
+
+      .building-foundation,
+      .floor,
+      .building-roof,
+      .rebuild-pillar {
+        page-break-inside: avoid;
+      }
     }
   </style>
 <base target="_blank">
 </head>
 <body class="door-1">
+
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-home">← Lobby</a>
+    <span class="nav-title">Door 1 — Aduhelm</span>
+    <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="nav-pdf" download>Download PDF ↓</a>
+  </nav>
+
   <main>
-    <p class="status">In Preparation</p>
-    <h1>Door 1 — Aduhelm</h1>
-    <div class="amber-line"></div>
-    <p class="description">Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling. Cold white. Surgical blue. Controlled instability.</p>
-    <a href="index.html" class="back-link">← Return to Lobby</a>
+
+    <!-- HERO: The Verdict -->
+    <section class="hero">
+      <p class="hero-label">Door 01 — Neurology / Regulatory Affairs</p>
+      <h1>Aduhelm</h1>
+      <p class="hero-meta">Biogen/Eisai · Anti-Amyloid Monoclonal Antibody · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</p>
+      <p class="hero-thesis">"The building passed site inspection while the foundation was already compromised. The inspection measures what it was designed to measure. It does not measure what it was not designed to look for."</p>
+      <div class="hero-data-point">
+        <strong>115 meetings</strong>
+        between FDA and Biogen in 12 months. 66 unrecorded.
+      </div>
+    </section>
+
+    <!-- THE BUILDING -->
+    <section class="building-section">
+      <p class="building-label">The Architecture of Collapse</p>
+
+      <div class="building-facade">
+
+        <!-- Foundation: Root Failure -->
+        <div class="building-foundation reveal">
+          <p>Independence became optional. Once optional, the system began producing something that looked like science and behaved like marketing.</p>
+        </div>
+
+        <!-- Hairline fractures -->
+        <div class="fracture-line"></div>
+
+        <!-- Floors: The five cracks -->
+        <div class="building-floors">
+
+          <div class="floor reveal" data-reveal-delay="0.1">
+            <span class="floor-number">Floor 01</span>
+            <h3 class="floor-title">The Post-Hoc Salvage</h3>
+            <p class="floor-insight">The DMC recommended futility. Biogen claimed analytical error. The DMC was never reconvened. No independent verification.</p>
+            <div class="floor-fracture"></div>
+          </div>
+
+          <div class="floor reveal" data-reveal-delay="0.2">
+            <span class="floor-number">Floor 02</span>
+            <h3 class="floor-title">The Firewall Collapse</h3>
+            <p class="floor-insight">115 meetings. 66 unrecorded. Joint briefing documents drafted by FDA staff. The distance between sponsor and regulator quietly dissolved.</p>
+            <div class="floor-fracture"></div>
+          </div>
+
+          <div class="floor reveal" data-reveal-delay="0.3">
+            <span class="floor-number">Floor 03</span>
+            <h3 class="floor-title">The Advisory Committee Bypass</h3>
+            <p class="floor-insight">10 of 11 voted against approval. FDA approved anyway. The pathway was constructed around the committee, not through it.</p>
+            <div class="floor-fracture"></div>
+          </div>
+
+          <div class="floor reveal" data-reveal-delay="0.4">
+            <span class="floor-number">Floor 04</span>
+            <h3 class="floor-title">The Surrogate Endpoint Substitution</h3>
+            <p class="floor-insight">Approved on amyloid reduction — a surrogate. The clinical endpoint the trial was designed to measure had already failed.</p>
+            <div class="floor-fracture"></div>
+          </div>
+
+          <div class="floor reveal" data-reveal-delay="0.5">
+            <span class="floor-number">Floor 05</span>
+            <h3 class="floor-title">The External Correction</h3>
+            <p class="floor-insight">Three resignations. CMS restriction. Congressional investigation. DOJ probe. EU withdrawal. The system corrected from outside because it could not from within.</p>
+            <div class="floor-fracture"></div>
+          </div>
+
+        </div>
+
+        <!-- Roof: The collapse -->
+        <div class="building-roof reveal" data-reveal-delay="0.6">
+          <p>"Five cracks. One foundation. One direction of failure. The building looked stable until the moment it didn't."</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- REBUILD: The Interventions -->
+    <section class="rebuild-section">
+      <p class="rebuild-label">The Structural Rebuild</p>
+
+      <div class="rebuild-container">
+
+        <div class="rebuild-pillar reveal" data-reveal-delay="0.2">
+          <span class="pillar-label">Intervention A</span>
+          <h3 class="pillar-title">DMC Governance Lock</h3>
+          <p class="pillar-insight">Futility recommendations become binding. Sponsor claims of analytical error require mandatory independent biostatistical audit. DMC must reconvene within 30 days. Post-hoc subgroups prohibited as primary evidence.</p>
+        </div>
+
+        <div class="rebuild-pillar reveal" data-reveal-delay="0.3">
+          <span class="pillar-label">Intervention B</span>
+          <h3 class="pillar-title">Interaction Audit Trail</h3>
+          <p class="pillar-insight">Every substantive sponsor-regulator interaction logged with timestamps and authorship. Advisory committee receives full interaction log 14 days before vote. Concealment becomes structurally impossible.</p>
+        </div>
+
+      </div>
+
+      <div class="regulatory-foundation reveal" data-reveal-delay="0.4">
+        <p>Independent Evidence Integrity Unit (IEIU) · ICH E6(R2) §5.19 · ICH E9 · FDA Formal Meetings Guidance · 21 CFR 312.32</p>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="closing">
+      <p class="closing-quote">"The instinct to look underneath is what I am building a career on. The CRA who verifies source data, flags deviations, maintains the audit trail — is one of the few people whose job is to see what is actually there."</p>
+      <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="btn btn-download" download>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Full Analysis (PDF)
+      </a>
+      <p style="font-size: 0.75rem; color: var(--text-slate); margin-top: var(--space-md);">Complete governance autopsy with congressional findings and regulatory anchors</p>
+    </section>
+
   </main>
+
+  <footer class="door-footer">
+    <p>Martha · 2026 · <a href="index.html" style="color: var(--door1-surgical-blue); text-decoration: none;">← Lobby</a></p>
+  </footer>
+
+  <script src="scripts/core.js"></script>
 </body>
 </html>
