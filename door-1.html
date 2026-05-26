@@ -1,714 +1,612 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Aduhelm: A governance autopsy. The building that passed inspection while the foundation was already compromised.">
-  <title>Door 1 — Aduhelm | Martha CRA Portfolio</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles/base.css">
-
-  <style>
-    /* ============================================================
-       DOOR 1 — ADUHELM: GLASS BUILDING
-       Pure SVG. Animated fracture propagation. Retrofit interventions.
-       ============================================================ */
-
-    .door-1 {
-      background: var(--bg-graphite);
-      min-height: 100vh;
-      color: var(--text-cream);
-      overflow-x: hidden;
-    }
-
-    /* —— NAVIGATION —— */
-    .nav-bar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: var(--space-md) var(--space-xl);
-      background: rgba(18, 18, 22, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(74, 122, 150, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-home {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--door1-surgical-blue);
-      text-decoration: none;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: color var(--transition-fast);
-    }
-
-    .nav-home:hover { color: var(--door1-cold-white); }
-
-    .nav-title {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-slate);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .nav-pdf {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--door1-surgical-blue);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: 1px solid rgba(74, 122, 150, 0.3);
-      padding: 0.4rem 1rem;
-      transition: all var(--transition-fast);
-    }
-
-    .nav-pdf:hover {
-      background: rgba(74, 122, 150, 0.1);
-      border-color: var(--door1-surgical-blue);
-    }
-
-    /* —— HERO —— */
-    .hero {
-      min-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: calc(var(--space-2xl) + 60px) var(--space-xl) var(--space-xl);
-    }
-
-    .hero-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--door1-surgical-blue);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: var(--space-md);
-    }
-
-    .hero h1 {
-      font-family: var(--font-accent);
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: var(--space-md);
-      color: var(--door1-cold-white);
-    }
-
-    .hero-meta {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      margin-bottom: var(--space-xl);
-    }
-
-    .hero-thesis {
-      font-family: var(--font-accent);
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      font-style: italic;
-      color: var(--text-warm);
-      max-width: 600px;
-      line-height: 1.5;
-      margin-bottom: var(--space-lg);
-    }
-
-    /* —— THE GLASS BUILDING —— */
-    .building-section {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: var(--space-xl);
-      position: relative;
-    }
-
-    .building-label {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-slate);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: var(--space-xl);
-      text-align: center;
-    }
-
-    .building-svg-container {
-      width: 100%;
-      max-width: 700px;
-      position: relative;
-    }
-
-    .building-svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* SVG Styles - applied via CSS for animation control */
-    .building-outline {
-      fill: none;
-      stroke: rgba(232, 237, 242, 0.15);
-      stroke-width: 1.5;
-    }
-
-    .building-glass {
-      fill: rgba(232, 237, 242, 0.03);
-      stroke: rgba(232, 237, 242, 0.08);
-      stroke-width: 0.5;
-    }
-
-    .floor-line {
-      stroke: rgba(232, 237, 242, 0.1);
-      stroke-width: 0.5;
-    }
-
-    .fracture {
-      fill: none;
-      stroke: var(--door1-surgical-blue);
-      stroke-width: 1;
-      stroke-linecap: round;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    .fracture.active {
-      opacity: 0.6;
-    }
-
-    .fracture-glow {
-      fill: none;
-      stroke: var(--door1-surgical-blue);
-      stroke-width: 2;
-      stroke-linecap: round;
-      filter: blur(2px);
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    .fracture-glow.active {
-      opacity: 0.3;
-    }
-
-    .floor-label {
-      font-family: var(--font-mono);
-      font-size: 8px;
-      fill: var(--text-muted);
-      text-anchor: middle;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-
-    .floor-label.active {
-      opacity: 0.7;
-    }
-
-    .floor-title-svg {
-      font-family: var(--font-accent);
-      font-size: 10px;
-      font-weight: 600;
-      fill: var(--door1-cold-white);
-      text-anchor: middle;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-
-    .floor-title-svg.active {
-      opacity: 1;
-    }
-
-    .foundation-label {
-      font-family: var(--font-mono);
-      font-size: 7px;
-      fill: var(--door1-surgical-blue);
-      text-anchor: middle;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    .foundation-label.active {
-      opacity: 0.8;
-    }
-
-    .foundation-text {
-      font-family: var(--font-accent);
-      font-size: 9px;
-      font-weight: 600;
-      fill: var(--door1-cold-white);
-      text-anchor: middle;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    .foundation-text.active {
-      opacity: 1;
-    }
-
-    /* Intervention beams - retrofit steel */
-    .beam {
-      fill: none;
-      stroke: rgba(196, 149, 106, 0.6);
-      stroke-width: 2;
-      stroke-linecap: square;
-      opacity: 0;
-      transition: opacity 1s ease, stroke-width 1s ease;
-    }
-
-    .beam.active {
-      opacity: 1;
-    }
-
-    .beam-glow {
-      fill: none;
-      stroke: rgba(196, 149, 106, 0.3);
-      stroke-width: 4;
-      stroke-linecap: square;
-      filter: blur(3px);
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    .beam-glow.active {
-      opacity: 0.4;
-    }
-
-    .beam-label {
-      font-family: var(--font-mono);
-      font-size: 7px;
-      fill: var(--amber-intense);
-      text-anchor: middle;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    .beam-label.active {
-      opacity: 0.8;
-    }
-
-    /* Foundation block */
-    .foundation-block {
-      fill: rgba(74, 122, 150, 0.08);
-      stroke: rgba(74, 122, 150, 0.2);
-      stroke-width: 1;
-    }
-
-    .foundation-crack {
-      fill: none;
-      stroke: var(--door1-surgical-blue);
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    .foundation-crack.active {
-      opacity: 0.7;
-    }
-
-    /* —— INTERVENTION SECTION —— */
-    .intervention-section {
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: var(--space-2xl) var(--space-xl);
-      text-align: center;
-    }
-
-    .intervention-label {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-slate);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: var(--space-xl);
-    }
-
-    .intervention-pillars {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-xl);
-      max-width: 800px;
-      width: 100%;
-      flex-wrap: wrap;
-    }
-
-    .pillar {
-      flex: 1;
-      min-width: 280px;
-      max-width: 380px;
-      background: linear-gradient(180deg, rgba(74, 122, 150, 0.08), rgba(74, 122, 150, 0.02));
-      border: 1px solid rgba(74, 122, 150, 0.2);
-      border-top: 3px solid var(--door1-surgical-blue);
-      padding: var(--space-lg);
-      text-align: center;
-      position: relative;
-      cursor: help;
-      transition: all var(--transition-base);
-    }
-
-    .pillar:hover {
-      border-color: var(--door1-surgical-blue);
-      box-shadow: 0 0 30px rgba(74, 122, 150, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .pillar-number {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--door1-surgical-blue);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: var(--space-xs);
-    }
-
-    .pillar h3 {
-      font-family: var(--font-accent);
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--door1-cold-white);
-      margin-bottom: var(--space-sm);
-    }
-
-    .pillar p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: all var(--transition-base);
-      margin: 0;
-    }
-
-    .pillar:hover p {
-      opacity: 1;
-      max-height: 200px;
-      margin-top: var(--space-sm);
-    }
-
-    .regulatory-footer {
-      margin-top: var(--space-xl);
-      padding: var(--space-md) var(--space-lg);
-      border: 1px solid rgba(74, 122, 150, 0.1);
-      max-width: 700px;
-    }
-
-    .regulatory-footer p {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-slate);
-      line-height: 1.8;
-      margin: 0;
-    }
-
-    /* —— CLOSING —— */
-    .closing {
-      min-height: 50vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: var(--space-2xl) var(--space-xl);
-    }
-
-    .closing-quote {
-      font-family: var(--font-accent);
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-      font-style: italic;
-      color: var(--text-warm);
-      max-width: 650px;
-      line-height: 1.5;
-      margin-bottom: var(--space-xl);
-    }
-
-    .btn-download-door1 {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-md) var(--space-xl);
-      background: transparent;
-      color: var(--door1-cold-white);
-      font-family: var(--font-accent);
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-decoration: none;
-      border: 2px solid rgba(74, 122, 150, 0.4);
-      transition: all var(--transition-base);
-      letter-spacing: 0.02em;
-      cursor: pointer;
-    }
-
-    .btn-download-door1:hover {
-      background: rgba(74, 122, 150, 0.1);
-      border-color: var(--door1-surgical-blue);
-      box-shadow: 0 0 30px rgba(74, 122, 150, 0.1);
-    }
-
-    /* —— FOOTER —— */
-    .door-footer {
-      padding: var(--space-xl) var(--space-xl);
-      text-align: center;
-      border-top: 1px solid rgba(74, 122, 150, 0.08);
-    }
-
-    .door-footer p {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-slate);
-      letter-spacing: 0.05em;
-    }
-
-    /* —— RESPONSIVE —— */
-    @media (max-width: 768px) {
-      .intervention-pillars {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .pillar {
-        max-width: 100%;
-        width: 100%;
-      }
-
-      .nav-bar {
-        padding: var(--space-sm) var(--space-md);
-      }
-
-      .nav-title {
-        display: none;
-      }
-
-      .hero {
-        padding-top: calc(var(--space-xl) + 50px);
-      }
-
-      .building-svg-container {
-        max-width: 100%;
-      }
-    }
-  </style>
-<base target="_blank">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Door 1 — Aduhelm | Martha Wuya Koroma</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1520;
+    --blue-cold: #4a7a96;
+    --blue-bright: #6db3d4;
+    --copper: #b87b4f;
+    --cream: #e8ddd0;
+    --white: #f4f0ea;
+    --muted: rgba(232,221,208,0.4);
+    --crack: #6db3d4;
+    --beam: #b87b4f;
+    --danger: rgba(109,179,212,0.15);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--navy);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(13,21,32,0.9);
+    border-bottom: 1px solid rgba(74,122,150,0.15);
+  }
+  nav a { color: var(--blue-cold); font-size: 0.65rem; letter-spacing: 0.15em; text-decoration: none; text-transform: uppercase; }
+  nav a:hover { color: var(--cream); }
+  .nav-center { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+  .nav-pdf {
+    border: 1px solid rgba(74,122,150,0.3);
+    padding: 0.35rem 0.9rem;
+    transition: all 0.2s;
+  }
+  .nav-pdf:hover { background: rgba(74,122,150,0.1); border-color: var(--blue-cold); }
+
+  /* MAIN STAGE */
+  .stage {
+    position: fixed; inset: 0;
+    padding-top: 52px;
+    display: grid;
+    grid-template-columns: 1fr 420px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+  }
+
+  /* LEFT PANEL — collapse narrative */
+  .panel-left {
+    grid-column: 1; grid-row: 2;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 2rem 1.5rem 2rem 2.5rem;
+    gap: 0.8rem;
+  }
+
+  .crack-label {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .crack-label.visible { opacity: 1; transform: translateX(0); }
+  .crack-num { font-size: 0.55rem; color: var(--blue-cold); letter-spacing: 0.2em; text-transform: uppercase; }
+  .crack-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600; color: var(--white); }
+  .crack-sub { font-size: 0.6rem; color: var(--muted); line-height: 1.5; }
+
+  /* RIGHT PANEL — intervention narrative */
+  .panel-right {
+    grid-column: 3; grid-row: 2;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 2rem 2.5rem 2rem 1.5rem;
+    gap: 1.2rem;
+  }
+
+  .beam-label {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    opacity: 0;
+    transform: translateX(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .beam-label.visible { opacity: 1; transform: translateX(0); }
+  .beam-tag { font-size: 0.55rem; color: var(--copper); letter-spacing: 0.2em; text-transform: uppercase; }
+  .beam-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600; color: var(--white); }
+  .beam-sub { font-size: 0.6rem; color: var(--muted); line-height: 1.5; }
+
+  /* BOTTOM — status */
+  .status-bar {
+    grid-column: 1 / -1; grid-row: 3;
+    padding: 0.6rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(74,122,150,0.1);
+  }
+  .status-text {
+    font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em;
+    transition: color 0.8s ease;
+  }
+  .status-text.critical { color: var(--blue-bright); }
+  .status-text.stable { color: var(--copper); }
+  .reg-anchors { font-size: 0.55rem; color: rgba(232,221,208,0.25); letter-spacing: 0.08em; }
+
+  /* SVG CANVAS */
+  .building-wrap {
+    grid-column: 2; grid-row: 1 / -1;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  #building-svg {
+    width: 100%;
+    max-width: 420px;
+    height: calc(100vh - 52px);
+    overflow: visible;
+  }
+
+  /* SVG element classes */
+  .bldg-outline { fill: none; stroke: rgba(232,221,208,0.12); stroke-width: 1.5; }
+  .bldg-face { fill: rgba(74,122,150,0.06); stroke: rgba(74,122,150,0.12); stroke-width: 0.5; }
+  .window { fill: rgba(74,122,150,0.08); stroke: rgba(74,122,150,0.2); stroke-width: 0.5; }
+  .window.lit { fill: rgba(109,179,212,0.15); stroke: rgba(109,179,212,0.4); }
+  .floor-div { stroke: rgba(232,221,208,0.08); stroke-width: 0.5; }
+  .vert-div { stroke: rgba(232,221,208,0.06); stroke-width: 0.5; }
+  .roof-line { stroke: rgba(232,221,208,0.2); stroke-width: 1.5; fill: none; }
+
+  /* Cracks — hidden by default */
+  .crack {
+    fill: none; stroke: var(--crack);
+    stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: opacity 0.3s ease;
+    filter: drop-shadow(0 0 3px rgba(109,179,212,0.5));
+  }
+  .crack.draw {
+    opacity: 1;
+    animation: drawCrack 1.2s ease forwards;
+  }
+  @keyframes drawCrack {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Foundation crack — more dramatic */
+  .foundation-crack {
+    fill: none; stroke: var(--crack);
+    stroke-width: 1.5; stroke-linecap: round;
+    opacity: 0;
+    stroke-dasharray: 300; stroke-dashoffset: 300;
+    filter: drop-shadow(0 0 5px rgba(109,179,212,0.7));
+    transition: opacity 0.3s ease;
+  }
+  .foundation-crack.draw {
+    opacity: 1;
+    animation: drawCrack 2s ease forwards;
+  }
+
+  /* Floor danger flash */
+  .floor-zone {
+    fill: transparent;
+    transition: fill 1s ease;
+  }
+  .floor-zone.danger { fill: var(--danger); }
+
+  /* Lean — whole building tilts slightly */
+  .building-group {
+    transform-origin: 200px 600px;
+    transition: transform 4s ease;
+  }
+  .building-group.leaning { transform: rotate(1.2deg); }
+
+  /* Retrofit beams */
+  .beam-h, .beam-v {
+    stroke: var(--beam); stroke-width: 2.5; stroke-linecap: square;
+    fill: none;
+    opacity: 0;
+    stroke-dasharray: 300; stroke-dashoffset: 300;
+    filter: drop-shadow(0 0 4px rgba(184,123,79,0.6));
+  }
+  .beam-h.draw, .beam-v.draw {
+    opacity: 1;
+    animation: drawBeam 1.5s ease forwards;
+  }
+  @keyframes drawBeam {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Foundation block */
+  .foundation { fill: rgba(13,21,32,0.8); stroke: rgba(74,122,150,0.25); stroke-width: 1; }
+  .foundation-text { font-family: 'IBM Plex Mono', monospace; font-size: 8px; fill: var(--muted); }
+
+  /* Floor label in SVG */
+  .floor-tag { font-family: 'IBM Plex Mono', monospace; font-size: 7px; fill: rgba(232,221,208,0.35); letter-spacing: 0.1em; }
+
+  /* STABILISED glow when intervention complete */
+  .stabilised-glow {
+    fill: none; stroke: var(--beam);
+    stroke-width: 1; opacity: 0;
+    transition: opacity 2s ease;
+  }
+  .stabilised-glow.visible { opacity: 0.3; filter: blur(6px); }
+
+</style>
 </head>
-<body class="door-1">
+<body>
 
-  <nav class="nav-bar">
-    <a href="index.html" class="nav-home">← Lobby</a>
-    <span class="nav-title">Door 1 — Aduhelm</span>
-    <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="nav-pdf" download>Download PDF ↓</a>
-  </nav>
+<nav>
+  <a href="index.html">← Lobby</a>
+  <span class="nav-center">Door 01 — Aduhelm — Governance Autopsy</span>
+  <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="nav-pdf" download>PDF ↓</a>
+</nav>
 
-  <main>
+<div class="stage">
 
-    <!-- HERO -->
-    <section class="hero">
-      <p class="hero-label">Door 01 — Neurology / Regulatory Affairs</p>
-      <h1>Aduhelm</h1>
-      <p class="hero-meta">Biogen/Eisai · Anti-Amyloid Monoclonal Antibody · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</p>
-      <p class="hero-thesis">"The building passed site inspection while the foundation was already compromised."</p>
-    </section>
+  <!-- LEFT: Collapse narrative -->
+  <div class="panel-left">
+    <div class="crack-label" id="lbl-foundation">
+      <span class="crack-num">Foundation</span>
+      <span class="crack-title">Independence became optional</span>
+      <span class="crack-sub">115 FDA–Biogen meetings. 66 unrecorded.</span>
+    </div>
+    <div class="crack-label" id="lbl-f1">
+      <span class="crack-num">Floor 01</span>
+      <span class="crack-title">Post-Hoc Salvage</span>
+      <span class="crack-sub">Sponsor reversed DMC futility. No independent audit.</span>
+    </div>
+    <div class="crack-label" id="lbl-f2">
+      <span class="crack-num">Floor 02</span>
+      <span class="crack-title">Firewall Collapse</span>
+      <span class="crack-sub">FDA drafted joint briefing documents with Biogen.</span>
+    </div>
+    <div class="crack-label" id="lbl-f3">
+      <span class="crack-num">Floor 03</span>
+      <span class="crack-title">Committee Bypass</span>
+      <span class="crack-sub">Advisory vote: 10 against, 0 for. Approved anyway.</span>
+    </div>
+    <div class="crack-label" id="lbl-f4">
+      <span class="crack-num">Floor 04</span>
+      <span class="crack-title">Surrogate Substitution</span>
+      <span class="crack-sub">Clinical endpoint failed. Amyloid proxy substituted.</span>
+    </div>
+    <div class="crack-label" id="lbl-f5">
+      <span class="crack-num">Floor 05</span>
+      <span class="crack-title">External Correction</span>
+      <span class="crack-sub">3 resignations. Congressional inquiry. EU withdrawal.</span>
+    </div>
+  </div>
 
-    <!-- THE GLASS BUILDING -->
-    <section class="building-section" id="building">
-      <p class="building-label">The Architecture of Collapse</p>
+  <!-- CENTRE: Building SVG -->
+  <div class="building-wrap">
+    <svg id="building-svg" viewBox="0 0 400 680" xmlns="http://www.w3.org/2000/svg">
 
-      <div class="building-svg-container">
-        <svg class="building-svg" viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg">
+      <!-- BUILDING GROUP (will lean) -->
+      <g class="building-group" id="bldg-group">
 
-          <!-- Building outline -->
-          <rect class="building-outline" x="100" y="50" width="300" height="550" rx="2" />
+        <!-- Roof detail -->
+        <path class="roof-line" d="M 120 80 L 200 50 L 280 80" />
+        <line x1="200" y1="50" x2="200" y2="80" stroke="rgba(232,221,208,0.12)" stroke-width="1"/>
 
-          <!-- Glass panels -->
-          <rect class="building-glass" x="105" y="55" width="290" height="540" />
+        <!-- Main building outline -->
+        <rect class="bldg-outline" x="120" y="80" width="160" height="480" />
 
-          <!-- Floor divisions -->
-          <line class="floor-line" x1="100" y1="150" x2="400" y2="150" />
-          <line class="floor-line" x1="100" y1="250" x2="400" y2="250" />
-          <line class="floor-line" x1="100" y1="350" x2="400" y2="350" />
-          <line class="floor-line" x1="100" y1="450" x2="400" y2="450" />
+        <!-- Building face fill -->
+        <rect class="bldg-face" x="121" y="81" width="158" height="478" />
 
-          <!-- Vertical divisions -->
-          <line class="floor-line" x1="200" y1="50" x2="200" y2="600" />
-          <line class="floor-line" x1="300" y1="50" x2="300" y2="600" />
+        <!-- Floor zones (for danger flash) -->
+        <rect class="floor-zone" id="zone-f1" x="121" y="465" width="158" height="95" />
+        <rect class="floor-zone" id="zone-f2" x="121" y="369" width="158" height="96" />
+        <rect class="floor-zone" id="zone-f3" x="121" y="273" width="158" height="96" />
+        <rect class="floor-zone" id="zone-f4" x="121" y="177" width="158" height="96" />
+        <rect class="floor-zone" id="zone-f5" x="121" y="81" width="158" height="96" />
 
-          <!-- FOUNDATION -->
-          <rect class="foundation-block" x="80" y="600" width="340" height="80" rx="2" />
+        <!-- Floor divisions -->
+        <line class="floor-div" x1="120" y1="177" x2="280" y2="177" />
+        <line class="floor-div" x1="120" y1="273" x2="280" y2="273" />
+        <line class="floor-div" x1="120" y1="369" x2="280" y2="369" />
+        <line class="floor-div" x1="120" y1="465" x2="280" y2="465" />
 
-          <!-- Foundation crack -->
-          <path class="foundation-crack" id="foundation-crack" 
-            d="M 150 620 L 180 640 L 170 660 L 200 670 L 190 680" />
-          <path class="foundation-crack" id="foundation-crack-2"
-            d="M 320 625 L 300 645 L 310 665 L 280 675" />
+        <!-- Vertical divisions -->
+        <line class="vert-div" x1="168" y1="80" x2="168" y2="560" />
+        <line class="vert-div" x1="216" y1="80" x2="216" y2="560" />
+        <line class="vert-div" x1="232" y1="80" x2="232" y2="560" />
 
-          <!-- Foundation label -->
-          <text class="foundation-label" id="foundation-label" x="250" y="625">FOUNDATION</text>
-          <text class="foundation-text" id="foundation-text" x="250" y="645">Independence became optional</text>
+        <!-- Windows — Floor 5 -->
+        <rect class="window" x="130" y="95" width="28" height="18" rx="1"/>
+        <rect class="window" x="170" y="95" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="95" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="95" width="28" height="18" rx="1"/>
+        <rect class="window" id="w5a" x="130" y="120" width="28" height="18" rx="1"/>
+        <rect class="window" id="w5b" x="170" y="120" width="28" height="18" rx="1"/>
+        <rect class="window" id="w5c" x="222" y="120" width="28" height="18" rx="1"/>
+        <rect class="window" id="w5d" x="242" y="120" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="148" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="148" width="28" height="18" rx="1"/>
 
-          <!-- FRACTURE LINES - propagating upward -->
-          <!-- Main fracture from foundation through all floors -->
-          <path class="fracture" id="fracture-main"
-            d="M 200 600 L 205 550 L 195 500 L 200 450 L 198 400 L 202 350 L 200 300 L 198 250 L 201 200 L 200 150 L 199 100 L 200 50" />
-          <path class="fracture-glow" id="fracture-main-glow"
-            d="M 200 600 L 205 550 L 195 500 L 200 450 L 198 400 L 202 350 L 200 300 L 198 250 L 201 200 L 200 150 L 199 100 L 200 50" />
+        <!-- Windows — Floor 4 -->
+        <rect class="window" x="130" y="191" width="28" height="18" rx="1"/>
+        <rect class="window" id="w4a" x="170" y="191" width="28" height="18" rx="1"/>
+        <rect class="window" id="w4b" x="222" y="191" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="191" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="220" width="28" height="18" rx="1"/>
+        <rect class="window" id="w4c" x="170" y="220" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="220" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="220" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="248" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="248" width="28" height="18" rx="1"/>
 
-          <!-- Secondary fracture -->
-          <path class="fracture" id="fracture-sec"
-            d="M 280 600 L 285 550 L 275 500 L 280 450 L 278 400 L 282 350 L 280 300" />
-          <path class="fracture-glow" id="fracture-sec-glow"
-            d="M 280 600 L 285 550 L 275 500 L 280 450 L 278 400 L 282 350 L 280 300" />
+        <!-- Windows — Floor 3 -->
+        <rect class="window" id="w3a" x="130" y="287" width="28" height="18" rx="1"/>
+        <rect class="window" x="170" y="287" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="287" width="28" height="18" rx="1"/>
+        <rect class="window" id="w3b" x="242" y="287" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="316" width="28" height="18" rx="1"/>
+        <rect class="window" id="w3c" x="170" y="316" width="28" height="18" rx="1"/>
+        <rect class="window" id="w3d" x="222" y="316" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="316" width="28" height="18" rx="1"/>
+        <rect class="window" x="170" y="344" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="344" width="28" height="18" rx="1"/>
 
-          <!-- Floor 5 labels -->
-          <text class="floor-label" id="floor5-label" x="250" y="115">FLOOR 05</text>
-          <text class="floor-title-svg" id="floor5-title" x="250" y="135">External Correction</text>
+        <!-- Windows — Floor 2 -->
+        <rect class="window" x="130" y="383" width="28" height="18" rx="1"/>
+        <rect class="window" id="w2a" x="170" y="383" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="383" width="28" height="18" rx="1"/>
+        <rect class="window" id="w2b" x="242" y="383" width="28" height="18" rx="1"/>
+        <rect class="window" id="w2c" x="130" y="412" width="28" height="18" rx="1"/>
+        <rect class="window" x="170" y="412" width="28" height="18" rx="1"/>
+        <rect class="window" id="w2d" x="222" y="412" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="412" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="440" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="440" width="28" height="18" rx="1"/>
 
-          <!-- Floor 4 labels -->
-          <text class="floor-label" id="floor4-label" x="250" y="215">FLOOR 04</text>
-          <text class="floor-title-svg" id="floor4-title" x="250" y="235">Surrogate Substitution</text>
+        <!-- Windows — Floor 1 -->
+        <rect class="window" id="w1a" x="130" y="479" width="28" height="18" rx="1"/>
+        <rect class="window" x="170" y="479" width="28" height="18" rx="1"/>
+        <rect class="window" id="w1b" x="222" y="479" width="28" height="18" rx="1"/>
+        <rect class="window" x="242" y="479" width="28" height="18" rx="1"/>
+        <rect class="window" x="130" y="508" width="28" height="18" rx="1"/>
+        <rect class="window" id="w1c" x="170" y="508" width="28" height="18" rx="1"/>
+        <rect class="window" x="222" y="508" width="28" height="18" rx="1"/>
+        <rect class="window" id="w1d" x="242" y="508" width="28" height="18" rx="1"/>
 
-          <!-- Floor 3 labels -->
-          <text class="floor-label" id="floor3-label" x="250" y="315">FLOOR 03</text>
-          <text class="floor-title-svg" id="floor3-title" x="250" y="335">Committee Bypass</text>
+        <!-- Floor labels -->
+        <text class="floor-tag" x="126" y="174">FLOOR 01</text>
+        <text class="floor-tag" x="126" y="270">FLOOR 02</text>
+        <text class="floor-tag" x="126" y="366">FLOOR 03</text>
+        <text class="floor-tag" x="126" y="462">FLOOR 04</text>
 
-          <!-- Floor 2 labels -->
-          <text class="floor-label" id="floor2-label" x="250" y="415">FLOOR 02</text>
-          <text class="floor-title-svg" id="floor2-title" x="250" y="435">Firewall Collapse</text>
+        <!-- CRACKS — foundation level -->
+        <path class="foundation-crack" id="crack-base"
+          d="M 185 560 L 178 545 L 188 528 L 176 510 L 182 490 L 172 472 L 180 455"/>
+        <path class="foundation-crack" id="crack-base2"
+          d="M 225 560 L 232 542 L 222 525 L 235 505 L 228 488 L 238 470 L 229 455"/>
 
-          <!-- Floor 1 labels -->
-          <text class="floor-label" id="floor1-label" x="250" y="515">FLOOR 01</text>
-          <text class="floor-title-svg" id="floor1-title" x="250" y="535">Post-Hoc Salvage</text>
+        <!-- CRACKS — floor 1 -->
+        <path class="crack" id="crack-f1a"
+          d="M 180 455 L 174 435 L 182 418 L 170 400 L 176 382 L 168 369"/>
+        <path class="crack" id="crack-f1b"
+          d="M 229 455 L 236 438 L 226 420 L 234 402 L 226 383 L 232 369"/>
 
-          <!-- INTERVENTION BEAMS - retrofit steel -->
-          <!-- Beam A: DMC Governance Lock -->
-          <line class="beam" id="beam-a" x1="50" y1="200" x2="150" y2="200" />
-          <line class="beam-glow" id="beam-a-glow" x1="50" y1="200" x2="150" y2="200" />
-          <line class="beam" id="beam-a-vert" x1="100" y1="200" x2="100" y2="500" />
-          <line class="beam-glow" id="beam-a-vert-glow" x1="100" y1="200" x2="100" y2="500" />
-          <text class="beam-label" id="beam-a-label" x="100" y="195">DMC GOVERNANCE LOCK</text>
+        <!-- CRACKS — floor 2 -->
+        <path class="crack" id="crack-f2a"
+          d="M 168 369 L 174 350 L 164 332 L 172 314 L 165 298 L 170 273"/>
+        <path class="crack" id="crack-f2b"
+          d="M 232 369 L 226 351 L 234 333 L 226 315 L 233 298 L 228 273"/>
 
-          <!-- Beam B: Interaction Audit Trail -->
-          <line class="beam" id="beam-b" x1="350" y1="280" x2="450" y2="280" />
-          <line class="beam-glow" id="beam-b-glow" x1="350" y1="280" x2="450" y2="280" />
-          <line class="beam" id="beam-b-vert" x1="400" y1="280" x2="400" y2="520" />
-          <line class="beam-glow" id="beam-b-vert-glow" x1="400" y1="280" x2="400" y2="520" />
-          <text class="beam-label" id="beam-b-label" x="400" y="275">AUDIT TRAIL</text>
+        <!-- CRACKS — floor 3 -->
+        <path class="crack" id="crack-f3a"
+          d="M 170 273 L 164 256 L 172 238 L 163 221 L 170 204 L 165 177"/>
+        <path class="crack" id="crack-f3b"
+          d="M 228 273 L 234 255 L 226 237 L 233 220 L 227 203 L 232 177"/>
 
-        </svg>
-      </div>
-    </section>
+        <!-- CRACKS — floor 4 -->
+        <path class="crack" id="crack-f4a"
+          d="M 165 177 L 170 158 L 162 140 L 168 122 L 160 105 L 165 81"/>
+        <path class="crack" id="crack-f4b"
+          d="M 232 177 L 228 159 L 234 141 L 228 123 L 234 106 L 230 81"/>
 
-    <!-- INTERVENTION SECTION -->
-    <section class="intervention-section">
-      <p class="intervention-label">The Structural Rebuild</p>
+        <!-- INTERVENTION BEAMS — A: DMC Governance Lock -->
+        <!-- Horizontal cross-brace -->
+        <line class="beam-h" id="beam-a1" x1="60" y1="320" x2="200" y2="320"/>
+        <line class="beam-v" id="beam-a2" x1="60" y1="200" x2="60" y2="560"/>
+        <line class="beam-h" id="beam-a3" x1="60" y1="200" x2="150" y2="200"/>
+        <!-- Diagonal brace -->
+        <line class="beam-v" id="beam-a4" x1="60" y1="320" x2="120" y2="500"/>
 
-      <div class="intervention-pillars">
+        <!-- INTERVENTION BEAMS — B: Audit Trail -->
+        <line class="beam-h" id="beam-b1" x1="200" y1="260" x2="340" y2="260"/>
+        <line class="beam-v" id="beam-b2" x1="340" y1="160" x2="340" y2="520"/>
+        <line class="beam-h" id="beam-b3" x1="250" y1="160" x2="340" y2="160"/>
+        <line class="beam-v" id="beam-b4" x1="280" y1="260" x2="340" y2="420"/>
 
-        <div class="pillar reveal" data-reveal-delay="0.2">
-          <span class="pillar-number">Intervention A</span>
-          <h3>DMC Governance Lock</h3>
-          <p>Futility recommendations become binding. Sponsor claims of analytical error require mandatory independent biostatistical audit. DMC must reconvene within 30 days. Post-hoc subgroups prohibited as primary evidence.</p>
-        </div>
+        <!-- Stabilised glow overlay -->
+        <rect class="stabilised-glow" id="stable-glow" x="60" y="50" width="280" height="530" rx="2"/>
 
-        <div class="pillar reveal" data-reveal-delay="0.3">
-          <span class="pillar-number">Intervention B</span>
-          <h3>Interaction Audit Trail</h3>
-          <p>Every substantive sponsor-regulator interaction logged with timestamps and authorship. Advisory committee receives full interaction log 14 days before vote. Concealment becomes structurally impossible.</p>
-        </div>
+      </g>
 
-      </div>
+      <!-- FOUNDATION BLOCK (outside leaning group) -->
+      <rect class="foundation" x="100" y="558" width="200" height="60" rx="2"/>
+      <text class="foundation-text" x="200" y="578" text-anchor="middle" fill="rgba(109,179,212,0.5)" font-size="7" letter-spacing="0.15em">FOUNDATION</text>
+      <text class="foundation-text" x="200" y="596" text-anchor="middle" fill="rgba(232,221,208,0.5)" font-size="8" font-family="Cormorant Garamond, serif" font-style="italic" font-weight="600">Independence became optional</text>
 
-      <div class="regulatory-footer reveal" data-reveal-delay="0.4">
-        <p>Independent Evidence Integrity Unit (IEIU) · ICH E6(R2) §5.19 · ICH E9 · FDA Formal Meetings Guidance · 21 CFR 312.32</p>
-      </div>
-    </section>
+      <!-- Foundation cracks below building -->
+      <path class="foundation-crack" id="crack-fd1"
+        d="M 160 558 L 155 570 L 148 580 L 152 595 L 145 610"/>
+      <path class="foundation-crack" id="crack-fd2"
+        d="M 240 558 L 245 571 L 252 582 L 248 597 L 255 612"/>
 
-    <!-- CLOSING -->
-    <section class="closing">
-      <p class="closing-quote">"The instinct to look underneath is what I am building a career on. The CRA who verifies source data, flags deviations, maintains the audit trail — is one of the few people whose job is to see what is actually there."</p>
-      <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="btn-download-door1" download>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        Download Full Analysis (PDF)
-      </a>
-      <p style="font-size: 0.75rem; color: var(--text-slate); margin-top: var(--space-md);">Complete governance autopsy with congressional findings and regulatory anchors</p>
-    </section>
+      <!-- Beam labels (outside building group, won't lean) -->
+      <text id="beam-label-a" font-family="IBM Plex Mono, monospace" font-size="7" fill="rgba(184,123,79,0)" letter-spacing="0.1em"
+        x="30" y="186" text-anchor="start"
+        style="transition: fill 0.8s ease; text-transform: uppercase;">DMC LOCK</text>
+      <text id="beam-label-b" font-family="IBM Plex Mono, monospace" font-size="7" fill="rgba(184,123,79,0)" letter-spacing="0.1em"
+        x="345" y="246" text-anchor="start"
+        style="transition: fill 0.8s ease; text-transform: uppercase;">AUDIT TRAIL</text>
 
-  </main>
+    </svg>
+  </div>
 
-  <footer class="door-footer">
-    <p>Martha · 2026 · <a href="index.html" style="color: var(--door1-surgical-blue); text-decoration: none;">← Lobby</a></p>
-  </footer>
+  <!-- RIGHT: Intervention narrative -->
+  <div class="panel-right">
+    <div class="beam-label" id="lbl-intA">
+      <span class="beam-tag">Intervention A</span>
+      <span class="beam-title">DMC Governance Lock</span>
+      <span class="beam-sub">Futility binding. Analytical error claims require independent biostatistical audit. DMC reconvenes within 30 days.</span>
+      <span class="beam-sub" style="margin-top:0.3rem; color: rgba(184,123,79,0.5);">ICH E6(R2) §5.19 · ICH E9</span>
+    </div>
+    <div class="beam-label" id="lbl-intB">
+      <span class="beam-tag">Intervention B</span>
+      <span class="beam-title">Interaction Audit Trail</span>
+      <span class="beam-sub">Every FDA–sponsor interaction logged. Paragraph-level authorship on all briefing documents. Committee sees full log 14 days before vote.</span>
+      <span class="beam-sub" style="margin-top:0.3rem; color: rgba(184,123,79,0.5);">ICH E6(R2) §5.18 · FDA Formal Meetings Guidance</span>
+    </div>
+    <div class="beam-label" id="lbl-ieiu" style="margin-top: 0.4rem; padding-top: 0.8rem; border-top: 1px solid rgba(184,123,79,0.2);">
+      <span class="beam-tag">Governance Body</span>
+      <span class="beam-title">Independent Evidence Integrity Unit</span>
+      <span class="beam-sub">Firewalled from sponsor, regulator, and DMC. Protects the conditions under which truth can be evaluated without institutional momentum replacing it.</span>
+    </div>
+  </div>
 
-  <script src="scripts/core.js"></script>
-  <script>
-    // Building animation sequence
-    (function() {
-      const buildingSection = document.getElementById('building');
-      if (!buildingSection) return;
+  <!-- BOTTOM STATUS -->
+  <div class="status-bar">
+    <span class="status-text" id="status-msg">Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</span>
+    <span class="reg-anchors">ICH E6(R2) · ICH E9 · ICH E9(R1) · FDA Adaptive Design Guidance · 21 CFR 312.32</span>
+  </div>
 
-      let animated = false;
+</div>
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !animated) {
-            animated = true;
-            runBuildingAnimation();
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.3 });
+<script>
+// Animation timeline — keyed to ~5 min pitch
+// Each step: delay in ms, action function
 
-      observer.observe(buildingSection);
+function show(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('visible');
+}
 
-      function runBuildingAnimation() {
-        const sequence = [
-          // Foundation appears
-          { ids: ['foundation-label', 'foundation-text', 'foundation-crack', 'foundation-crack-2'], delay: 0 },
-          // Fractures begin
-          { ids: ['fracture-main', 'fracture-main-glow'], delay: 800 },
-          { ids: ['fracture-sec', 'fracture-sec-glow'], delay: 1200 },
-          // Floors light up as fracture reaches them
-          { ids: ['floor1-label', 'floor1-title'], delay: 1500 },
-          { ids: ['floor2-label', 'floor2-title'], delay: 2000 },
-          { ids: ['floor3-label', 'floor3-title'], delay: 2500 },
-          { ids: ['floor4-label', 'floor4-title'], delay: 3000 },
-          { ids: ['floor5-label', 'floor5-title'], delay: 3500 },
-          // Intervention beams appear - retrofit
-          { ids: ['beam-a', 'beam-a-glow', 'beam-a-vert', 'beam-a-vert-glow', 'beam-a-label'], delay: 4500 },
-          { ids: ['beam-b', 'beam-b-glow', 'beam-b-vert', 'beam-b-vert-glow', 'beam-b-label'], delay: 5200 },
-        ];
+function drawSVG(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('draw');
+}
 
-        sequence.forEach(step => {
-          setTimeout(() => {
-            step.ids.forEach(id => {
-              const el = document.getElementById(id);
-              if (el) el.classList.add('active');
-            });
-          }, step.delay);
-        });
-      }
-    })();
-  </script>
+function danger(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('danger');
+}
+
+function litWindow(...ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('lit');
+  });
+}
+
+function dimWindow(...ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('lit');
+  });
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  if (!el) return;
+  el.className = 'status-text' + (cls ? ' ' + cls : '');
+  el.textContent = msg;
+}
+
+function showBeamLabel(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.fill = 'rgba(184,123,79,0.7)';
+}
+
+const timeline = [
+  // 0:00 — Building stands quietly. Windows softly lit.
+  [200, () => {
+    litWindow('w5a','w5b','w5c','w5d','w4a','w4b','w4c','w3a','w3b','w3c','w3d','w2a','w2b','w2c','w2d','w1a','w1b','w1c','w1d');
+    setStatus('Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021');
+  }],
+
+  // 0:25 — Foundation crack appears
+  [7000, () => {
+    drawSVG('crack-fd1');
+    drawSVG('crack-fd2');
+    show('lbl-foundation');
+    setStatus('FOUNDATION FAILURE: Independence became optional', 'critical');
+  }],
+
+  // 0:45 — Crack enters building base
+  [12000, () => {
+    drawSVG('crack-base');
+    drawSVG('crack-base2');
+  }],
+
+  // 1:00 — Floor 1 compromised
+  [17000, () => {
+    drawSVG('crack-f1a');
+    drawSVG('crack-f1b');
+    danger('zone-f1');
+    show('lbl-f1');
+    dimWindow('w1a','w1b','w1c','w1d');
+    setStatus('FLOOR 01 COMPROMISED: Post-Hoc Salvage — DMC overridden without audit', 'critical');
+  }],
+
+  // 1:30 — Floor 2 compromised
+  [25000, () => {
+    drawSVG('crack-f2a');
+    drawSVG('crack-f2b');
+    danger('zone-f2');
+    show('lbl-f2');
+    dimWindow('w2a','w2b','w2c','w2d');
+    setStatus('FLOOR 02 COMPROMISED: Firewall Collapse — 66 unrecorded meetings', 'critical');
+  }],
+
+  // 2:00 — Floor 3 compromised
+  [33000, () => {
+    drawSVG('crack-f3a');
+    drawSVG('crack-f3b');
+    danger('zone-f3');
+    show('lbl-f3');
+    dimWindow('w3a','w3b','w3c','w3d');
+    setStatus('FLOOR 03 COMPROMISED: Committee Bypass — 10 against, 0 for, approved anyway', 'critical');
+  }],
+
+  // 2:30 — Floor 4 compromised + lean begins
+  [41000, () => {
+    drawSVG('crack-f4a');
+    drawSVG('crack-f4b');
+    danger('zone-f4');
+    show('lbl-f4');
+    dimWindow('w4a','w4b','w4c');
+    document.getElementById('bldg-group').classList.add('leaning');
+    setStatus('FLOOR 04 COMPROMISED: Surrogate Substitution — clinical endpoint abandoned', 'critical');
+  }],
+
+  // 3:00 — Floor 5 — external correction
+  [49000, () => {
+    danger('zone-f5');
+    show('lbl-f5');
+    dimWindow('w5a','w5b','w5c','w5d');
+    setStatus('FLOOR 05: External Correction — 3 resignations, congressional inquiry, EU withdrawal', 'critical');
+  }],
+
+  // 3:30 — Intervention A appears
+  [57000, () => {
+    drawSVG('beam-a1');
+    setTimeout(() => drawSVG('beam-a2'), 400);
+    setTimeout(() => drawSVG('beam-a3'), 800);
+    setTimeout(() => drawSVG('beam-a4'), 1200);
+    setTimeout(() => showBeamLabel('beam-label-a'), 1600);
+    show('lbl-intA');
+    setStatus('INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory', 'stable');
+  }],
+
+  // 4:15 — Intervention B appears
+  [68000, () => {
+    drawSVG('beam-b1');
+    setTimeout(() => drawSVG('beam-b2'), 400);
+    setTimeout(() => drawSVG('beam-b3'), 800);
+    setTimeout(() => drawSVG('beam-b4'), 1200);
+    setTimeout(() => showBeamLabel('beam-label-b'), 1600);
+    show('lbl-intB');
+    setStatus('INTERVENTION B: Audit Trail — every interaction logged, authorship attributed, committee informed', 'stable');
+  }],
+
+  // 4:45 — IEIU + building stabilises
+  [77000, () => {
+    show('lbl-ieiu');
+    document.getElementById('bldg-group').classList.remove('leaning');
+    document.getElementById('stable-glow').classList.add('visible');
+    // Re-light some windows — partial recovery
+    litWindow('w5a','w4b','w3c','w2a','w1d');
+    setStatus('STABILISED — not rebuilt, but structurally sound. The audit trail holds.', 'stable');
+  }],
+];
+
+// Run timeline
+timeline.forEach(([delay, fn]) => {
+  setTimeout(fn, delay);
+});
+</script>
+
 </body>
 </html>
