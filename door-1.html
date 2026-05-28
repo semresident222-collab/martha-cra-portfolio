@@ -3,673 +3,824 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Door 1 — Aduhelm | Martha Wuya Koroma</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<title>MetaVoxa CRA Portfolio — Door 1: ADUHELM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d1520;overflow:hidden;font-family:'IBM Plex Mono',monospace}
-canvas{position:fixed;top:0;left:0;z-index:1}
-
-#nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:.8rem 2rem;display:flex;justify-content:space-between;align-items:center;
-  background:rgba(13,21,32,.92);border-bottom:1px solid rgba(74,122,150,.12)
-}
-#nav a{color:#4a7a96;font-size:.6rem;letter-spacing:.15em;text-decoration:none;text-transform:uppercase;transition:color .2s}
-#nav a:hover{color:#e8ddd0}
-.nav-title{font-size:.55rem;color:rgba(232,221,208,.28);letter-spacing:.2em;text-transform:uppercase}
-.nav-pdf{border:1px solid rgba(74,122,150,.22);padding:.28rem .75rem}
-
-#panel-left{
-  position:fixed;left:1.2rem;top:52px;bottom:40px;z-index:50;
-  display:flex;flex-direction:column;justify-content:center;gap:.55rem;
-  width:190px;pointer-events:none
-}
-.fl{opacity:0;transform:translateX(-14px);transition:opacity .7s ease,transform .7s ease}
-.fl.show{opacity:1;transform:translateX(0)}
-.fl-num{font-size:.5rem;color:#6db3d4;letter-spacing:.18em;text-transform:uppercase;display:block}
-.fl-name{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;color:#e8ddd0;display:block;line-height:1.2}
-.fl-sub{font-size:.52rem;color:rgba(232,221,208,.38);line-height:1.4;display:block;margin-top:.1rem}
-
-#panel-right{
-  position:fixed;right:1.2rem;top:52px;bottom:40px;z-index:50;
-  display:flex;flex-direction:column;justify-content:center;gap:.8rem;
-  width:210px;text-align:right;pointer-events:none
-}
-.bm{opacity:0;transform:translateX(14px);transition:opacity .7s ease,transform .7s ease}
-.bm.show{opacity:1;transform:translateX(0)}
-.bm-tag{font-size:.5rem;color:#b87b4f;letter-spacing:.18em;text-transform:uppercase;display:block}
-.bm-name{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;color:#e8ddd0;display:block;line-height:1.2}
-.bm-sub{font-size:.52rem;color:rgba(232,221,208,.38);line-height:1.4;display:block;margin-top:.1rem}
-
-#anchor{
-  position:fixed;bottom:2.8rem;left:50%;transform:translateX(-50%);
-  text-align:center;pointer-events:none;z-index:50;
-  opacity:0;transition:opacity 1.8s ease;white-space:nowrap
-}
-#anchor.show{opacity:1}
-#anchor p{
-  font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;
-  color:#e8ddd0;letter-spacing:.02em
-}
-
-#statusbar{
-  position:fixed;bottom:0;left:0;right:0;z-index:50;
-  padding:.42rem 2rem;display:flex;justify-content:space-between;align-items:center;
-  background:rgba(13,21,32,.75);border-top:1px solid rgba(74,122,150,.08)
-}
-#status-msg{font-size:.55rem;color:rgba(232,221,208,.32);letter-spacing:.07em;transition:color .6s}
-#status-msg.critical{color:#6db3d4}
-#status-msg.stable{color:#b87b4f}
-.reg-txt{font-size:.5rem;color:rgba(232,221,208,.18);letter-spacing:.05em}
-
-#hint{
-  position:fixed;bottom:2rem;right:1.5rem;z-index:50;
-  font-size:.48rem;color:rgba(232,221,208,.12);letter-spacing:.1em;text-transform:uppercase
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d1520;
+    overflow: hidden;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: #e8ddd0;
+    width: 100vw;
+    height: 100vh;
+  }
+  #canvas-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+  #ui-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .label {
+    position: absolute;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
+    text-shadow: 0 0 20px rgba(13,21,32,0.9);
+  }
+  .label.visible { opacity: 1; }
+  .floor-label {
+    color: #6db3d4;
+    font-weight: 400;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .beam-label {
+    color: #b87b4f;
+    font-weight: 400;
+  }
+  .anchor-phrase {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    font-style: italic;
+    color: #e8ddd0;
+    opacity: 0;
+    transition: opacity 2s ease;
+    text-align: center;
+    max-width: 600px;
+    line-height: 1.6;
+    text-shadow: 0 0 30px rgba(13,21,32,1);
+  }
+  .anchor-phrase.visible { opacity: 1; }
+  .cta {
+    position: absolute;
+    bottom: 24px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(232,221,208,0.4);
+    transition: color 0.6s ease, opacity 0.6s ease;
+    pointer-events: auto;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .cta:hover { color: #e8ddd0; }
+  #cta-pdf { right: 24px; }
+  #cta-next { right: 140px; }
+  #cta-prev { right: 240px; opacity: 0.2; pointer-events: none; }
+  .door-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s ease;
+    z-index: 20;
+  }
+  .door-title.visible { opacity: 1; }
+  .door-title h1 {
+    font-size: 14px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(232,221,208,0.5);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .door-title h2 {
+    font-size: 32px;
+    font-weight: 400;
+    color: #e8ddd0;
+    letter-spacing: 2px;
+    line-height: 1.3;
+  }
+  .door-title h3 {
+    font-size: 13px;
+    color: rgba(232,221,208,0.4);
+    margin-top: 12px;
+    font-weight: 400;
+    font-style: italic;
+  }
+  #progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #b87b4f;
+    width: 0%;
+    transition: width 0.1s linear;
+    z-index: 30;
+  }
+  #timer {
+    position: fixed;
+    bottom: 6px;
+    left: 24px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgba(232,221,208,0.25);
+    z-index: 30;
+    font-family: 'Courier New', monospace;
+  }
 </style>
+<base target="_blank">
 </head>
 <body>
 
-<div id="nav">
-  <a href="index.html">← Lobby</a>
-  <span class="nav-title">Door 01 — Aduhelm — Governance Autopsy</span>
-  <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="nav-pdf" download>PDF ↓</a>
+<div id="canvas-container"></div>
+
+<div id="ui-layer">
+  <div id="door-title" class="door-title">
+    <h1>Door 1</h1>
+    <h2>ADUHELM</h2>
+    <h3>The Building That Passed Inspection</h3>
+  </div>
+
+  <!-- Floor Labels -->
+  <div id="fl1" class="label floor-label" style="top:72%;">Floor 01 — Post-Hoc Salvage</div>
+  <div id="fl2" class="label floor-label" style="top:58%;">Floor 02 — Firewall Collapse</div>
+  <div id="fl3" class="label floor-label" style="top:44%;">Floor 03 — Committee Bypass</div>
+  <div id="fl4" class="label floor-label" style="top:30%;">Floor 04 — Surrogate Substitution</div>
+  <div id="fl5" class="label floor-label" style="top:16%;">Floor 05 — External Correction</div>
+  <div id="fl-foundation" class="label floor-label" style="bottom:8%; color:#b87b4f;">Foundation: Independence became optional</div>
+
+  <!-- Beam Labels -->
+  <div id="bl-left" class="label beam-label" style="bottom:35%; left:18%;">DMC GOVERNANCE LOCK</div>
+  <div id="bl-right" class="label beam-label" style="bottom:35%; right:18%;">AUDIT TRAIL</div>
+  <div id="bl-center" class="label beam-label" style="bottom:28%; left:50%; transform:translateX(-50%);">IEIU</div>
+
+  <div id="anchor" class="anchor-phrase">"The instinct to look underneath is what I am building a career on."</div>
+
+  <a id="cta-pdf" class="cta" href="#" onclick="alert('Protocol PDF — placeholder'); return false;">View Protocol PDF</a>
+  <a id="cta-next" class="cta" href="#door2">Next Door →</a>
+  <a id="cta-prev" class="cta" href="#">← Previous Door</a>
 </div>
 
-<div id="panel-left">
-  <div class="fl" id="lbl-fd">
-    <span class="fl-num">Foundation</span>
-    <span class="fl-name">Independence became optional</span>
-    <span class="fl-sub">115 meetings. 66 unrecorded.</span>
-  </div>
-  <div class="fl" id="lbl-f1">
-    <span class="fl-num">Floor 01</span>
-    <span class="fl-name">Post-Hoc Salvage</span>
-    <span class="fl-sub">DMC overridden. No independent audit.</span>
-  </div>
-  <div class="fl" id="lbl-f2">
-    <span class="fl-num">Floor 02</span>
-    <span class="fl-name">Firewall Collapse</span>
-    <span class="fl-sub">FDA drafted Biogen's briefing documents.</span>
-  </div>
-  <div class="fl" id="lbl-f3">
-    <span class="fl-num">Floor 03</span>
-    <span class="fl-name">Committee Bypass</span>
-    <span class="fl-sub">10 against. 0 for. Approved anyway.</span>
-  </div>
-  <div class="fl" id="lbl-f4">
-    <span class="fl-num">Floor 04</span>
-    <span class="fl-name">Surrogate Substitution</span>
-    <span class="fl-sub">Clinical endpoint failed. Proxy substituted.</span>
-  </div>
-  <div class="fl" id="lbl-f5">
-    <span class="fl-num">Floor 05</span>
-    <span class="fl-name">External Correction</span>
-    <span class="fl-sub">3 resignations. Congress. EU withdrawal.</span>
-  </div>
-</div>
-
-<div id="panel-right">
-  <div class="bm" id="lbl-ia">
-    <span class="bm-tag">Intervention A</span>
-    <span class="bm-name">DMC Governance Lock</span>
-    <span class="bm-sub">Futility binding. Independent audit mandatory.<br>ICH E6(R2) §5.19 · ICH E9</span>
-  </div>
-  <div class="bm" id="lbl-ib">
-    <span class="bm-tag">Intervention B</span>
-    <span class="bm-name">Interaction Audit Trail</span>
-    <span class="bm-sub">Every meeting logged. Full record before committee votes.<br>ICH E6(R2) §5.18</span>
-  </div>
-  <div class="bm" id="lbl-ieiu" style="padding-top:.6rem;border-top:1px solid rgba(184,123,79,.18);margin-top:.2rem">
-    <span class="bm-tag">Governance Body</span>
-    <span class="bm-name">IEIU</span>
-    <span class="bm-sub">Firewalled. Independent. Cannot be overridden by institutional momentum.</span>
-  </div>
-</div>
-
-<div id="anchor">
-  <p>"The instinct to look underneath is what I am building a career on."</p>
-</div>
-
-<div id="statusbar">
-  <span id="status-msg">Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</span>
-  <span class="reg-txt">ICH E6(R2) · ICH E9 · ICH E9(R1) · FDA Adaptive Design Guidance · 21 CFR 312.32</span>
-</div>
-
-<div id="hint">Space to pause</div>
+<div id="progress-bar"></div>
+<div id="timer">00:00 / 05:00</div>
 
 <script>
-// ── SCENE SETUP ──────────────────────────────────────────────────────────────
+// ============================================
+// META VOXA CRA PORTFOLIO — DOOR 1: ADUHELM
+// Three.js — Corporate Building, Cracks, Copper Beams
+// 5-minute arc, no scrolling, screen-share ready
+// ============================================
+
+const TOTAL_DURATION = 300; // 5 minutes in seconds
+let elapsed = 0;
+let isPlaying = false;
+let animationId;
+
+// Scene setup
+const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0d1520);
-scene.fog = new THREE.FogExp2(0x0d1520, 0.025);
+scene.fog = new THREE.FogExp2(0x0d1520, 0.015);
 
-const W = window.innerWidth, H = window.innerHeight;
-const camera = new THREE.PerspectiveCamera(42, W/H, 0.1, 300);
-camera.position.set(9, 5, 24);
-camera.lookAt(0, 5, 0);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(0, 8, 35);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-renderer.setSize(W, H);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+container.appendChild(renderer.domElement);
 
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+// Lighting
+const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.4);
+scene.add(ambientLight);
+
+const moonLight = new THREE.DirectionalLight(0x4a7a96, 0.6);
+moonLight.position.set(15, 30, 20);
+moonLight.castShadow = true;
+moonLight.shadow.mapSize.width = 2048;
+moonLight.shadow.mapSize.height = 2048;
+scene.add(moonLight);
+
+const fillLight = new THREE.DirectionalLight(0x2a4050, 0.3);
+fillLight.position.set(-10, 10, -10);
+scene.add(fillLight);
+
+const foundationGlow = new THREE.PointLight(0xb87b4f, 0, 15);
+foundationGlow.position.set(0, -2, 5);
+scene.add(foundationGlow);
+
+// Materials
+const glassMat = new THREE.MeshPhysicalMaterial({
+  color: 0x4a7a96,
+  transparent: true,
+  opacity: 0.25,
+  roughness: 0.1,
+  metalness: 0.9,
+  side: THREE.DoubleSide,
+  envMapIntensity: 1
 });
 
-// ── LIGHTS ───────────────────────────────────────────────────────────────────
-scene.add(new THREE.AmbientLight(0x1a2a3a, 2.0));
-const sun = new THREE.DirectionalLight(0x4a6a8a, 1.0);
-sun.position.set(12, 20, 12);
-sun.castShadow = true;
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0x1a3040, 0.5);
-fill.position.set(-10, 6, -8);
-scene.add(fill);
+const frameMat = new THREE.MeshStandardMaterial({
+  color: 0x2a3a4a,
+  roughness: 0.7,
+  metalness: 0.3
+});
+
+const windowLitMat = new THREE.MeshBasicMaterial({
+  color: 0xc8d8e8,
+  transparent: true,
+  opacity: 0.6
+});
+
+const windowDarkMat = new THREE.MeshBasicMaterial({
+  color: 0x1a2530,
+  transparent: true,
+  opacity: 0.8
+});
+
+const crackMat = new THREE.MeshBasicMaterial({
+  color: 0x6db3d4,
+  transparent: true,
+  opacity: 0,
+  blending: THREE.AdditiveBlending
+});
+
+const beamMat = new THREE.MeshStandardMaterial({
+  color: 0xb87b4f,
+  roughness: 0.4,
+  metalness: 0.7,
+  emissive: 0x4a3018,
+  emissiveIntensity: 0.2
+});
+
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x0a1018,
+  roughness: 0.9,
+  metalness: 0.1
+});
+
+// Building group
+const building = new THREE.Group();
+scene.add(building);
 
 // Ground
-const gnd = new THREE.Mesh(
-  new THREE.PlaneGeometry(120, 120),
-  new THREE.MeshPhongMaterial({ color: 0x080e16, shininess: 30, specular: 0x1a2a3a })
-);
-gnd.rotation.x = -Math.PI/2;
-gnd.position.y = -1.2;
-gnd.receiveShadow = true;
-scene.add(gnd);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -4;
+ground.receiveShadow = true;
+scene.add(ground);
 
-const grid = new THREE.GridHelper(80, 60, 0x0f1a24, 0x0b1520);
-grid.position.y = -1.18;
-scene.add(grid);
+// Building dimensions
+const bWidth = 8;
+const bDepth = 6;
+const floorHeight = 2.2;
+const numFloors = 6;
+const bHeight = numFloors * floorHeight;
 
-// ── BUILDING ─────────────────────────────────────────────────────────────────
-const bW=4, bD=2, flH=2, nF=5, bH=flH*nF;
-const bldg = new THREE.Group();
-scene.add(bldg);
+// Floor windows storage for darkening
+const floorWindows = [];
 
-// Foundation block
-const fndMesh = new THREE.Mesh(
-  new THREE.BoxGeometry(bW+.7, 1.4, bD+.7),
-  new THREE.MeshPhongMaterial({ color: 0x0e1a28, shininess: 20, emissive: 0x0a1420, emissiveIntensity: .6 })
-);
-fndMesh.position.set(0, -.7, 0);
-fndMesh.castShadow = true;
-bldg.add(fndMesh);
-const fndEdge = new THREE.LineSegments(
-  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW+.7, 1.4, bD+.7)),
-  new THREE.LineBasicMaterial({ color: 0x4a7a96, opacity:.35, transparent:true })
-);
-fndEdge.position.copy(fndMesh.position);
-bldg.add(fndEdge);
+// Build floors
+for (let f = 0; f < numFloors; f++) {
+  const yBase = f * floorHeight - 4;
+  const floorGroup = new THREE.Group();
 
-// Foundation text label in 3D (via canvas texture)
-function makeTextSprite(text, size, col) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512; canvas.height = 64;
-  const ctx = canvas.getContext('2d');
-  ctx.font = `${size}px IBM Plex Mono, monospace`;
-  ctx.fillStyle = col;
-  ctx.textAlign = 'center';
-  ctx.fillText(text, 256, 44);
-  const tex = new THREE.CanvasTexture(canvas);
-  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(3.2, 0.4, 1);
-  return sprite;
-}
-const fdLabel = makeTextSprite('FOUNDATION — Independence became optional', 22, 'rgba(109,179,212,0.55)');
-fdLabel.position.set(0, -.7, bD/2+.5);
-fdLabel.visible = false;
-bldg.add(fdLabel);
+  // Floor slab
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.2, 0.15, bDepth + 0.2), frameMat);
+  slab.position.y = yBase + floorHeight;
+  slab.castShadow = true;
+  floorGroup.add(slab);
 
-// Glass curtain wall
-const glassMat = new THREE.MeshPhongMaterial({
-  color: 0x2a4a62, transparent: true, opacity: .16,
-  side: THREE.DoubleSide, shininess: 120, specular: 0x4a8ab0
-});
-const glassMesh = new THREE.Mesh(new THREE.BoxGeometry(bW, bH, bD), glassMat);
-glassMesh.position.set(0, bH/2, 0);
-bldg.add(glassMesh);
-
-// Structural frame edges
-const frameEdge = new THREE.LineSegments(
-  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW, bH, bD)),
-  new THREE.LineBasicMaterial({ color: 0x6db3d4, opacity: .4, transparent: true })
-);
-frameEdge.position.set(0, bH/2, 0);
-bldg.add(frameEdge);
-
-// Floor slabs
-const slabGeo = new THREE.BoxGeometry(bW+.12, .07, bD+.12);
-const slabMat = new THREE.MeshPhongMaterial({ color:0x3a5a72, emissive:0x1a3040, emissiveIntensity:.3 });
-for (let i=1; i<nF; i++) {
-  const s = new THREE.Mesh(slabGeo, slabMat);
-  s.position.set(0, i*flH, 0);
-  bldg.add(s);
-}
-
-// Columns — 4 front + 4 back
-const colGeo = new THREE.BoxGeometry(.1, bH, .1);
-const colMat = new THREE.MeshPhongMaterial({ color:0x3a5a72, emissive:0x1a2a38, emissiveIntensity:.2 });
-[-1.8, -.6, .6, 1.8].forEach(x => {
-  [bD/2, -bD/2].forEach(z => {
-    const c = new THREE.Mesh(colGeo, colMat);
-    c.position.set(x, bH/2, z);
-    bldg.add(c);
+  // Columns (4 corners)
+  const colGeo = new THREE.BoxGeometry(0.3, floorHeight, 0.3);
+  const positions = [
+    [-bWidth/2 + 0.3, yBase + floorHeight/2, -bDepth/2 + 0.3],
+    [bWidth/2 - 0.3, yBase + floorHeight/2, -bDepth/2 + 0.3],
+    [-bWidth/2 + 0.3, yBase + floorHeight/2, bDepth/2 - 0.3],
+    [bWidth/2 - 0.3, yBase + floorHeight/2, bDepth/2 - 0.3]
+  ];
+  positions.forEach(pos => {
+    const col = new THREE.Mesh(colGeo, frameMat);
+    col.position.set(...pos);
+    col.castShadow = true;
+    floorGroup.add(col);
   });
-});
+
+  // Glass walls (front and back)
+  const glassGeo = new THREE.PlaneGeometry(bWidth - 0.8, floorHeight - 0.3);
+
+  // Front glass
+  const frontGlass = new THREE.Mesh(glassGeo, glassMat.clone());
+  frontGlass.position.set(0, yBase + floorHeight/2, bDepth/2 + 0.01);
+  floorGroup.add(frontGlass);
+
+  // Back glass
+  const backGlass = new THREE.Mesh(glassGeo, glassMat.clone());
+  backGlass.position.set(0, yBase + floorHeight/2, -bDepth/2 - 0.01);
+  backGlass.rotation.y = Math.PI;
+  floorGroup.add(backGlass);
+
+  // Side glasses
+  const sideGlassGeo = new THREE.PlaneGeometry(bDepth - 0.8, floorHeight - 0.3);
+  const leftGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
+  leftGlass.position.set(-bWidth/2 - 0.01, yBase + floorHeight/2, 0);
+  leftGlass.rotation.y = -Math.PI/2;
+  floorGroup.add(leftGlass);
+
+  const rightGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
+  rightGlass.position.set(bWidth/2 + 0.01, yBase + floorHeight/2, 0);
+  rightGlass.rotation.y = Math.PI/2;
+  floorGroup.add(rightGlass);
+
+  // Windows (grid of small lit panels)
+  const winRows = 2;
+  const winCols = 4;
+  const winW = (bWidth - 1.2) / winCols;
+  const winH = (floorHeight - 0.5) / winRows;
+  const floorWins = [];
+
+  for (let r = 0; r < winRows; r++) {
+    for (let c = 0; c < winCols; c++) {
+      const winGeo = new THREE.PlaneGeometry(winW * 0.7, winH * 0.7);
+      const win = new THREE.Mesh(winGeo, windowLitMat.clone());
+      const wx = -bWidth/2 + 0.6 + c * winW + winW/2;
+      const wy = yBase + 0.4 + r * winH + winH/2;
+      win.position.set(wx, wy, bDepth/2 + 0.02);
+      floorGroup.add(win);
+      floorWins.push(win);
+
+      // Back windows too
+      const winBack = win.clone();
+      winBack.position.set(wx, wy, -bDepth/2 - 0.02);
+      winBack.rotation.y = Math.PI;
+      floorGroup.add(winBack);
+      floorWins.push(winBack);
+    }
+  }
+  floorWindows.push(floorWins);
+
+  // Life inside — subtle office lights flickering
+  if (f > 0 && f < numFloors - 1) {
+    for (let i = 0; i < 3; i++) {
+      const lightGeo = new THREE.SphereGeometry(0.04, 4, 4);
+      const lightMat = new THREE.MeshBasicMaterial({
+        color: 0xffe8c8,
+        transparent: true,
+        opacity: 0.3 + Math.random() * 0.3
+      });
+      const light = new THREE.Mesh(lightGeo, lightMat);
+      light.position.set(
+        (Math.random() - 0.5) * (bWidth - 1),
+        yBase + 0.5 + Math.random() * (floorHeight - 0.8),
+        (Math.random() - 0.5) * (bDepth - 1)
+      );
+      light.userData = { 
+        baseOpacity: lightMat.opacity,
+        flickerSpeed: 1 + Math.random() * 3,
+        flickerOffset: Math.random() * 10
+      };
+      floorGroup.add(light);
+    }
+  }
+
+  building.add(floorGroup);
+}
 
 // Roof
-const roofMesh = new THREE.Mesh(
-  new THREE.BoxGeometry(bW+.2, .18, bD+.2),
-  new THREE.MeshPhongMaterial({ color:0x1e3045, emissive:0x1a2a3a, emissiveIntensity:.5, shininess:60 })
-);
-roofMesh.position.set(0, bH+.09, 0);
-bldg.add(roofMesh);
-const roofEdge = new THREE.LineSegments(
-  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW+.2, .18, bD+.2)),
-  new THREE.LineBasicMaterial({ color:0x6db3d4, opacity:.55, transparent:true })
-);
-roofEdge.position.copy(roofMesh.position);
-bldg.add(roofEdge);
+const roof = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.4, 0.3, bDepth + 0.4), frameMat);
+roof.position.y = bHeight - 4 + 0.15;
+building.add(roof);
 
-// ── WINDOWS ──────────────────────────────────────────────────────────────────
-const winGeo = new THREE.PlaneGeometry(.3, .24);
-const wins = [];
-const winsByFloor = [[],[],[],[],[]];
+// Foundation slab (visible base)
+const foundation = new THREE.Mesh(
+  new THREE.BoxGeometry(bWidth + 1, 0.5, bDepth + 1),
+  new THREE.MeshStandardMaterial({ color: 0x1a2530, roughness: 0.8 })
+);
+foundation.position.y = -4.25;
+building.add(foundation);
 
-function addWin(x, y, z, rotY, floor) {
-  const mat = new THREE.MeshBasicMaterial({
-    color: 0x4a8fb5, transparent: true, opacity: .75, side: THREE.FrontSide
-  });
-  const m = new THREE.Mesh(winGeo, mat);
-  m.position.set(x, y, z);
-  if (rotY) m.rotation.y = rotY;
-  bldg.add(m);
-  const w = {
-    mesh: m, floor, off: false, meeting: false, elev: false,
-    flickerPhase: Math.random()*Math.PI*2,
-    flickerSpeed: .4 + Math.random()*1.8
+// ============================================
+// CRACKS — procedural fracture lines
+// ============================================
+const cracks = [];
+
+function createCrack(start, end, segments = 8, width = 0.02) {
+  const points = [];
+  points.push(start.clone());
+  for (let i = 1; i < segments; i++) {
+    const t = i / segments;
+    const pos = new THREE.Vector3().lerpVectors(start, end, t);
+    pos.x += (Math.random() - 0.5) * 0.3;
+    pos.z += (Math.random() - 0.5) * 0.2;
+    points.push(pos);
+  }
+  points.push(end.clone());
+
+  const curve = new THREE.CatmullRomCurve3(points);
+  const tubeGeo = new THREE.TubeGeometry(curve, segments * 3, width, 4, false);
+  const crack = new THREE.Mesh(tubeGeo, crackMat.clone());
+  crack.material.opacity = 0;
+  scene.add(crack);
+  return crack;
+}
+
+// Main vertical crack from foundation up
+const mainCrackStart = new THREE.Vector3(0.5, -3.8, bDepth/2 + 0.03);
+const mainCrackEnd = new THREE.Vector3(1.2, bHeight - 4, bDepth/2 + 0.03);
+cracks.push({ mesh: createCrack(mainCrackStart, mainCrackEnd, 12, 0.025), startTime: 5, endTime: 30 });
+
+// Secondary cracks branching
+const branch1Start = new THREE.Vector3(0.5, -1, bDepth/2 + 0.03);
+const branch1End = new THREE.Vector3(-0.8, 2, bDepth/2 + 0.03);
+cracks.push({ mesh: createCrack(branch1Start, branch1End, 8, 0.018), startTime: 25, endTime: 50 });
+
+const branch2Start = new THREE.Vector3(0.8, 1, bDepth/2 + 0.03);
+const branch2End = new THREE.Vector3(2, 4, bDepth/2 + 0.03);
+cracks.push({ mesh: createCrack(branch2Start, branch2End, 8, 0.015), startTime: 40, endTime: 70 });
+
+const branch3Start = new THREE.Vector3(-0.3, 3, bDepth/2 + 0.03);
+const branch3End = new THREE.Vector3(-1.5, 6, bDepth/2 + 0.03);
+cracks.push({ mesh: createCrack(branch3Start, branch3End, 8, 0.02), startTime: 60, endTime: 90 });
+
+// Side cracks (visible during rotation)
+const sideCrackStart = new THREE.Vector3(bWidth/2 + 0.03, -3, 0.5);
+const sideCrackEnd = new THREE.Vector3(bWidth/2 + 0.03, 5, -1);
+cracks.push({ mesh: createCrack(sideCrackStart, sideCrackEnd, 10, 0.02), startTime: 80, endTime: 110 });
+
+// ============================================
+// COPPER INTERVENTION BEAMS
+// ============================================
+const beams = [];
+
+function createBeam(start, end, radius = 0.12) {
+  const dir = new THREE.Vector3().subVectors(end, start);
+  const len = dir.length();
+  const beamGeo = new THREE.CylinderGeometry(radius, radius, len, 8);
+  const beam = new THREE.Mesh(beamGeo, beamMat.clone());
+
+  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+  beam.position.copy(mid);
+  beam.lookAt(end);
+  beam.rotateX(Math.PI / 2);
+  beam.scale.y = 0; // Start invisible
+
+  scene.add(beam);
+  return beam;
+}
+
+// Left beam — diagonal from ground to mid-building
+const leftBeamStart = new THREE.Vector3(-8, -4, 8);
+const leftBeamEnd = new THREE.Vector3(-bWidth/2 - 0.5, 2, bDepth/2 + 0.5);
+const leftBeam = createBeam(leftBeamStart, leftBeamEnd, 0.15);
+beams.push({ mesh: leftBeam, startTime: 210, endTime: 240 });
+
+// Right beam — diagonal from ground to mid-building
+const rightBeamStart = new THREE.Vector3(8, -4, 8);
+const rightBeamEnd = new THREE.Vector3(bWidth/2 + 0.5, 2, bDepth/2 + 0.5);
+const rightBeam = createBeam(rightBeamStart, rightBeamEnd, 0.15);
+beams.push({ mesh: rightBeam, startTime: 240, endTime: 270 });
+
+// Connecting node (horizontal beam between the two)
+const nodeBeamStart = new THREE.Vector3(-bWidth/2 - 0.3, 1.8, bDepth/2 + 0.3);
+const nodeBeamEnd = new THREE.Vector3(bWidth/2 + 0.3, 1.8, bDepth/2 + 0.3);
+const nodeBeam = createBeam(nodeBeamStart, nodeBeamEnd, 0.1);
+beams.push({ mesh: nodeBeam, startTime: 255, endTime: 280 });
+
+// ============================================
+// CAMERA ANIMATION PATH
+// ============================================
+function getCameraState(t) {
+  // t is 0-300 seconds
+  let pos, target, fov = 45;
+
+  if (t < 5) {
+    // 0-5s: Establishing shot — wide, still, impressive
+    const ease = t / 5;
+    pos = new THREE.Vector3(0, 8, 35);
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 25) {
+    // 5-25s: Slow zoom toward foundation, camera descends
+    const p = (t - 5) / 20;
+    const ease = p * p * (3 - 2 * p); // smoothstep
+    pos = new THREE.Vector3(
+      0,
+      8 - ease * 6,
+      35 - ease * 20
+    );
+    target = new THREE.Vector3(0, -2 + ease * 2, 0);
+  } else if (t < 60) {
+    // 25-60s: Pull back to full view, cracks propagate floor by floor
+    const p = (t - 25) / 35;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(
+      0,
+      2 + ease * 6,
+      15 + ease * 15
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 90) {
+    // 60-90s: Rotate to side view, building leans
+    const p = (t - 60) / 30;
+    const ease = p * p * (3 - 2 * p);
+    const angle = ease * (15 * Math.PI / 180);
+    const dist = 25;
+    pos = new THREE.Vector3(
+      Math.sin(angle) * dist,
+      8,
+      Math.cos(angle) * dist
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 150) {
+    // 90-150s: Hold side view, building at max stress
+    const p = (t - 90) / 60;
+    const lean = Math.sin(p * Math.PI) * 0.03; // subtle sway
+    pos = new THREE.Vector3(
+      Math.sin(15 * Math.PI / 180) * 25 + lean * 2,
+      8,
+      Math.cos(15 * Math.PI / 180) * 25
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 180) {
+    // 150-180s: Pause at max stress
+    pos = new THREE.Vector3(
+      Math.sin(15 * Math.PI / 180) * 25,
+      8,
+      Math.cos(15 * Math.PI / 180) * 25
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 240) {
+    // 180-240s: Intervention — beams bolt on, hold side view
+    const p = (t - 180) / 60;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(
+      Math.sin(15 * Math.PI / 180) * 25,
+      8,
+      Math.cos(15 * Math.PI / 180) * 25
+    );
+    target = new THREE.Vector3(0, 2, 0);
+  } else if (t < 270) {
+    // 240-270s: Rotate back to front, building straightens
+    const p = (t - 240) / 30;
+    const ease = p * p * (3 - 2 * p);
+    const angle = (1 - ease) * (15 * Math.PI / 180);
+    const dist = 25 + ease * 5;
+    pos = new THREE.Vector3(
+      Math.sin(angle) * dist,
+      8,
+      Math.cos(angle) * dist
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else {
+    // 270-300s: Slow zoom out, full exterior with repair work visible
+    const p = Math.min((t - 270) / 30, 1);
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(
+      0,
+      8 + ease * 4,
+      30 + ease * 10
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  }
+
+  return { position: pos, target: target, fov: fov };
+}
+
+// ============================================
+// BUILDING LEAN ANIMATION
+// ============================================
+function updateBuildingLean(t) {
+  // Building leans during 60-180s, then straightens 240-270s
+  let leanAngle = 0;
+
+  if (t >= 60 && t < 180) {
+    const p = Math.min((t - 60) / 30, 1);
+    const ease = p * p * (3 - 2 * p);
+    leanAngle = ease * 0.08; // max lean
+  } else if (t >= 180 && t < 240) {
+    leanAngle = 0.08; // hold
+  } else if (t >= 240 && t < 270) {
+    const p = (t - 240) / 30;
+    const ease = p * p * (3 - 2 * p);
+    leanAngle = 0.08 * (1 - ease);
+  }
+
+  building.rotation.z = leanAngle;
+}
+
+// ============================================
+// WINDOW DARKENING — floor by floor
+// ============================================
+function updateWindows(t) {
+  // Floor 1 darkens 25-60s, Floor 2 at 60-90s, etc.
+  const floorTimes = [25, 60, 90, 120, 150, 180];
+
+  for (let f = 0; f < floorWindows.length; f++) {
+    const startDark = floorTimes[f] || 25;
+    const endDark = startDark + 30;
+
+    let darkAmount = 0;
+    if (t > startDark) {
+      const p = Math.min((t - startDark) / 30, 1);
+      darkAmount = p * p * (3 - 2 * p);
+    }
+
+    floorWindows[f].forEach(win => {
+      const r = 0.78 + (0.1 - 0.78) * darkAmount;
+      const g = 0.85 + (0.16 - 0.85) * darkAmount;
+      const b = 0.91 + (0.19 - 0.91) * darkAmount;
+      win.material.color.setRGB(r, g, b);
+      win.material.opacity = 0.6 * (1 - darkAmount * 0.7);
+    });
+  }
+}
+
+// ============================================
+// UI LABEL MANAGEMENT
+// ============================================
+function updateLabels(t) {
+  const labelTimes = {
+    'fl-foundation': { start: 5, end: 300 },
+    'fl1': { start: 25, end: 300 },
+    'fl2': { start: 60, end: 300 },
+    'fl3': { start: 90, end: 300 },
+    'fl4': { start: 120, end: 300 },
+    'fl5': { start: 150, end: 300 },
+    'bl-left': { start: 210, end: 300 },
+    'bl-right': { start: 240, end: 300 },
+    'bl-center': { start: 255, end: 300 },
+    'anchor': { start: 270, end: 300 }
   };
-  wins.push(w);
-  if (floor>=0 && floor<5) winsByFloor[floor].push(w);
-  return w;
-}
 
-const fZ = bD/2+.012, bkZ = -(bD/2+.012);
-const xCols = [-1.65, -.55, .55, 1.65];
-const yRows = [.32, .82, 1.32];
-
-for (let fl=0; fl<nF; fl++) {
-  const fb = fl*flH;
-  xCols.forEach(x => {
-    yRows.forEach(yr => {
-      addWin(x, fb+yr, fZ, 0, fl);
-      if (Math.random()>.35) addWin(x, fb+yr, bkZ, Math.PI, fl);
-    });
-  });
-  // Side windows
-  [-.6, .6].forEach(z => {
-    [.55, 1.05].forEach(yr => {
-      addWin(-bW/2-.012, fb+yr, z, -Math.PI/2, fl);
-      addWin( bW/2+.012, fb+yr, z,  Math.PI/2, fl);
-    });
-  });
-}
-
-// Meeting room — floor 2, positive x, front face — warm amber
-winsByFloor[2].filter(w => w.mesh.position.x > 0 && w.mesh.position.z > 0)
-  .forEach(w => { w.meeting = true; });
-
-// Elevator shaft — rightmost x col, front face, all floors
-wins.filter(w => Math.abs(w.mesh.position.x-1.65)<.1 && w.mesh.position.z>0)
-  .forEach(w => { w.elev = true; });
-
-// ── ELEVATOR ─────────────────────────────────────────────────────────────────
-const elev = new THREE.Mesh(
-  new THREE.BoxGeometry(.14, .2, .06),
-  new THREE.MeshBasicMaterial({ color:0x8ac8e8, transparent:true, opacity:.9 })
-);
-elev.position.set(1.65, .4, fZ-.03);
-bldg.add(elev);
-
-// Shaft line
-const shaftPts = [
-  new THREE.Vector3(1.65, 0, fZ-.03),
-  new THREE.Vector3(1.65, bH, fZ-.03)
-];
-bldg.add(new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints(shaftPts),
-  new THREE.LineBasicMaterial({ color:0x1a4a62, opacity:.25, transparent:true })
-));
-
-// ── SILHOUETTES ──────────────────────────────────────────────────────────────
-const silGeo = new THREE.PlaneGeometry(.1, .18);
-const sils = [];
-[
-  [-1.65, 3.32, fZ+.01],
-  [-.55,  5.82, fZ+.01],
-  [.55,   1.82, fZ+.01],
-  [1.65,  7.32, fZ+.01]
-].forEach(([x,y,z]) => {
-  const m = new THREE.Mesh(silGeo, new THREE.MeshBasicMaterial({ color:0x0a1520, transparent:true, opacity:.85 }));
-  m.position.set(x, y, z);
-  bldg.add(m);
-  sils.push({ mesh:m, baseX:x, phase:Math.random()*Math.PI*2 });
-});
-
-// ── CRACKS ───────────────────────────────────────────────────────────────────
-const crackMat = new THREE.LineBasicMaterial({ color:0x6db3d4, transparent:true, opacity:.9 });
-
-function makeCrackFromPath(ptArr) {
-  const pts = ptArr.map(p => new THREE.Vector3(p[0], p[1], p[2]));
-  const line = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([pts[0]]),
-    crackMat.clone()
-  );
-  bldg.add(line);
-  return { line, pts, progress:0, active:false, speed:.018 };
-}
-
-const z0 = fZ+.005;
-
-// Foundation cracks
-const CRACKS = [
-  makeCrackFromPath([[.1,-1.1,z0],[.0,-.65,z0],[-.12,-.2,z0],[.05,.12,z0]]),
-  makeCrackFromPath([[-.2,-1.0,z0],[-.08,-.55,z0],[-.22,-.18,z0],[-.08,.15,z0]]),
-  // Floor 1
-  makeCrackFromPath([[.05,.12,z0],[-.08,.62,z0],[.1,1.22,z0],[-.06,1.85,z0],[.0,2.08,z0]]),
-  makeCrackFromPath([[-.08,.15,z0],[-.22,.68,z0],[-.06,1.28,z0],[-.2,1.88,z0],[-.1,2.08,z0]]),
-  // Floor 2
-  makeCrackFromPath([[.0,2.08,z0],[.14,2.62,z0],[-.1,3.22,z0],[.08,3.85,z0],[.0,4.08,z0]]),
-  makeCrackFromPath([[-.1,2.08,z0],[-.24,2.68,z0],[-.08,3.28,z0],[-.2,3.88,z0],[-.1,4.08,z0]]),
-  // Floor 3
-  makeCrackFromPath([[.0,4.08,z0],[-.12,4.65,z0],[.1,5.25,z0],[-.06,5.85,z0],[.0,6.08,z0]]),
-  makeCrackFromPath([[-.1,4.08,z0],[-.22,4.7,z0],[-.06,5.3,z0],[-.18,5.9,z0],[-.08,6.08,z0]]),
-  // Floor 4
-  makeCrackFromPath([[.0,6.08,z0],[.12,6.65,z0],[-.1,7.25,z0],[.06,7.85,z0],[.0,8.08,z0]]),
-  makeCrackFromPath([[-.08,6.08,z0],[-.2,6.7,z0],[-.06,7.3,z0],[-.18,7.9,z0],[-.08,8.08,z0]]),
-  // Floor 5
-  makeCrackFromPath([[.0,8.08,z0],[-.1,8.65,z0],[.1,9.25,z0],[-.06,9.85,z0],[.0,10.05,z0]]),
-  makeCrackFromPath([[-.08,8.08,z0],[-.2,8.7,z0],[-.06,9.3,z0],[-.16,9.9,z0],[-.06,10.05,z0]])
-];
-
-function startCrack(c, spd) {
-  c.active = true; c.speed = spd||.018; c.progress = 0;
-}
-
-function updateCracks() {
-  CRACKS.forEach(c => {
-    if (!c.active) return;
-    c.progress = Math.min(1, c.progress + c.speed);
-    const n = c.pts.length;
-    const pi = c.progress*(n-1);
-    const fi = Math.floor(pi);
-    const fr = pi - fi;
-    const disp = [];
-    for (let i=0; i<=fi && i<n-1; i++) disp.push(c.pts[i]);
-    if (fi < n-1) {
-      const a=c.pts[fi], b=c.pts[fi+1];
-      disp.push(new THREE.Vector3(a.x+(b.x-a.x)*fr, a.y+(b.y-a.y)*fr, a.z+(b.z-a.z)*fr));
-    }
-    if (disp.length >= 2) {
-      c.line.geometry.dispose();
-      c.line.geometry = new THREE.BufferGeometry().setFromPoints(disp);
-    }
-    if (c.progress >= 1) c.active = false;
-  });
-}
-
-// ── COPPER BEAMS ─────────────────────────────────────────────────────────────
-const bMat = new THREE.MeshPhongMaterial({ color:0xb87b4f, emissive:0x8a5a30, emissiveIntensity:.5, shininess:70 });
-const BEAMS = [];
-
-function makeBeam(x,y,z,w,h,d) {
-  const geo = new THREE.BoxGeometry(w,h,d);
-  const mesh = new THREE.Mesh(geo, bMat.clone());
-  mesh.position.set(x,y,z);
-  mesh.scale.set(0,0,0);
-  bldg.add(mesh);
-  const eg = new THREE.LineSegments(new THREE.EdgesGeometry(geo),
-    new THREE.LineBasicMaterial({ color:0xd4a070, opacity:.65, transparent:true }));
-  mesh.add(eg);
-  const bd = { mesh, eg, cur:0, active:false, speed:.055 };
-  BEAMS.push(bd);
-  return bd;
-}
-
-// Left side — Intervention A
-makeBeam(-bW/2-.45, bH/2, 0, .18, bH, .18);        // vertical bar
-makeBeam(-bW/2-.45, bH*.28, 0, .35, .18, .18);      // cross low
-makeBeam(-bW/2-.45, bH*.72, 0, .35, .18, .18);      // cross high
-makeBeam(-bW/2-.22, bH*.5, 0, .12, bH*.65, .12);    // inner rib
-
-// Right side — Intervention B
-makeBeam(bW/2+.45, bH/2, 0, .18, bH, .18);
-makeBeam(bW/2+.45, bH*.22, 0, .35, .18, .18);
-makeBeam(bW/2+.45, bH*.68, 0, .35, .18, .18);
-makeBeam(bW/2+.22, bH*.5, 0, .12, bH*.55, .12);
-
-function activateBeams(from, to, spd) {
-  for (let i=from; i<to; i++) {
-    const b = BEAMS[i];
-    setTimeout(() => { b.active = true; b.speed = spd||.055; }, (i-from)*350);
-  }
-}
-
-function updateBeams() {
-  BEAMS.forEach(b => {
-    if (!b.active) return;
-    b.cur = Math.min(1, b.cur+b.speed);
-    b.mesh.scale.setScalar(b.cur);
-  });
-}
-
-// ── CAMERA SYSTEM ────────────────────────────────────────────────────────────
-const camKF = [
-  { pos:[9,5,24],  look:[0,5,0],  dur:6000  },   // 0 wide establishing
-  { pos:[3,.6,13], look:[0,.4,0], dur:5000  },   // 1 descend to foundation
-  { pos:[7,5,19],  look:[0,5,0],  dur:5000  },   // 2 pull back full view
-  { pos:[7,5,19],  look:[0,5,0],  dur:40000 },   // 3 hold — cracks propagate
-  { pos:[22,5,3],  look:[0,4,0],  dur:9000  },   // 4 side view — lean visible
-  { pos:[22,5,3],  look:[0,4,0],  dur:28000 },   // 5 hold side — interventions
-  { pos:[0,5,23],  look:[0,5,0],  dur:9000  },   // 6 return front
-  { pos:[0,5,23],  look:[0,5,0],  dur:99999 }    // 7 hold final
-];
-
-let camPhase=0, camPhaseT=0;
-const camCur  = { pos:new THREE.Vector3(9,5,24), look:new THREE.Vector3(0,5,0) };
-const camNext = { pos:new THREE.Vector3(), look:new THREE.Vector3() };
-
-function updateCamera(elapsed) {
-  const kf  = camKF[camPhase];
-  const nxt = camKF[Math.min(camPhase+1, camKF.length-1)];
-  const t   = Math.min(1, (elapsed-camPhaseT) / kf.dur);
-  const s   = t<.5 ? 2*t*t : -1+(4-2*t)*t;
-
-  camNext.pos.set(...nxt.pos); camNext.look.set(...nxt.look);
-  camCur.pos.set(...kf.pos);   camCur.look.set(...kf.look);
-
-  camera.position.lerpVectors(camCur.pos, camNext.pos, s);
-  const lk = new THREE.Vector3().lerpVectors(camCur.look, camNext.look, s);
-  camera.lookAt(lk);
-
-  if (t>=1 && camPhase<camKF.length-2) { camPhase++; camPhaseT=elapsed; }
-}
-
-// ── LEAN SYSTEM ──────────────────────────────────────────────────────────────
-let leanCur=0, leanTarget=0;
-function updateLean() {
-  leanCur += (leanTarget-leanCur)*.004;
-  bldg.rotation.z = leanCur;
-}
-
-// ── WINDOW LIFE ──────────────────────────────────────────────────────────────
-let elevY=.4, elevDir=1;
-
-function updateLife(t) {
-  // Elevator
-  elevY += elevDir*.007;
-  if (elevY > bH-.3) elevDir=-1;
-  if (elevY < .3) elevDir=1;
-  elev.position.y = elevY;
-
-  // Silhouettes sway subtly
-  sils.forEach(s => {
-    s.mesh.position.x = s.baseX + Math.sin(t*.28+s.phase)*.04;
-    s.mesh.position.y += Math.sin(t*.15+s.phase*.7)*.0008;
-  });
-
-  // Window flicker
-  wins.forEach(w => {
-    if (w.off) return;
-    if (w.meeting) {
-      const p = .5 + .5*Math.sin(t*.35+w.flickerPhase);
-      w.mesh.material.color.setRGB(.28+p*.2, .22+p*.12, .08+p*.04);
-      w.mesh.material.opacity = .55+p*.25;
-    } else if (w.elev) {
-      const near = Math.max(0, 1-Math.abs(w.mesh.position.y-elevY)/1.5);
-      w.mesh.material.opacity = .35+near*.5;
+  for (const [id, times] of Object.entries(labelTimes)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (t >= times.start && t <= times.end) {
+      el.classList.add('visible');
     } else {
-      if (Math.random()<.0008) {
-        const orig = w.mesh.material.opacity;
-        w.mesh.material.opacity = .15+Math.random()*.25;
-        setTimeout(()=>{ if(!w.off) w.mesh.material.opacity=orig; }, 60+Math.random()*180);
-      }
+      el.classList.remove('visible');
     }
-  });
-}
-
-// ── TIMELINE ─────────────────────────────────────────────────────────────────
-const triggered = new Set();
-const TL = [
-  { t:7000, fn:()=>{
-    startCrack(CRACKS[0],.012); startCrack(CRACKS[1],.010);
-    fdLabel.visible=true; show('lbl-fd');
-    setS("FOUNDATION: Independence became optional — 66 unrecorded FDA–Biogen meetings","critical");
-  }},
-  { t:14000, fn:()=>{
-    startCrack(CRACKS[2],.016); startCrack(CRACKS[3],.014);
-    show('lbl-f1'); dimFloor(0);
-    setS("FLOOR 01: Post-Hoc Salvage — DMC overridden. No independent audit.","critical");
-  }},
-  { t:24000, fn:()=>{
-    startCrack(CRACKS[4],.016); startCrack(CRACKS[5],.014);
-    show('lbl-f2'); dimFloor(1);
-    setS("FLOOR 02: Firewall Collapse — FDA drafted Biogen own briefing documents","critical");
-  }},
-  { t:34000, fn:()=>{
-    startCrack(CRACKS[6],.016); startCrack(CRACKS[7],.014);
-    show('lbl-f3'); dimFloor(2);
-    setS("FLOOR 03: Committee Bypass — 10 against. 0 for. Approved anyway.","critical");
-  }},
-  { t:44000, fn:()=>{
-    startCrack(CRACKS[8],.016); startCrack(CRACKS[9],.014);
-    show('lbl-f4'); dimFloor(3); leanTarget=.022;
-    setS("FLOOR 04: Surrogate Substitution — clinical endpoint abandoned mid-trial","critical");
-  }},
-  { t:54000, fn:()=>{
-    startCrack(CRACKS[10],.016); startCrack(CRACKS[11],.014);
-    show('lbl-f5'); dimFloor(4);
-    setS("FLOOR 05: External Correction — 3 resignations. Congressional inquiry. EU withdrawal.","critical");
-  }},
-  { t:66000, fn:()=>{
-    activateBeams(0,4,.052); show('lbl-ia');
-    setS("INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory","stable");
-  }},
-  { t:78000, fn:()=>{
-    activateBeams(4,8,.052); show('lbl-ib');
-    setS("INTERVENTION B: Interaction Audit Trail — every meeting logged, authorship attributed","stable");
-  }},
-  { t:88000, fn:()=>{
-    show('lbl-ieiu'); leanTarget=0; relightWins();
-    setS("STABILISED — not rebuilt, but structurally sound. The record is intact.","stable");
-  }},
-  { t:95000, fn:()=>{ document.getElementById('anchor').classList.add('show'); }}
-];
-
-function checkTL(e) {
-  TL.forEach((ev,i)=>{ if(!triggered.has(i)&&e>=ev.t){ triggered.add(i); ev.fn(); } });
-}
-
-function show(id){ const el=document.getElementById(id); if(el) el.classList.add('show'); }
-
-function setS(msg,cls){
-  const el=document.getElementById('status-msg');
-  if(!el) return;
-  el.classList.remove('critical','stable');
-  if(cls) el.classList.add(cls);
-  el.textContent=msg;
-}
-
-function dimFloor(f){
-  winsByFloor[f].forEach(w=>{
-    if(Math.random()>.25){
-      const delay=Math.random()*1800;
-      setTimeout(()=>{
-        w.mesh.material.color.set(0x1a2838);
-        w.mesh.material.opacity=.2;
-        w.off=true;
-      }, delay);
-    }
-  });
-}
-
-function relightWins(){
-  wins.forEach(w=>{
-    if(w.off&&Math.random()>.45){
-      setTimeout(()=>{
-        w.mesh.material.color.set(0x4a8fb5);
-        w.mesh.material.opacity=.65;
-        w.off=false;
-      }, Math.random()*3500);
-    }
-  });
-}
-
-// ── MOUSE SUBTLE PARALLAX ────────────────────────────────────────────────────
-let mX=0, mY=0;
-document.addEventListener('mousemove', e=>{
-  mX=(e.clientX/innerWidth-.5)*.6;
-  mY=(e.clientY/innerHeight-.5)*.3;
-});
-
-// ── PAUSE CONTROL ────────────────────────────────────────────────────────────
-let paused=false;
-document.addEventListener('keydown', e=>{
-  if(e.code==='Space'){ paused=!paused; e.preventDefault(); }
-});
-
-// ── RENDER LOOP ──────────────────────────────────────────────────────────────
-const clock=new THREE.Clock();
-let elapsed=0;
-
-(function animate(){
-  requestAnimationFrame(animate);
-  if(!paused){
-    const dt=clock.getDelta();
-    elapsed+=dt*1000;
-    const t=elapsed/1000;
-
-    checkTL(elapsed);
-    updateCamera(elapsed);
-    updateCracks();
-    updateBeams();
-    updateLean();
-    updateLife(t);
-
-    // Subtle mouse parallax offset on top of scripted camera
-    camera.position.x += (mX*1.2 - camera.position.x*.04)*.008;
-    camera.position.y += (-mY*.8 - camera.position.y*.0)*.004;
   }
+}
+
+// ============================================
+// PROGRESS & TIMER
+// ============================================
+function updateProgress(t) {
+  const pct = (t / TOTAL_DURATION) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  const mins = Math.floor(t / 60);
+  const secs = Math.floor(t % 60);
+  const totalMins = Math.floor(TOTAL_DURATION / 60);
+  const totalSecs = Math.floor(TOTAL_DURATION % 60);
+  document.getElementById('timer').textContent = 
+    `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / ${String(totalMins).padStart(2,'0')}:${String(totalSecs).padStart(2,'0')}`;
+}
+
+// ============================================
+// DOOR TITLE
+// ============================================
+function updateDoorTitle(t) {
+  const title = document.getElementById('door-title');
+  if (t < 3) {
+    title.classList.add('visible');
+  } else if (t > 5) {
+    title.classList.remove('visible');
+  }
+}
+
+// ============================================
+// MAIN ANIMATION LOOP
+// ============================================
+const clock = new THREE.Clock();
+let lastTime = 0;
+
+function animate() {
+  animationId = requestAnimationFrame(animate);
+
+  const delta = clock.getDelta();
+
+  if (isPlaying) {
+    elapsed += delta;
+    if (elapsed > TOTAL_DURATION) {
+      elapsed = TOTAL_DURATION;
+      isPlaying = false;
+    }
+  }
+
+  const t = elapsed;
+
+  // Camera
+  const camState = getCameraState(t);
+  camera.position.lerp(camState.position, 0.05);
+  camera.lookAt(camState.target);
+  camera.fov = camState.fov;
+  camera.updateProjectionMatrix();
+
+  // Building lean
+  updateBuildingLean(t);
+
+  // Windows
+  updateWindows(t);
+
+  // Cracks
+  cracks.forEach(crack => {
+    if (t >= crack.startTime && t <= crack.endTime + 10) {
+      const p = Math.min((t - crack.startTime) / (crack.endTime - crack.startTime), 1);
+      const ease = p * p * (3 - 2 * p);
+      // Fade in then hold
+      crack.mesh.material.opacity = Math.min(ease * 0.9, 0.7);
+      // Glow pulse
+      crack.mesh.material.emissive = new THREE.Color(0x6db3d4);
+      crack.mesh.material.emissiveIntensity = 0.3 + Math.sin(t * 3) * 0.1;
+    }
+  });
+
+  // Beams
+  beams.forEach(beam => {
+    if (t >= beam.startTime && t <= beam.endTime + 20) {
+      const p = Math.min((t - beam.startTime) / (beam.endTime - beam.startTime), 1);
+      const ease = p * p * (3 - 2 * p);
+      beam.mesh.scale.y = ease;
+      beam.mesh.material.emissiveIntensity = 0.2 + ease * 0.5;
+    }
+  });
+
+  // Foundation glow during intervention
+  if (t >= 180 && t <= 300) {
+    const p = Math.min((t - 180) / 60, 1);
+    foundationGlow.intensity = p * 2;
+  }
+
+  // Life inside — flicker
+  building.traverse(child => {
+    if (child.userData && child.userData.flickerSpeed) {
+      const flicker = Math.sin(t * child.userData.flickerSpeed + child.userData.flickerOffset);
+      child.material.opacity = child.userData.baseOpacity + flicker * 0.1;
+    }
+  });
+
+  // UI
+  updateLabels(t);
+  updateProgress(t);
+  updateDoorTitle(t);
+
   renderer.render(scene, camera);
-})();
+}
+
+// ============================================
+// CONTROLS
+// ============================================
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    isPlaying = !isPlaying;
+  }
+  if (e.code === 'ArrowRight') {
+    elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
+  }
+  if (e.code === 'ArrowLeft') {
+    elapsed = Math.max(elapsed - 10, 0);
+  }
+  if (e.code === 'KeyR') {
+    elapsed = 0;
+    isPlaying = false;
+  }
+});
+
+// Click to start
+container.addEventListener('click', () => {
+  if (!isPlaying && elapsed === 0) {
+    isPlaying = true;
+  }
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Start
+animate();
+
+// Auto-start after 1s
+setTimeout(() => {
+  isPlaying = true;
+}, 1000);
+
 </script>
 </body>
 </html>
