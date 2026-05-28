@@ -4,835 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MetaVoxa CRA Portfolio — Door 1: ADUHELM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #0d1520;
-    overflow: hidden;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    color: #e8ddd0;
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-  }
-
-  /* ============================================
-     SCENE CONTAINER — holds all visual layers
-     ============================================ */
-  #scene {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    overflow: hidden;
-  }
-
-  /* ============================================
-     BUILDING LAYERS — stacked SVGs
-     ============================================ */
-  .building-layer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 320px;
-    height: 520px;
-    transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s ease;
-  }
-
-  /* Building silhouette — the permanent structure */
-  #building-silhouette {
-    z-index: 10;
-  }
-  #building-silhouette svg {
-    width: 100%; height: 100%;
-    filter: drop-shadow(0 0 40px rgba(74,122,150,0.15));
-  }
-
-  /* Glass layer — translucent, shows interior */
-  #building-glass {
-    z-index: 20;
-    opacity: 0.35;
-  }
-
-  /* Interior layer — the human activity inside */
-  #building-interior {
-    z-index: 15;
-    opacity: 0;
-    transition: opacity 2s ease;
-  }
-  #building-interior.visible {
-    opacity: 1;
-  }
-
-  /* Crack layer — fractures that spread */
-  #building-cracks {
-    z-index: 25;
-    pointer-events: none;
-  }
-  #building-cracks svg {
-    width: 100%; height: 100%;
-  }
-  .crack-path {
-    fill: none;
-    stroke: #6db3d4;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-    opacity: 0;
-    filter: drop-shadow(0 0 6px #6db3d4);
-  }
-  .crack-path.active {
-    opacity: 1;
-    animation: drawCrack 2s ease forwards;
-  }
-  @keyframes drawCrack {
-    to { stroke-dashoffset: 0; }
-  }
-
-  /* Beam layer — copper intervention */
-  #building-beams {
-    z-index: 30;
-    pointer-events: none;
-  }
-  .beam {
-    position: absolute;
-    background: #b87b4f;
-    transform-origin: left center;
-    transform: scaleX(0);
-    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 20px rgba(184,123,79,0.4), inset 0 0 10px rgba(255,200,150,0.2);
-  }
-  .beam.visible {
-    transform: scaleX(1);
-  }
-
-  /* ============================================
-     WINDOW GRID — individual lit panels
-     ============================================ */
-  .window-grid {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 18;
-    pointer-events: none;
-  }
-  .window {
-    position: absolute;
-    background: #c8d8e8;
-    opacity: 0.5;
-    transition: opacity 3s ease, background 3s ease;
-    box-shadow: 0 0 8px rgba(200,216,232,0.3);
-  }
-  .window.dark {
-    opacity: 0.15;
-    background: #1a2530;
-    box-shadow: none;
-  }
-  .window.flicker {
-    animation: windowFlicker 4s ease-in-out infinite;
-  }
-  @keyframes windowFlicker {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.35; }
-  }
-
-  /* ============================================
-     LIFE INSIDE — silhouettes, subtle
-     ============================================ */
-  .life-silhouette {
-    position: absolute;
-    width: 14px;
-    height: 28px;
-    background: #0a1418;
-    border-radius: 7px 7px 3px 3px;
-    opacity: 0.5;
-    transition: opacity 2s ease;
-    z-index: 16;
-  }
-  .life-silhouette::before {
-    content: '';
-    position: absolute;
-    top: -8px; left: 2px;
-    width: 10px; height: 10px;
-    background: #0a1418;
-    border-radius: 50%;
-  }
-  .life-silhouette.moving {
-    animation: silhouetteMove 8s ease-in-out infinite;
-  }
-  @keyframes silhouetteMove {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(15px); }
-  }
-
-  /* ============================================
-     ELEVATOR — external shaft, moving car
-     ============================================ */
-  .elevator-shaft {
-    position: absolute;
-    right: -25px;
-    top: 60px;
-    width: 18px;
-    height: 400px;
-    border: 1px solid rgba(74,122,150,0.2);
-    z-index: 12;
-  }
-  .elevator-car {
-    position: absolute;
-    left: 2px;
-    width: 14px;
-    height: 20px;
-    background: rgba(42,58,74,0.6);
-    border: 1px solid rgba(109,179,212,0.3);
-    transition: top 4s ease-in-out;
-  }
-  .elevator-indicator {
-    position: absolute;
-    right: -22px;
-    width: 4px;
-    height: 4px;
-    background: #6db3d4;
-    border-radius: 50%;
-    opacity: 0.4;
-    transition: top 4s ease-in-out;
-  }
-
-  /* ============================================
-     FOUNDATION GLOW
-     ============================================ */
-  .foundation-glow {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 30px;
-    background: radial-gradient(ellipse, rgba(184,123,79,0) 0%, rgba(184,123,79,0) 100%);
-    transition: background 3s ease;
-    z-index: 5;
-    pointer-events: none;
-  }
-  .foundation-glow.active {
-    background: radial-gradient(ellipse, rgba(184,123,79,0.3) 0%, rgba(184,123,79,0) 70%);
-  }
-
-  /* ============================================
-     CAMERA STATES — CSS transforms on the scene
-     ============================================ */
-  .scene-wide {
-    transform: scale(1) translate(0, 0);
-  }
-  .scene-foundation {
-    transform: scale(2.5) translate(0, 180px);
-  }
-  .scene-floor1 {
-    transform: scale(2.2) translate(0, 120px);
-  }
-  .scene-floor2 {
-    transform: scale(2.2) translate(0, 50px);
-  }
-  .scene-floor3 {
-    transform: scale(2.2) translate(0, -20px);
-  }
-  .scene-floor4 {
-    transform: scale(2.2) translate(0, -90px);
-  }
-  .scene-floor5 {
-    transform: scale(2.2) translate(0, -160px);
-  }
-  .scene-side {
-    transform: scale(1) translate(0, 0) rotateY(15deg);
-  }
-  .scene-lean {
-    transform: scale(1) translate(0, 0) rotateZ(2deg);
-  }
-  .scene-repair {
-    transform: scale(1.1) translate(0, 0);
-  }
-  .scene-final {
-    transform: scale(0.9) translate(0, 0);
-  }
-
-  /* ============================================
-     UI LAYER
-     ============================================ */
-  #ui-layer {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100;
-    pointer-events: none;
-  }
-
-  .label {
-    position: absolute;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 2.5s ease;
-    pointer-events: none;
-    text-shadow: 0 0 30px rgba(13,21,32,1), 0 0 60px rgba(13,21,32,0.8);
-  }
+  body { background: #0d1520; overflow: hidden; font-family: 'Georgia', serif; color: #e8ddd0; width: 100vw; height: 100vh; }
+  #canvas-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+  #ui-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; }
+  .label { position: absolute; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: opacity 2.5s ease; pointer-events: none; text-shadow: 0 0 30px rgba(13,21,32,1), 0 0 60px rgba(13,21,32,0.8); }
   .label.visible { opacity: 1; }
-  .floor-label {
-    color: #6db3d4;
-    font-weight: 400;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 12px;
-    letter-spacing: 3px;
-  }
-  .beam-label {
-    color: #b87b4f;
-    font-weight: 400;
-    font-size: 10px;
-    letter-spacing: 2px;
-  }
-  .anchor-phrase {
-    position: absolute;
-    bottom: 16%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 17px;
-    font-style: italic;
-    color: #e8ddd0;
-    opacity: 0;
-    transition: opacity 3s ease;
-    text-align: center;
-    max-width: 560px;
-    line-height: 1.7;
-    text-shadow: 0 0 40px rgba(13,21,32,1), 0 0 80px rgba(13,21,32,0.9);
-  }
+  .floor-label { color: #6db3d4; font-weight: 400; left: 50%; transform: translateX(-50%); font-size: 12px; letter-spacing: 3px; }
+  .beam-label { color: #b87b4f; font-weight: 400; font-size: 10px; letter-spacing: 2px; }
+  .anchor-phrase { position: absolute; bottom: 16%; left: 50%; transform: translateX(-50%); font-size: 17px; font-style: italic; color: #e8ddd0; opacity: 0; transition: opacity 3s ease; text-align: center; max-width: 560px; line-height: 1.7; text-shadow: 0 0 40px rgba(13,21,32,1), 0 0 80px rgba(13,21,32,0.9); }
   .anchor-phrase.visible { opacity: 1; }
-  .cta {
-    position: absolute;
-    bottom: 24px;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(232,221,208,0.35);
-    transition: color 0.6s ease, opacity 0.6s ease;
-    pointer-events: auto;
-    cursor: pointer;
-    text-decoration: none;
-  }
+  .cta { position: absolute; bottom: 24px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(232,221,208,0.35); transition: color 0.6s ease, opacity 0.6s ease; pointer-events: auto; cursor: pointer; text-decoration: none; }
   .cta:hover { color: #e8ddd0; }
   #cta-pdf { right: 24px; }
   #cta-next { right: 140px; }
   #cta-prev { right: 240px; opacity: 0.15; pointer-events: none; }
-  .door-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 2.5s ease;
-    z-index: 20;
-  }
+  .door-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; opacity: 0; transition: opacity 2.5s ease; z-index: 20; }
   .door-title.visible { opacity: 1; }
-  .door-title h1 {
-    font-size: 13px;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    color: rgba(232,221,208,0.4);
-    margin-bottom: 20px;
-    font-weight: 400;
-  }
-  .door-title h2 {
-    font-size: 36px;
-    font-weight: 400;
-    color: #e8ddd0;
-    letter-spacing: 4px;
-    line-height: 1.2;
-  }
-  .door-title h3 {
-    font-size: 14px;
-    color: rgba(232,221,208,0.35);
-    margin-top: 16px;
-    font-weight: 400;
-    font-style: italic;
-    letter-spacing: 1px;
-  }
-  #progress-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background: #b87b4f;
-    width: 0%;
-    transition: width 0.1s linear;
-    z-index: 200;
-  }
-  #timer {
-    position: fixed;
-    bottom: 6px;
-    left: 24px;
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: rgba(232,221,208,0.2);
-    z-index: 200;
-    font-family: 'Courier New', monospace;
-  }
-  .floor-detail {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 2s ease;
-    pointer-events: none;
-  }
+  .door-title h1 { font-size: 13px; letter-spacing: 8px; text-transform: uppercase; color: rgba(232,221,208,0.4); margin-bottom: 20px; font-weight: 400; }
+  .door-title h2 { font-size: 36px; font-weight: 400; color: #e8ddd0; letter-spacing: 4px; line-height: 1.2; }
+  .door-title h3 { font-size: 14px; color: rgba(232,221,208,0.35); margin-top: 16px; font-weight: 400; font-style: italic; letter-spacing: 1px; }
+  #progress-bar { position: fixed; bottom: 0; left: 0; height: 2px; background: #b87b4f; width: 0%; transition: width 0.1s linear; z-index: 30; }
+  #timer { position: fixed; bottom: 6px; left: 24px; font-size: 10px; letter-spacing: 1px; color: rgba(232,221,208,0.2); z-index: 30; font-family: 'Courier New', monospace; }
+  .floor-detail { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
   .floor-detail.visible { opacity: 1; }
-  .floor-detail .detail-title {
-    font-size: 10px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: rgba(109,179,212,0.6);
-    margin-bottom: 8px;
-  }
-  .floor-detail .detail-text {
-    font-size: 13px;
-    color: rgba(232,221,208,0.5);
-    line-height: 1.6;
-    max-width: 400px;
-  }
-
-  /* ============================================
-     INTERIOR DETAIL VISUALS — per floor
-     ============================================ */
-  .interior-detail {
-    position: absolute;
-    opacity: 0;
-    transition: opacity 2s ease;
-    pointer-events: none;
-  }
-  .interior-detail.visible {
-    opacity: 1;
-  }
-
-  /* Floor 1: Scattered papers */
-  .paper-scatter {
-    position: absolute;
-    width: 12px;
-    height: 8px;
-    background: rgba(200,208,216,0.4);
-    transform: rotate(var(--rot));
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-  }
-
-  /* Floor 2: Meeting table */
-  .meeting-table {
-    position: absolute;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    width: 140px;
-    height: 50px;
-    background: rgba(58,48,40,0.5);
-    border-radius: 2px;
-    border: 1px solid rgba(184,123,79,0.2);
-  }
-  .meeting-person {
-    position: absolute;
-    width: 12px;
-    height: 22px;
-    background: #0a1418;
-    border-radius: 6px 6px 2px 2px;
-    opacity: 0.6;
-  }
-  .meeting-person::before {
-    content: '';
-    position: absolute;
-    top: -6px; left: 2px;
-    width: 8px; height: 8px;
-    background: #0a1418;
-    border-radius: 50%;
-  }
-  .firewall-barrier {
-    position: absolute;
-    left: 50%; top: 10%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 80%;
-    background: linear-gradient(to bottom, transparent, rgba(196,75,43,0.3), transparent);
-    opacity: 0;
-    transition: opacity 2s ease;
-  }
-  .firewall-barrier.dissolving {
-    opacity: 1;
-    animation: dissolvePulse 3s ease-in-out infinite;
-  }
-  @keyframes dissolvePulse {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.5; }
-  }
-
-  /* Floor 3: Vote board */
-  .vote-board {
-    position: absolute;
-    right: 10px; top: 20%;
-    width: 50px;
-    height: 60px;
-    background: rgba(26,37,48,0.7);
-    border: 1px solid rgba(74,122,150,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
-  .vote-check {
-    width: 8px; height: 8px;
-    background: rgba(45,90,61,0.6);
-    border-radius: 1px;
-  }
-  .vote-x {
-    width: 8px; height: 8px;
-    background: rgba(196,75,43,0.6);
-    border-radius: 1px;
-    position: relative;
-  }
-  .vote-x::before, .vote-x::after {
-    content: '';
-    position: absolute;
-    width: 6px; height: 1px;
-    background: rgba(196,75,43,0.8);
-    top: 50%; left: 50%;
-  }
-  .vote-x::before { transform: translate(-50%, -50%) rotate(45deg); }
-  .vote-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
-  .raised-hand-visual {
-    position: absolute;
-    width: 4px;
-    height: 20px;
-    background: rgba(196,75,43,0.5);
-    border-radius: 2px;
-    transform-origin: bottom center;
-    animation: handRaise 4s ease-in-out infinite;
-  }
-  @keyframes handRaise {
-    0%, 100% { transform: rotate(-10deg); }
-    50% { transform: rotate(-60deg); }
-  }
-
-  /* Floor 4: Lab screens */
-  .lab-screen {
-    position: absolute;
-    width: 50px;
-    height: 35px;
-    background: rgba(26,37,48,0.6);
-    border: 1px solid rgba(74,122,150,0.15);
-  }
-  .lab-screen.amyloid {
-    border-color: rgba(196,75,43,0.3);
-    animation: screenPulse 3s ease-in-out infinite;
-  }
-  @keyframes screenPulse {
-    0%, 100% { box-shadow: inset 0 0 10px rgba(196,75,43,0.1); }
-    50% { box-shadow: inset 0 0 20px rgba(196,75,43,0.3); }
-  }
-  .lab-arrow {
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background: #b87b4f;
-    opacity: 0.5;
-  }
-  .lab-arrow::after {
-    content: '';
-    position: absolute;
-    right: -4px; top: -3px;
-    border: 4px solid transparent;
-    border-left: 6px solid #b87b4f;
-  }
-
-  /* Floor 5: Empty + door */
-  .correction-door {
-    position: absolute;
-    left: 50%; top: 30%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 60px;
-    border: 2px solid #b87b4f;
-    background: rgba(184,123,79,0.05);
-    box-shadow: 0 0 30px rgba(184,123,79,0.2), inset 0 0 20px rgba(184,123,79,0.1);
-  }
-  .corrector-figure {
-    position: absolute;
-    width: 14px;
-    height: 30px;
-    background: rgba(184,123,79,0.4);
-    border-radius: 7px 7px 3px 3px;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 2s ease, transform 3s ease;
-  }
-  .corrector-figure.visible {
-    opacity: 1;
-    transform: translate(-50%, -50%) translateX(-30px);
-  }
-  .corrector-figure::before {
-    content: '';
-    position: absolute;
-    top: -8px; left: 2px;
-    width: 10px; height: 10px;
-    background: rgba(184,123,79,0.5);
-    border-radius: 50%;
-  }
-  .scattered-chair {
-    position: absolute;
-    width: 16px;
-    height: 12px;
-    background: rgba(42,32,32,0.5);
-    border-radius: 2px;
-    transform: rotate(var(--chair-rot));
-  }
-
-  /* ============================================
-     AMBIENT EFFECTS
-     ============================================ */
-  .ambient-dust {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: rgba(200,216,232,0.15);
-    border-radius: 50%;
-    animation: dustFloat 15s linear infinite;
-  }
-  @keyframes dustFloat {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 0.3; }
-    90% { opacity: 0.3; }
-    100% { transform: translateY(-300px) translateX(50px); opacity: 0; }
-  }
-
-  /* Ground reflection */
-  .ground-reflection {
-    position: absolute;
-    bottom: -60px;
-    left: 50%;
-    transform: translateX(-50%) scaleY(-0.3);
-    width: 320px;
-    height: 520px;
-    opacity: 0.08;
-    filter: blur(8px);
-    pointer-events: none;
-    z-index: 2;
-  }
+  .floor-detail .detail-title { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: rgba(109,179,212,0.6); margin-bottom: 8px; }
+  .floor-detail .detail-text { font-size: 13px; color: rgba(232,221,208,0.5); line-height: 1.6; max-width: 400px; }
 </style>
 <base target="_blank">
 </head>
 <body>
-
-<div id="scene">
-  <!-- Ground reflection -->
-  <div class="ground-reflection" id="ground-reflection">
-    <svg viewBox="0 0 320 520" width="100%" height="100%">
-      <path d="M40,500 L40,80 L60,60 L260,60 L280,80 L280,500 Z" fill="#1a2530"/>
-      <rect x="50" y="70" width="220" height="420" fill="#0d1520" opacity="0.5"/>
-    </svg>
-  </div>
-
-  <!-- Foundation glow -->
-  <div class="foundation-glow" id="foundation-glow"></div>
-
-  <!-- Building silhouette -->
-  <div class="building-layer" id="building-silhouette">
-    <svg viewBox="0 0 320 520" preserveAspectRatio="xMidYMid meet">
-      <!-- Main building mass -->
-      <path d="M40,500 L40,80 L60,60 L100,55 L220,55 L260,60 L280,80 L280,500 Z" 
-            fill="#1a2530" stroke="#2a3a4a" stroke-width="1"/>
-      <!-- Roof overhang -->
-      <rect x="35" y="75" width="250" height="8" rx="2" fill="#1e2e3e"/>
-      <!-- Penthouse -->
-      <rect x="180" y="40" width="60" height="35" rx="2" fill="#152030"/>
-      <rect x="195" y="25" width="4" height="15" fill="#444"/>
-      <circle cx="197" cy="20" r="3" fill="#c44b2b" opacity="0.6">
-        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
-      </circle>
-      <!-- Entrance canopy -->
-      <rect x="120" y="75" width="80" height="4" rx="1" fill="#1e2e3e"/>
-      <line x1="125" y1="79" x2="125" y2="95" stroke="#1e2e3e" stroke-width="2"/>
-      <line x1="195" y1="79" x2="195" y2="95" stroke="#1e2e3e" stroke-width="2"/>
-      <!-- Entrance recess -->
-      <rect x="135" y="85" width="50" height="40" rx="2" fill="#0a1018"/>
-      <!-- Column lines -->
-      <line x1="60" y1="80" x2="60" y2="500" stroke="#2a3a4a" stroke-width="2" opacity="0.5"/>
-      <line x1="260" y1="80" x2="260" y2="500" stroke="#2a3a4a" stroke-width="2" opacity="0.5"/>
-      <line x1="160" y1="80" x2="160" y2="500" stroke="#2a3a4a" stroke-width="1" opacity="0.3"/>
-      <!-- Floor lines -->
-      <line x1="50" y1="140" x2="270" y2="140" stroke="#2a3a4a" stroke-width="0.5" opacity="0.3"/>
-      <line x1="50" y1="210" x2="270" y2="210" stroke="#2a3a4a" stroke-width="0.5" opacity="0.3"/>
-      <line x1="50" y1="280" x2="270" y2="280" stroke="#2a3a4a" stroke-width="0.5" opacity="0.3"/>
-      <line x1="50" y1="350" x2="270" y2="350" stroke="#2a3a4a" stroke-width="0.5" opacity="0.3"/>
-      <line x1="50" y1="420" x2="270" y2="420" stroke="#2a3a4a" stroke-width="0.5" opacity="0.3"/>
-    </svg>
-  </div>
-
-  <!-- Window grid -->
-  <div class="building-layer window-grid" id="window-grid">
-    <!-- Windows generated by JS -->
-  </div>
-
-  <!-- Building interior (shows through glass) -->
-  <div class="building-layer" id="building-interior">
-    <!-- Floor 1 interior -->
-    <div class="interior-detail" id="int-floor1" style="top:420px; left:0; width:100%; height:70px;">
-      <div class="paper-scatter" style="left:20%; top:60%; --rot:15deg;"></div>
-      <div class="paper-scatter" style="left:35%; top:70%; --rot:-20deg;"></div>
-      <div class="paper-scatter" style="left:50%; top:55%; --rot:45deg;"></div>
-      <div class="paper-scatter" style="left:65%; top:65%; --rot:-10deg;"></div>
-      <div class="paper-scatter" style="left:75%; top:50%; --rot:30deg;"></div>
-      <div class="paper-scatter" style="left:25%; top:45%; --rot:-35deg;"></div>
-      <div class="life-silhouette" style="left:30%; top:20%;"></div>
-      <div class="life-silhouette moving" style="left:70%; top:25%;"></div>
-    </div>
-    <!-- Floor 2 interior -->
-    <div class="interior-detail" id="int-floor2" style="top:350px; left:0; width:100%; height:70px;">
-      <div class="meeting-table"></div>
-      <div class="meeting-person" style="left:25%; top:20%;"></div>
-      <div class="meeting-person" style="left:35%; top:15%;"></div>
-      <div class="meeting-person" style="left:45%; top:18%;"></div>
-      <div class="meeting-person" style="left:55%; top:15%;"></div>
-      <div class="meeting-person" style="left:65%; top:20%;"></div>
-      <div class="meeting-person" style="left:30%; top:65%;"></div>
-      <div class="meeting-person" style="left:40%; top:70%;"></div>
-      <div class="meeting-person" style="left:50%; top:68%;"></div>
-      <div class="meeting-person" style="left:60%; top:70%;"></div>
-      <div class="meeting-person" style="left:70%; top:65%;"></div>
-      <div class="firewall-barrier" id="firewall-barrier"></div>
-    </div>
-    <!-- Floor 3 interior -->
-    <div class="interior-detail" id="int-floor3" style="top:280px; left:0; width:100%; height:70px;">
-      <div class="vote-board">
-        <div class="vote-check"></div>
-        <div class="vote-check"></div>
-        <div class="vote-check"></div>
-        <div class="vote-check"></div>
-        <div class="vote-x"></div>
-      </div>
-      <div class="meeting-person" style="left:20%; top:30%;"></div>
-      <div class="meeting-person" style="left:30%; top:25%;"></div>
-      <div class="meeting-person" style="left:40%; top:28%;"></div>
-      <div class="meeting-person" style="left:50%; top:25%;"></div>
-      <div class="meeting-person" style="left:60%; top:28%;"></div>
-      <div class="meeting-person" style="left:70%; top:30%;"></div>
-      <div class="raised-hand-visual" style="left:68%; top:10%;"></div>
-    </div>
-    <!-- Floor 4 interior -->
-    <div class="interior-detail" id="int-floor4" style="top:210px; left:0; width:100%; height:70px;">
-      <div class="lab-screen amyloid" style="left:15%; top:20%;"></div>
-      <div class="lab-screen" style="left:55%; top:20%; border-color:rgba(74,122,150,0.3);"></div>
-      <div class="lab-arrow" style="left:42%; top:35%;"></div>
-      <div class="life-silhouette" style="left:75%; top:40%;"></div>
-    </div>
-    <!-- Floor 5 interior -->
-    <div class="interior-detail" id="int-floor5" style="top:140px; left:0; width:100%; height:70px;">
-      <div class="correction-door">
-        <div class="corrector-figure" id="corrector-figure"></div>
-      </div>
-      <div class="scattered-chair" style="left:20%; top:60%; --chair-rot:15deg;"></div>
-      <div class="scattered-chair" style="left:75%; top:50%; --chair-rot:-20deg;"></div>
-      <div class="scattered-chair" style="left:60%; top:70%; --chair-rot:30deg;"></div>
-    </div>
-  </div>
-
-  <!-- Crack layer -->
-  <div class="building-layer" id="building-cracks">
-    <svg viewBox="0 0 320 520" preserveAspectRatio="xMidYMid meet">
-      <!-- Main vertical crack from foundation -->
-      <path class="crack-path" id="crack-main" d="M160,500 L165,480 L155,450 L170,420 L160,390 L175,360 L165,330 L180,300 L170,270 L185,240 L175,210 L190,180 L180,150 L195,120 L185,100" />
-      <!-- Branch left -->
-      <path class="crack-path" id="crack-branch1" d="M165,450 L140,430 L120,440 L100,420" />
-      <!-- Branch right -->
-      <path class="crack-path" id="crack-branch2" d="M170,420 L200,400 L220,410 L240,390" />
-      <!-- Upper branch -->
-      <path class="crack-path" id="crack-branch3" d="M175,360 L150,340 L130,350 L110,330" />
-      <!-- Side crack -->
-      <path class="crack-path" id="crack-side" d="M280,400 L290,380 L285,350 L295,320 L290,290" />
-      <!-- Corner crack -->
-      <path class="crack-path" id="crack-corner" d="M260,480 L270,460 L265,440 L275,420 L270,400" />
-    </svg>
-  </div>
-
-  <!-- Beam layer -->
-  <div class="building-layer" id="building-beams">
-    <!-- Left beam -->
-    <div class="beam" id="beam-left" style="left:-80px; top:280px; width:120px; height:8px; transform:rotate(-35deg);"></div>
-    <!-- Right beam -->
-    <div class="beam" id="beam-right" style="right:-80px; top:280px; width:120px; height:8px; transform:rotate(35deg); transform-origin:right center;"></div>
-    <!-- Cross beam -->
-    <div class="beam" id="beam-cross" style="left:60px; top:300px; width:200px; height:6px;"></div>
-    <!-- Foundation anchors -->
-    <div class="beam" id="beam-anchor1" style="left:-100px; top:490px; width:80px; height:6px;"></div>
-    <div class="beam" id="beam-anchor2" style="right:-100px; top:490px; width:80px; height:6px;"></div>
-  </div>
-
-  <!-- Elevator shaft -->
-  <div class="elevator-shaft" id="elevator-shaft">
-    <div class="elevator-car" id="elevator-car"></div>
-  </div>
-  <div class="elevator-indicator" id="elevator-indicator"></div>
-
-  <!-- Ambient dust particles -->
-  <div class="ambient-dust" style="left:20%; top:80%; animation-delay:0s;"></div>
-  <div class="ambient-dust" style="left:60%; top:70%; animation-delay:5s;"></div>
-  <div class="ambient-dust" style="left:40%; top:60%; animation-delay:10s;"></div>
-  <div class="ambient-dust" style="left:80%; top:50%; animation-delay:3s;"></div>
-</div>
-
-<!-- UI Layer -->
+<div id="canvas-container"></div>
 <div id="ui-layer">
-  <div id="door-title" class="door-title">
-    <h1>Door 1</h1>
-    <h2>ADUHELM</h2>
-    <h3>The Building That Passed Inspection</h3>
-  </div>
-
+  <div id="door-title" class="door-title"><h1>Door 1</h1><h2>ADUHELM</h2><h3>The Building That Passed Inspection</h3></div>
   <div id="fl1" class="label floor-label" style="top:68%;">Floor 01 — Post-Hoc Salvage</div>
   <div id="fl2" class="label floor-label" style="top:54%;">Floor 02 — Firewall Collapse</div>
   <div id="fl3" class="label floor-label" style="top:40%;">Floor 03 — Committee Bypass</div>
   <div id="fl4" class="label floor-label" style="top:26%;">Floor 04 — Surrogate Substitution</div>
   <div id="fl5" class="label floor-label" style="top:12%;">Floor 05 — External Correction</div>
   <div id="fl-foundation" class="label floor-label" style="bottom:10%; color:#b87b4f; font-size:10px;">Foundation: Independence became optional</div>
-
-  <div id="fd1" class="floor-detail" style="top:55%;">
-    <div class="detail-title">Floor 01 — Post-Hoc Salvage</div>
-    <div class="detail-text">Data re-analysed after the trial closed.<br>The building was already occupied when the foundation cracked.</div>
-  </div>
-  <div id="fd2" class="floor-detail" style="top:55%;">
-    <div class="detail-title">Floor 02 — Firewall Collapse</div>
-    <div class="detail-text">116 meetings. The firewall between sponsor and regulator dissolved.<br>Independence became optional.</div>
-  </div>
-  <div id="fd3" class="floor-detail" style="top:55%;">
-    <div class="detail-title">Floor 03 — Committee Bypass</div>
-    <div class="detail-text">Advisory committee overruled. The vote that mattered<br>was not the vote that counted.</div>
-  </div>
-  <div id="fd4" class="floor-detail" style="top:55%;">
-    <div class="detail-title">Floor 04 — Surrogate Substitution</div>
-    <div class="detail-text">Amyloid replaced cognition as the endpoint.<br>The proxy became the purpose.</div>
-  </div>
-  <div id="fd5" class="floor-detail" style="top:55%;">
-    <div class="detail-title">Floor 05 — External Correction</div>
-    <div class="detail-text">The correction came from outside the building.<br>Not repair — rescue.</div>
-  </div>
-
+  <div id="fd1" class="floor-detail" style="top:55%;"><div class="detail-title">Floor 01 — Post-Hoc Salvage</div><div class="detail-text">Data re-analysed after the trial closed.<br>The building was already occupied when the foundation cracked.</div></div>
+  <div id="fd2" class="floor-detail" style="top:55%;"><div class="detail-title">Floor 02 — Firewall Collapse</div><div class="detail-text">116 meetings. The firewall between sponsor and regulator dissolved.<br>Independence became optional.</div></div>
+  <div id="fd3" class="floor-detail" style="top:55%;"><div class="detail-title">Floor 03 — Committee Bypass</div><div class="detail-text">Advisory committee overruled. The vote that mattered<br>was not the vote that counted.</div></div>
+  <div id="fd4" class="floor-detail" style="top:55%;"><div class="detail-title">Floor 04 — Surrogate Substitution</div><div class="detail-text">Amyloid replaced cognition as the endpoint.<br>The proxy became the purpose.</div></div>
+  <div id="fd5" class="floor-detail" style="top:55%;"><div class="detail-title">Floor 05 — External Correction</div><div class="detail-text">The correction came from outside the building.<br>Not repair — rescue.</div></div>
   <div id="bl-left" class="label beam-label" style="bottom:30%; left:15%;">DMC GOVERNANCE LOCK</div>
   <div id="bl-right" class="label beam-label" style="bottom:30%; right:15%;">AUDIT TRAIL</div>
   <div id="bl-center" class="label beam-label" style="bottom:22%; left:50%; transform:translateX(-50%);">IEIU</div>
-
   <div id="anchor" class="anchor-phrase">"The instinct to look underneath is what I am building a career on."</div>
-
   <a id="cta-pdf" class="cta" href="#" onclick="alert('Protocol PDF — placeholder'); return false;">View Protocol PDF</a>
   <a id="cta-next" class="cta" href="#door2">Next Door →</a>
   <a id="cta-prev" class="cta" href="#">← Previous Door</a>
 </div>
-
 <div id="progress-bar"></div>
 <div id="timer">00:00 / 05:00</div>
 
@@ -841,284 +66,758 @@ const TOTAL_DURATION = 300;
 let elapsed = 0;
 let isPlaying = false;
 
-// Generate windows
-const windowGrid = document.getElementById('window-grid');
-const floors = [
-  { y: 430, h: 55 }, // lobby
-  { y: 355, h: 50 }, // floor 1
-  { y: 285, h: 50 }, // floor 2
-  { y: 215, h: 50 }, // floor 3
-  { y: 145, h: 50 }, // floor 4
-  { y: 90, h: 40 }   // floor 5 (shorter)
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1520);
+scene.fog = new THREE.FogExp2(0x0d1520, 0.012);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 300);
+camera.position.set(0, 10, 45);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.appendChild(renderer.domElement);
+
+const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.35);
+scene.add(ambientLight);
+
+const moonLight = new THREE.DirectionalLight(0x5a8aaa, 0.5);
+moonLight.position.set(20, 40, 25);
+moonLight.castShadow = true;
+moonLight.shadow.mapSize.width = 4096;
+moonLight.shadow.mapSize.height = 4096;
+moonLight.shadow.camera.near = 0.5;
+moonLight.shadow.camera.far = 100;
+moonLight.shadow.camera.left = -30;
+moonLight.shadow.camera.right = 30;
+moonLight.shadow.camera.top = 30;
+moonLight.shadow.camera.bottom = -30;
+moonLight.shadow.bias = -0.0005;
+scene.add(moonLight);
+
+const rimLight = new THREE.DirectionalLight(0x3a5a6a, 0.3);
+rimLight.position.set(-15, 15, -20);
+scene.add(rimLight);
+
+const foundationGlow = new THREE.PointLight(0xb87b4f, 0, 20);
+foundationGlow.position.set(0, -3, 8);
+scene.add(foundationGlow);
+
+const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x3a6078, transparent: true, opacity: 0.18, roughness: 0.05, metalness: 0.95, side: THREE.DoubleSide, clearcoat: 1.0, clearcoatRoughness: 0.1, envMapIntensity: 2 });
+const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e2e3e, roughness: 0.6, metalness: 0.5 });
+const concreteMat = new THREE.MeshStandardMaterial({ color: 0x2a3a4a, roughness: 0.85, metalness: 0.15 });
+const windowLitMat = new THREE.MeshBasicMaterial({ color: 0xd8e4f0, transparent: true, opacity: 0.45 });
+const crackMat = new THREE.MeshBasicMaterial({ color: 0x6db3d4, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+const beamMat = new THREE.MeshStandardMaterial({ color: 0xa06838, roughness: 0.35, metalness: 0.8, emissive: 0x3a2010, emissiveIntensity: 0.15 });
+const beamRivetMat = new THREE.MeshStandardMaterial({ color: 0xc08850, roughness: 0.3, metalness: 0.9, emissive: 0x4a2810, emissiveIntensity: 0.3 });
+const groundMat = new THREE.MeshStandardMaterial({ color: 0x080e14, roughness: 0.95, metalness: 0.05 });
+const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x101820, roughness: 0.9, metalness: 0.1 });
+const silhouetteMat = new THREE.MeshBasicMaterial({ color: 0x0a1418, transparent: true, opacity: 0.7 });
+const paperMat = new THREE.MeshBasicMaterial({ color: 0xc8d0d8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+const deskMat = new THREE.MeshStandardMaterial({ color: 0x3a3028, roughness: 0.7, metalness: 0.2 });
+const screenGlowMat = new THREE.MeshBasicMaterial({ color: 0x4a7a96, transparent: true, opacity: 0.4 });
+const redGlowMat = new THREE.MeshBasicMaterial({ color: 0xc44b2b, transparent: true, opacity: 0.3 });
+const greenGlowMat = new THREE.MeshBasicMaterial({ color: 0x2d5a3d, transparent: true, opacity: 0.3 });
+
+const building = new THREE.Group();
+scene.add(building);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(40, 0.3, 30), sidewalkMat);
+sidewalk.position.set(0, -4.85, 5);
+sidewalk.receiveShadow = true;
+scene.add(sidewalk);
+
+const curb = new THREE.Mesh(new THREE.BoxGeometry(40, 0.5, 0.4), concreteMat);
+curb.position.set(0, -4.75, 20.2);
+scene.add(curb);
+
+const bWidth = 10;
+const bDepth = 8;
+const floorHeight = 2.8;
+const numFloors = 6;
+const lobbyHeight = 4.5;
+
+const floorWindows = [];
+const floorInteriorObjects = [];
+const floorGroups = [];
+
+// LOBBY
+const lobbyGroup = new THREE.Group();
+const lobbyColGeo = new THREE.BoxGeometry(0.6, lobbyHeight, 0.6);
+const lobbyCols = [
+  [-bWidth/2 + 0.8, -5 + lobbyHeight/2, -bDepth/2 + 0.8],
+  [bWidth/2 - 0.8, -5 + lobbyHeight/2, -bDepth/2 + 0.8],
+  [-bWidth/2 + 0.8, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [bWidth/2 - 0.8, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [0, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [0, -5 + lobbyHeight/2, -bDepth/2 + 0.8]
 ];
-
-floors.forEach((floor, fi) => {
-  const cols = fi === 0 ? 4 : 5;
-  const rows = 2;
-  const winW = 28;
-  const winH = 18;
-  const gapX = 8;
-  const gapY = 6;
-  const startX = (320 - (cols * winW + (cols - 1) * gapX)) / 2;
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const win = document.createElement('div');
-      win.className = 'window' + (fi > 0 ? ' flicker' : '');
-      win.style.left = (startX + c * (winW + gapX)) + 'px';
-      win.style.top = (floor.y + r * (winH + gapY)) + 'px';
-      win.style.width = winW + 'px';
-      win.style.height = winH + 'px';
-      win.dataset.floor = fi;
-      windowGrid.appendChild(win);
-    }
-  }
+lobbyCols.forEach(pos => {
+  const col = new THREE.Mesh(lobbyColGeo, frameMat);
+  col.position.set(...pos);
+  col.castShadow = true;
+  lobbyGroup.add(col);
 });
 
-// Scene state management
-const scene = document.getElementById('scene');
-const interior = document.getElementById('building-interior');
-const foundationGlow = document.getElementById('foundation-glow');
+const lobbyGlassGeo = new THREE.PlaneGeometry(bWidth - 2, lobbyHeight - 0.5);
+const lobbyFront = new THREE.Mesh(lobbyGlassGeo, glassMat.clone());
+lobbyFront.position.set(0, -5 + lobbyHeight/2, bDepth/2 + 0.02);
+lobbyGroup.add(lobbyFront);
+const lobbyBack = new THREE.Mesh(lobbyGlassGeo, glassMat.clone());
+lobbyBack.position.set(0, -5 + lobbyHeight/2, -bDepth/2 - 0.02);
+lobbyBack.rotation.y = Math.PI;
+lobbyGroup.add(lobbyBack);
 
-function setSceneState(state) {
-  scene.className = '';
-  scene.classList.add(state);
+const entrance = new THREE.Mesh(new THREE.BoxGeometry(3, 2.5, 0.3), new THREE.MeshStandardMaterial({ color: 0x0a1018, roughness: 0.3, metalness: 0.7 }));
+entrance.position.set(0, -5 + 1.25, bDepth/2 + 0.15);
+lobbyGroup.add(entrance);
+
+const canopy = new THREE.Mesh(new THREE.BoxGeometry(4, 0.15, 2), new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.4, metalness: 0.6 }));
+canopy.position.set(0, -5 + 2.8, bDepth/2 + 1);
+lobbyGroup.add(canopy);
+
+const canopySupportGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.8, 8);
+[-1.5, 1.5].forEach(x => {
+  const sup = new THREE.Mesh(canopySupportGeo, frameMat);
+  sup.position.set(x, -5 + 1.4, bDepth/2 + 1.8);
+  lobbyGroup.add(sup);
+});
+
+const lobbySlab = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.3, 0.25, bDepth + 0.3), concreteMat);
+lobbySlab.position.y = -5 + lobbyHeight;
+lobbySlab.castShadow = true;
+lobbyGroup.add(lobbySlab);
+
+const receptionDesk = new THREE.Mesh(new THREE.BoxGeometry(3, 1.1, 1), new THREE.MeshStandardMaterial({ color: 0x2a2020, roughness: 0.6, metalness: 0.3 }));
+receptionDesk.position.set(0, -5 + 0.55, -1);
+lobbyGroup.add(receptionDesk);
+
+const receptionist = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 1.6, 8), silhouetteMat);
+receptionist.position.set(0, -5 + 0.8, -0.3);
+lobbyGroup.add(receptionist);
+
+for (let i = 0; i < 8; i++) {
+  const light = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffe8c0, transparent: true, opacity: 0.35 }));
+  light.position.set((Math.random() - 0.5) * (bWidth - 2), -5 + lobbyHeight - 0.3, (Math.random() - 0.5) * (bDepth - 2));
+  light.userData = { baseOpacity: 0.35, flickerSpeed: 0.5 + Math.random() * 2, offset: Math.random() * 10 };
+  lobbyGroup.add(light);
 }
 
-function darkenFloor(floorIdx) {
-  document.querySelectorAll('.window[data-floor="' + floorIdx + '"]').forEach(w => {
-    w.classList.add('dark');
+building.add(lobbyGroup);
+floorGroups.push(lobbyGroup);
+
+// UPPER FLOORS WITH INTERIORS
+for (let f = 1; f < numFloors; f++) {
+  const yBase = -5 + lobbyHeight + (f - 1) * floorHeight;
+  const floorGroup = new THREE.Group();
+  const interiorGroup = new THREE.Group();
+
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.4, 0.2, bDepth + 0.4), concreteMat);
+  slab.position.y = yBase + floorHeight;
+  slab.castShadow = true;
+  floorGroup.add(slab);
+
+  const ceiling = new THREE.Mesh(new THREE.BoxGeometry(bWidth - 0.2, 0.15, bDepth - 0.2), new THREE.MeshStandardMaterial({ color: 0x1a2530, roughness: 0.8 }));
+  ceiling.position.y = yBase + floorHeight - 0.08;
+  floorGroup.add(ceiling);
+
+  const spandrelGeo = new THREE.BoxGeometry(bWidth - 0.2, 0.5, 0.15);
+  const spandrelFront = new THREE.Mesh(spandrelGeo, frameMat);
+  spandrelFront.position.set(0, yBase + 0.25, bDepth/2 + 0.08);
+  floorGroup.add(spandrelFront);
+  const spandrelBack = new THREE.Mesh(spandrelGeo, frameMat);
+  spandrelBack.position.set(0, yBase + 0.25, -bDepth/2 - 0.08);
+  floorGroup.add(spandrelBack);
+
+  const colPositions = [
+    [-bWidth/2 + 0.6, yBase + floorHeight/2, -bDepth/2 + 0.6],
+    [bWidth/2 - 0.6, yBase + floorHeight/2, -bDepth/2 + 0.6],
+    [-bWidth/2 + 0.6, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [bWidth/2 - 0.6, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [0, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [0, yBase + floorHeight/2, -bDepth/2 + 0.6]
+  ];
+  colPositions.forEach(pos => {
+    const web = new THREE.Mesh(new THREE.BoxGeometry(0.08, floorHeight, 0.4), frameMat);
+    web.position.set(pos[0], pos[1], pos[2]);
+    floorGroup.add(web);
+    const flange1 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 0.5), frameMat);
+    flange1.position.set(pos[0], pos[1] + floorHeight/2 - 0.03, pos[2]);
+    floorGroup.add(flange1);
+    const flange2 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 0.5), frameMat);
+    flange2.position.set(pos[0], pos[1] - floorHeight/2 + 0.03, pos[2]);
+    floorGroup.add(flange2);
   });
+
+  const glassH = floorHeight - 0.6;
+  const glassGeo = new THREE.PlaneGeometry(bWidth - 1.4, glassH);
+  const frontGlass = new THREE.Mesh(glassGeo, glassMat.clone());
+  frontGlass.position.set(0, yBase + 0.5 + glassH/2, bDepth/2 + 0.02);
+  floorGroup.add(frontGlass);
+  const backGlass = new THREE.Mesh(glassGeo, glassMat.clone());
+  backGlass.position.set(0, yBase + 0.5 + glassH/2, -bDepth/2 - 0.02);
+  backGlass.rotation.y = Math.PI;
+  floorGroup.add(backGlass);
+  const sideGlassGeo = new THREE.PlaneGeometry(bDepth - 1.4, glassH);
+  const leftGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
+  leftGlass.position.set(-bWidth/2 - 0.02, yBase + 0.5 + glassH/2, 0);
+  leftGlass.rotation.y = -Math.PI/2;
+  floorGroup.add(leftGlass);
+  const rightGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
+  rightGlass.position.set(bWidth/2 + 0.02, yBase + 0.5 + glassH/2, 0);
+  rightGlass.rotation.y = Math.PI/2;
+  floorGroup.add(rightGlass);
+
+  // FLOOR-SPECIFIC INTERIORS
+  if (f === 1) {
+    // FLOOR 1: POST-HOC SALVAGE
+    for (let i = 0; i < 20; i++) {
+      const paper = new THREE.Mesh(new THREE.PlaneGeometry(0.3 + Math.random() * 0.3, 0.2 + Math.random() * 0.2), paperMat.clone());
+      paper.position.set((Math.random() - 0.5) * (bWidth - 2), yBase + 0.02 + Math.random() * 0.05, (Math.random() - 0.5) * (bDepth - 2));
+      paper.rotation.x = -Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+      paper.rotation.z = Math.random() * Math.PI;
+      paper.userData = { type: 'paper', baseY: paper.position.y, driftSpeed: 0.5 + Math.random() };
+      interiorGroup.add(paper);
+    }
+    const desk = new THREE.Mesh(new THREE.BoxGeometry(2, 0.8, 1), deskMat);
+    desk.position.set(-2, yBase + 0.4, -1);
+    interiorGroup.add(desk);
+    const worker = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 1.5, 8), silhouetteMat);
+    worker.position.set(-2, yBase + 0.75, -0.3);
+    worker.userData = { type: 'worker', baseRot: 0, speed: 2 };
+    interiorGroup.add(worker);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.4), screenGlowMat.clone());
+    screen.position.set(-2, yBase + 0.9, -0.45);
+    screen.rotation.x = -0.3;
+    interiorGroup.add(screen);
+    for (let i = 0; i < 3; i++) {
+      const chart = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), paperMat.clone());
+      chart.position.set(2 + i * 0.3, yBase + 1.5 + i * 0.2, -bDepth/2 + 0.3);
+      chart.rotation.y = 0.1 * (i - 1);
+      interiorGroup.add(chart);
+    }
+    const desk2 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.8, 0.8), deskMat);
+    desk2.position.set(2.5, yBase + 0.4, 1);
+    interiorGroup.add(desk2);
+    const chair = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshStandardMaterial({ color: 0x2a2020 }));
+    chair.position.set(2.5, yBase + 0.25, 1.6);
+    chair.rotation.z = 0.4;
+    interiorGroup.add(chair);
+  } else if (f === 2) {
+    // FLOOR 2: FIREWALL COLLAPSE
+    const table = new THREE.Mesh(new THREE.BoxGeometry(5, 0.1, 2), new THREE.MeshStandardMaterial({ color: 0x3a3028, roughness: 0.6 }));
+    table.position.set(0, yBase + 0.8, 0);
+    interiorGroup.add(table);
+    for (let i = 0; i < 12; i++) {
+      const person = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 1.3, 8), silhouetteMat.clone());
+      const angle = (i / 12) * Math.PI * 2;
+      const radius = 1.8 + (i % 3) * 0.3;
+      person.position.set(Math.cos(angle) * radius, yBase + 0.65, Math.sin(angle) * radius);
+      person.userData = { type: 'meeting', baseY: person.position.y, idx: i };
+      interiorGroup.add(person);
+    }
+    const firewall = new THREE.Mesh(new THREE.PlaneGeometry(0.2, floorHeight - 0.5), new THREE.MeshBasicMaterial({ color: 0xc44b2b, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending }));
+    firewall.position.set(0, yBase + floorHeight/2, 0);
+    firewall.userData = { type: 'firewall', baseOpacity: 0.15 };
+    interiorGroup.add(firewall);
+    for (let i = 0; i < 8; i++) {
+      const doc = new THREE.Mesh(new THREE.PlaneGeometry(0.25, 0.18), paperMat.clone());
+      doc.position.set((Math.random() - 0.5) * 4, yBase + 0.86, (Math.random() - 0.5) * 1.5);
+      doc.rotation.x = -Math.PI / 2;
+      doc.rotation.z = Math.random() * Math.PI;
+      interiorGroup.add(doc);
+    }
+    const sponsorSide = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.05), new THREE.MeshBasicMaterial({ color: 0x4a7a96, transparent: true, opacity: 0.2 }));
+    sponsorSide.position.set(-1.25, yBase + 0.82, 0);
+    sponsorSide.rotation.x = -Math.PI / 2;
+    interiorGroup.add(sponsorSide);
+    const regulatorSide = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.05), new THREE.MeshBasicMaterial({ color: 0x6db3d4, transparent: true, opacity: 0.2 }));
+    regulatorSide.position.set(1.25, yBase + 0.82, 0);
+    regulatorSide.rotation.x = -Math.PI / 2;
+    interiorGroup.add(regulatorSide);
+  } else if (f === 3) {
+    // FLOOR 3: COMMITTEE BYPASS
+    const table = new THREE.Mesh(new THREE.BoxGeometry(3, 0.1, 1.5), new THREE.MeshStandardMaterial({ color: 0x3a3028 }));
+    table.position.set(0, yBase + 0.8, 0);
+    interiorGroup.add(table);
+    for (let i = 0; i < 7; i++) {
+      const person = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 1.3, 8), silhouetteMat.clone());
+      const angle = (i / 7) * Math.PI * 1.5 - Math.PI * 0.75;
+      person.position.set(Math.sin(angle) * 1.5, yBase + 0.65, Math.cos(angle) * 0.8);
+      person.userData = { type: 'committee', idx: i, baseY: person.position.y };
+      interiorGroup.add(person);
+    }
+    const raisedHand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6), new THREE.MeshBasicMaterial({ color: 0xc44b2b, transparent: true, opacity: 0.5 }));
+    raisedHand.position.set(1.2, yBase + 1.6, -0.5);
+    raisedHand.userData = { type: 'raisedHand', baseY: yBase + 1.2, targetY: yBase + 1.6 };
+    interiorGroup.add(raisedHand);
+    const tallyBoard = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.8), new THREE.MeshBasicMaterial({ color: 0x1a2530 }));
+    tallyBoard.position.set(-2.5, yBase + 1.5, -bDepth/2 + 0.4);
+    tallyBoard.rotation.y = 0.2;
+    interiorGroup.add(tallyBoard);
+    for (let i = 0; i < 4; i++) {
+      const check = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.12), greenGlowMat.clone());
+      check.position.set(-2.5 + (i - 1.5) * 0.2, yBase + 1.7, -bDepth/2 + 0.42);
+      interiorGroup.add(check);
+    }
+    const xMark = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.12), redGlowMat.clone());
+    xMark.position.set(-2.5 + 0.5, yBase + 1.5, -bDepth/2 + 0.42);
+    interiorGroup.add(xMark);
+  } else if (f === 4) {
+    // FLOOR 4: SURROGATE SUBSTITUTION
+    const microscope = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 0.8, 8), new THREE.MeshStandardMaterial({ color: 0x2a3a4a, metalness: 0.7, roughness: 0.3 }));
+    microscope.position.set(-2, yBase + 0.4, -1);
+    interiorGroup.add(microscope);
+    const microscopeEye = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.3, 8), new THREE.MeshStandardMaterial({ color: 0x1a2530, metalness: 0.8 }));
+    microscopeEye.position.set(-2, yBase + 0.9, -1);
+    microscopeEye.rotation.x = Math.PI / 4;
+    interiorGroup.add(microscopeEye);
+    const screen1 = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.7), redGlowMat.clone());
+    screen1.position.set(0, yBase + 1.4, -bDepth/2 + 0.35);
+    screen1.rotation.y = 0.1;
+    screen1.userData = { type: 'amyloidScreen', baseOpacity: 0.3 };
+    interiorGroup.add(screen1);
+    const screen2 = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.7), screenGlowMat.clone());
+    screen2.position.set(1.5, yBase + 1.4, -bDepth/2 + 0.35);
+    screen2.rotation.y = -0.1;
+    screen2.userData = { type: 'cognitionScreen', baseOpacity: 0.3 };
+    interiorGroup.add(screen2);
+    const arrow = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.3, 4), new THREE.MeshBasicMaterial({ color: 0xb87b4f, transparent: true, opacity: 0.4 }));
+    arrow.position.set(0.75, yBase + 1.4, -bDepth/2 + 0.4);
+    arrow.rotation.z = -Math.PI / 2;
+    interiorGroup.add(arrow);
+    const labWorker = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 1.4, 8), silhouetteMat);
+    labWorker.position.set(2, yBase + 0.7, 1);
+    labWorker.userData = { type: 'labWorker', baseY: labWorker.position.y };
+    interiorGroup.add(labWorker);
+    for (let i = 0; i < 3; i++) {
+      const beaker = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.2, 8), new THREE.MeshPhysicalMaterial({ color: i === 0 ? 0xc44b2b : 0x4a7a96, transparent: true, opacity: 0.5, roughness: 0.1 }));
+      beaker.position.set(2.5 + i * 0.2, yBase + 0.9, 1.5);
+      interiorGroup.add(beaker);
+    }
+  } else if (f === 5) {
+    // FLOOR 5: EXTERNAL CORRECTION
+    const emptyFloor = new THREE.Mesh(new THREE.PlaneGeometry(bWidth - 1, bDepth - 1), new THREE.MeshStandardMaterial({ color: 0x1a2028, roughness: 0.9 }));
+    emptyFloor.rotation.x = -Math.PI / 2;
+    emptyFloor.position.set(0, yBase + 0.01, 0);
+    interiorGroup.add(emptyFloor);
+    const corrector = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 1.6, 8), new THREE.MeshBasicMaterial({ color: 0xb87b4f, transparent: true, opacity: 0.6 }));
+    corrector.position.set(0, yBase + 0.8, bDepth/2 - 1);
+    corrector.userData = { type: 'corrector', baseZ: bDepth/2 - 0.5, targetZ: 0 };
+    interiorGroup.add(corrector);
+    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2, 0.1), new THREE.MeshStandardMaterial({ color: 0xb87b4f, metalness: 0.6, roughness: 0.4 }));
+    doorFrame.position.set(0, yBase + 1, bDepth/2 + 0.05);
+    interiorGroup.add(doorFrame);
+    const doorLight = new THREE.Mesh(new THREE.PlaneGeometry(1, 2.5), new THREE.MeshBasicMaterial({ color: 0xb87b4f, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
+    doorLight.position.set(0, yBase + 1, bDepth/2 - 0.5);
+    doorLight.rotation.x = Math.PI / 2;
+    interiorGroup.add(doorLight);
+    for (let i = 0; i < 4; i++) {
+      const chair = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshStandardMaterial({ color: 0x2a2020 }));
+      chair.position.set((Math.random() - 0.5) * 5, yBase + 0.25, (Math.random() - 0.5) * 4);
+      chair.rotation.y = Math.random() * Math.PI;
+      chair.rotation.z = (Math.random() - 0.5) * 0.3;
+      interiorGroup.add(chair);
+    }
+  }
+
+  // COMMON ELEMENTS
+  const winRows = 2;
+  const winCols = 5;
+  const winW = (bWidth - 2) / winCols;
+  const winH = (glassH - 0.4) / winRows;
+  const floorWins = [];
+  for (let r = 0; r < winRows; r++) {
+    for (let c = 0; c < winCols; c++) {
+      const winGeo = new THREE.PlaneGeometry(winW * 0.75, winH * 0.75);
+      const win = new THREE.Mesh(winGeo, windowLitMat.clone());
+      const wx = -bWidth/2 + 1 + c * winW + winW/2;
+      const wy = yBase + 0.7 + r * winH + winH/2;
+      win.position.set(wx, wy, bDepth/2 + 0.03);
+      floorGroup.add(win);
+      floorWins.push(win);
+      const winBack = win.clone();
+      winBack.position.set(wx, wy, -bDepth/2 - 0.03);
+      winBack.rotation.y = Math.PI;
+      floorGroup.add(winBack);
+      floorWins.push(winBack);
+    }
+  }
+  floorWindows.push(floorWins);
+
+  for (let i = 0; i < 5; i++) {
+    const light = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffe8c0, transparent: true, opacity: 0.2 + Math.random() * 0.25 }));
+    light.position.set((Math.random() - 0.5) * (bWidth - 2), yBase + 0.5 + Math.random() * (glassH - 0.5), (Math.random() - 0.5) * (bDepth - 2));
+    light.userData = { baseOpacity: light.material.opacity, flickerSpeed: 1 + Math.random() * 3, offset: Math.random() * 10 };
+    floorGroup.add(light);
+  }
+
+  const elevatorLight = new THREE.Mesh(new THREE.SphereGeometry(0.03, 4, 4), new THREE.MeshBasicMaterial({ color: 0x6db3d4, transparent: true, opacity: 0.3 }));
+  elevatorLight.position.set(bWidth/2 - 0.3, yBase + floorHeight - 0.2, bDepth/2 + 0.04);
+  floorGroup.add(elevatorLight);
+
+  if (f > 1 && f < 5) {
+    for (let i = 0; i < 2; i++) {
+      const silhouette = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 1.2, 6), silhouetteMat.clone());
+      silhouette.position.set((Math.random() - 0.5) * (bWidth - 3), yBase + 0.6 + Math.random() * 0.5, bDepth/2 - 0.3);
+      silhouette.userData = { type: 'windowSil', baseX: silhouette.position.x, speed: 0.3 + Math.random() };
+      floorGroup.add(silhouette);
+    }
+  }
+
+  floorGroup.add(interiorGroup);
+  floorInteriorObjects.push(interiorGroup);
+  building.add(floorGroup);
+  floorGroups.push(floorGroup);
 }
 
-function showInterior(floorNum) {
-  interior.classList.add('visible');
-  document.querySelectorAll('.interior-detail').forEach(d => d.classList.remove('visible'));
-  const target = document.getElementById('int-floor' + floorNum);
-  if (target) target.classList.add('visible');
+const roofOverhang = 0.6;
+const roof = new THREE.Mesh(new THREE.BoxGeometry(bWidth + roofOverhang, 0.4, bDepth + roofOverhang), new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.5, metalness: 0.5 }));
+const roofY = -5 + lobbyHeight + (numFloors - 1) * floorHeight + 0.2;
+roof.position.y = roofY;
+roof.castShadow = true;
+building.add(roof);
+
+const penthouse = new THREE.Mesh(new THREE.BoxGeometry(3, 1.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x152030, roughness: 0.7, metalness: 0.3 }));
+penthouse.position.set(1.5, roofY + 0.95, -1);
+building.add(penthouse);
+
+const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.06, 3, 8), new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.2 }));
+antenna.position.set(1.5, roofY + 2.5, -1);
+building.add(antenna);
+
+const warningLight = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff3333, transparent: true, opacity: 0.8 }));
+warningLight.position.set(1.5, roofY + 4, -1);
+building.add(warningLight);
+
+// ELEVATOR SHAFT
+const elevatorShaft = new THREE.Group();
+const shaftGeo = new THREE.BoxGeometry(1.2, lobbyHeight + (numFloors - 1) * floorHeight + 1, 1.2);
+const shaft = new THREE.Mesh(shaftGeo, new THREE.MeshStandardMaterial({ color: 0x1a2530, roughness: 0.8, metalness: 0.3, transparent: true, opacity: 0.6 }));
+shaft.position.set(bWidth/2 + 0.8, -5 + (lobbyHeight + (numFloors - 1) * floorHeight)/2, 0);
+elevatorShaft.add(shaft);
+
+const elevatorCar = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshStandardMaterial({ color: 0x2a3a4a, metalness: 0.5, roughness: 0.4 }));
+elevatorCar.position.set(bWidth/2 + 0.8, -4, 0);
+elevatorCar.userData = { type: 'elevator', minY: -4, maxY: roofY - 1 };
+elevatorShaft.add(elevatorCar);
+
+const cableGeo = new THREE.CylinderGeometry(0.02, 0.02, 20, 4);
+const cable = new THREE.Mesh(cableGeo, new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.8 }));
+cable.position.set(bWidth/2 + 0.8, 6, 0);
+elevatorShaft.add(cable);
+
+scene.add(elevatorShaft);
+
+// CRACKS
+const cracks = [];
+function createCrack(start, end, segments, width) {
+  const points = [];
+  points.push(start.clone());
+  for (let i = 1; i < segments; i++) {
+    const t = i / segments;
+    const pos = new THREE.Vector3().lerpVectors(start, end, t);
+    pos.x += (Math.random() - 0.5) * 0.4;
+    pos.z += (Math.random() - 0.5) * 0.3;
+    pos.y += (Math.random() - 0.5) * 0.15;
+    points.push(pos);
+  }
+  points.push(end.clone());
+  const curve = new THREE.CatmullRomCurve3(points);
+  const tubeGeo = new THREE.TubeGeometry(curve, segments * 4, width, 6, false);
+  const crack = new THREE.Mesh(tubeGeo, crackMat.clone());
+  crack.material.opacity = 0;
+  scene.add(crack);
+  return crack;
 }
 
-function hideInterior() {
-  interior.classList.remove('visible');
-  document.querySelectorAll('.interior-detail').forEach(d => d.classList.remove('visible'));
+const mainCrack = createCrack(new THREE.Vector3(0.3, -4.8, bDepth/2 + 0.04), new THREE.Vector3(1.5, roofY - 1, bDepth/2 + 0.04), 14, 0.05);
+cracks.push({ mesh: mainCrack, startTime: 5, endTime: 35, glowIntensity: 0.6 });
+const branch1 = createCrack(new THREE.Vector3(0.5, -2, bDepth/2 + 0.04), new THREE.Vector3(-1.2, 3, bDepth/2 + 0.04), 10, 0.035);
+cracks.push({ mesh: branch1, startTime: 30, endTime: 65, glowIntensity: 0.5 });
+const branch2 = createCrack(new THREE.Vector3(1.0, 2, bDepth/2 + 0.04), new THREE.Vector3(2.5, 7, bDepth/2 + 0.04), 10, 0.03);
+cracks.push({ mesh: branch2, startTime: 50, endTime: 90, glowIntensity: 0.45 });
+const branch3 = createCrack(new THREE.Vector3(-0.5, 5, bDepth/2 + 0.04), new THREE.Vector3(-2, 10, bDepth/2 + 0.04), 10, 0.04);
+cracks.push({ mesh: branch3, startTime: 75, endTime: 115, glowIntensity: 0.5 });
+const sideCrack = createCrack(new THREE.Vector3(bWidth/2 + 0.04, -3.5, 0.5), new THREE.Vector3(bWidth/2 + 0.04, 8, -1.5), 12, 0.04);
+cracks.push({ mesh: sideCrack, startTime: 95, endTime: 140, glowIntensity: 0.5 });
+const cornerCrack = createCrack(new THREE.Vector3(bWidth/2 - 0.2, -4.5, bDepth/2 + 0.04), new THREE.Vector3(bWidth/2 + 0.5, 5, bDepth/2 + 0.5), 10, 0.035);
+cracks.push({ mesh: cornerCrack, startTime: 110, endTime: 150, glowIntensity: 0.4 });
+
+// BEAMS
+const beams = [];
+function createHeavyBeam(start, end, hasRivets) {
+  const dir = new THREE.Vector3().subVectors(end, start);
+  const len = dir.length();
+  const beamGroup = new THREE.Group();
+  const web = new THREE.Mesh(new THREE.BoxGeometry(0.15, len, 0.4), beamMat.clone());
+  web.position.y = len / 2;
+  beamGroup.add(web);
+  const topFlange = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.08, 0.5), beamMat.clone());
+  topFlange.position.y = len - 0.04;
+  beamGroup.add(topFlange);
+  const botFlange = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.08, 0.5), beamMat.clone());
+  botFlange.position.y = 0.04;
+  beamGroup.add(botFlange);
+  if (hasRivets) {
+    const rivetGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.06, 8);
+    const numRivets = Math.floor(len / 0.8);
+    for (let i = 1; i < numRivets; i++) {
+      const rivet = new THREE.Mesh(rivetGeo, beamRivetMat.clone());
+      rivet.rotation.z = Math.PI / 2;
+      rivet.position.set(0.08, i * 0.8, 0.2);
+      beamGroup.add(rivet);
+      const rivet2 = rivet.clone(); rivet2.position.set(0.08, i * 0.8, -0.2); beamGroup.add(rivet2);
+      const rivet3 = rivet.clone(); rivet3.position.set(-0.08, i * 0.8, 0.2); beamGroup.add(rivet3);
+      const rivet4 = rivet.clone(); rivet4.position.set(-0.08, i * 0.8, -0.2); beamGroup.add(rivet4);
+    }
+  }
+  const plateGeo = new THREE.BoxGeometry(1.2, 0.6, 0.8);
+  const topPlate = new THREE.Mesh(plateGeo, beamMat.clone());
+  topPlate.position.y = len;
+  beamGroup.add(topPlate);
+  const botPlate = new THREE.Mesh(plateGeo, beamMat.clone());
+  botPlate.position.y = 0;
+  beamGroup.add(botPlate);
+  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+  beamGroup.position.copy(mid);
+  beamGroup.lookAt(end);
+  beamGroup.rotateX(Math.PI / 2);
+  beamGroup.scale.set(0, 0, 0);
+  scene.add(beamGroup);
+  return beamGroup;
 }
 
-function activateCrack(id) {
-  const crack = document.getElementById(id);
-  if (crack) crack.classList.add('active');
+const leftBeam = createHeavyBeam(new THREE.Vector3(-10, -5, 12), new THREE.Vector3(-bWidth/2 - 0.3, 6, bDepth/2 + 0.5), true);
+beams.push({ mesh: leftBeam, startTime: 200, endTime: 230 });
+const rightBeam = createHeavyBeam(new THREE.Vector3(10, -5, 12), new THREE.Vector3(bWidth/2 + 0.3, 6, bDepth/2 + 0.5), true);
+beams.push({ mesh: rightBeam, startTime: 225, endTime: 255 });
+const crossBeam = createHeavyBeam(new THREE.Vector3(-bWidth/2 - 0.2, 4, bDepth/2 + 0.4), new THREE.Vector3(bWidth/2 + 0.2, 4, bDepth/2 + 0.4), false);
+beams.push({ mesh: crossBeam, startTime: 240, endTime: 270 });
+const anchorBeam1 = createHeavyBeam(new THREE.Vector3(-12, -4.7, 10), new THREE.Vector3(-8, -4.7, 10), false);
+beams.push({ mesh: anchorBeam1, startTime: 195, endTime: 210 });
+const anchorBeam2 = createHeavyBeam(new THREE.Vector3(8, -4.7, 10), new THREE.Vector3(12, -4.7, 10), false);
+beams.push({ mesh: anchorBeam2, startTime: 220, endTime: 235 });
+
+// CAMERA
+function getCameraState(t) {
+  let pos, target;
+  if (t < 5) {
+    pos = new THREE.Vector3(0, 10, 45);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 8) {
+    const p = (t - 5) / 3;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 10 - ease * 8, 45 - ease * 30);
+    target = new THREE.Vector3(0, -2 + ease * 3, 0);
+  } else if (t < 25) {
+    pos = new THREE.Vector3(0, 2, 15);
+    target = new THREE.Vector3(0, -1, 0);
+  } else if (t < 30) {
+    const p = (t - 25) / 5;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 2 + ease * 8, 15 + ease * 20);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 35) {
+    const p = (t - 30) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor1Y, 0);
+  } else if (t < 55) {
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y, 7);
+    target = new THREE.Vector3(0, floor1Y, 0);
+  } else if (t < 60) {
+    const p = (t - 55) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y + ease * 4, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 65) {
+    const p = (t - 60) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor2Y, 0);
+  } else if (t < 85) {
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y, 7);
+    target = new THREE.Vector3(0, floor2Y, 0);
+  } else if (t < 90) {
+    const p = (t - 85) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y + ease * 3, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 95) {
+    const p = (t - 90) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor3Y, 0);
+  } else if (t < 115) {
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y, 7);
+    target = new THREE.Vector3(0, floor3Y, 0);
+  } else if (t < 120) {
+    const p = (t - 115) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y + ease * 2, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 125) {
+    const p = (t - 120) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor4Y, 0);
+  } else if (t < 145) {
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y, 7);
+    target = new THREE.Vector3(0, floor4Y, 0);
+  } else if (t < 150) {
+    const p = (t - 145) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y + ease * 2, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 155) {
+    const p = (t - 150) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor5Y = -5 + lobbyHeight + 4.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor5Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor5Y, 0);
+  } else if (t < 175) {
+    const floor5Y = -5 + lobbyHeight + 4.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor5Y, 7);
+    target = new THREE.Vector3(0, floor5Y, 0);
+  } else if (t < 180) {
+    const p = (t - 175) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const angle = ease * (20 * Math.PI / 180);
+    pos = new THREE.Vector3(Math.sin(angle) * 30, 8, Math.cos(angle) * 30);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 200) {
+    pos = new THREE.Vector3(Math.sin(20 * Math.PI / 180) * 30, 8, Math.cos(20 * Math.PI / 180) * 30);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 230) {
+    pos = new THREE.Vector3(Math.sin(20 * Math.PI / 180) * 30, 8, Math.cos(20 * Math.PI / 180) * 30);
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 260) {
+    const p = (t - 230) / 30;
+    const ease = p * p * (3 - 2 * p);
+    const angle = (1 - ease) * (20 * Math.PI / 180);
+    pos = new THREE.Vector3(Math.sin(angle) * 32, 8, Math.cos(angle) * 32);
+    target = new THREE.Vector3(0, 4, 0);
+  } else {
+    const p = Math.min((t - 260) / 40, 1);
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 10 + ease * 5, 35 + ease * 15);
+    target = new THREE.Vector3(0, 4, 0);
+  }
+  return { position: pos, target: target };
 }
 
-function showBeam(id) {
-  const beam = document.getElementById(id);
-  if (beam) beam.classList.add('visible');
+function updateBuildingLean(t) {
+  let leanAngle = 0;
+  if (t >= 150 && t < 180) {
+    const p = Math.min((t - 150) / 20, 1);
+    const ease = p * p * (3 - 2 * p);
+    leanAngle = ease * 0.06;
+  } else if (t >= 180 && t < 230) {
+    leanAngle = 0.06;
+  } else if (t >= 230 && t < 260) {
+    const p = (t - 230) / 30;
+    const ease = p * p * (3 - 2 * p);
+    leanAngle = 0.06 * (1 - ease);
+  }
+  building.rotation.z = leanAngle;
 }
 
-function updateElevator(t) {
-  const car = document.getElementById('elevator-car');
-  const indicator = document.getElementById('elevator-indicator');
-  const cycle = (t % 20) / 20;
-  const pos = cycle < 0.5 ? cycle * 2 : 2 - cycle * 2;
-  const y = 10 + pos * 370;
-  car.style.top = y + 'px';
-  indicator.style.top = (y + 60) + 'px';
+function updateWindows(t) {
+  const floorTimes = [25, 55, 85, 115, 145, 175];
+  for (let f = 0; f < floorWindows.length; f++) {
+    const startDark = floorTimes[f] || 25;
+    const endDark = startDark + 25;
+    let darkAmount = 0;
+    if (t > startDark) {
+      const p = Math.min((t - startDark) / 25, 1);
+      darkAmount = p * p * (3 - 2 * p);
+    }
+    floorWindows[f].forEach(win => {
+      const r = 0.85 + (0.07 - 0.85) * darkAmount;
+      const g = 0.90 + (0.13 - 0.90) * darkAmount;
+      const b = 0.94 + (0.13 - 0.94) * darkAmount;
+      win.material.color.setRGB(r, g, b);
+      win.material.opacity = 0.5 * (1 - darkAmount * 0.65);
+    });
+  }
 }
 
 function updateLabels(t) {
-  const times = {
-    'fl-foundation': [8, 300],
-    'fl1': [35, 300],
-    'fl2': [65, 300],
-    'fl3': [95, 300],
-    'fl4': [125, 300],
-    'fl5': [155, 300],
-    'bl-left': [205, 300],
-    'bl-right': [230, 300],
-    'bl-center': [245, 300],
-    'anchor': [275, 300]
+  const labelTimes = {
+    'fl-foundation': { start: 8, end: 300 },
+    'fl1': { start: 35, end: 300 },
+    'fl2': { start: 65, end: 300 },
+    'fl3': { start: 95, end: 300 },
+    'fl4': { start: 125, end: 300 },
+    'fl5': { start: 155, end: 300 },
+    'bl-left': { start: 205, end: 300 },
+    'bl-right': { start: 230, end: 300 },
+    'bl-center': { start: 245, end: 300 },
+    'anchor': { start: 275, end: 300 }
   };
-  for (const [id, [start, end]] of Object.entries(times)) {
+  for (const [id, times] of Object.entries(labelTimes)) {
     const el = document.getElementById(id);
-    if (el) el.classList.toggle('visible', t >= start && t <= end);
+    if (!el) continue;
+    if (t >= times.start && t <= times.end) el.classList.add('visible');
+    else el.classList.remove('visible');
   }
-
-  const details = {
-    'fd1': [35, 55],
-    'fd2': [65, 85],
-    'fd3': [95, 115],
-    'fd4': [125, 145],
-    'fd5': [155, 175]
+  const detailTimes = {
+    'fd1': { start: 35, end: 55 },
+    'fd2': { start: 65, end: 85 },
+    'fd3': { start: 95, end: 115 },
+    'fd4': { start: 125, end: 145 },
+    'fd5': { start: 155, end: 175 }
   };
-  for (const [id, [start, end]] of Object.entries(details)) {
+  for (const [id, times] of Object.entries(detailTimes)) {
     const el = document.getElementById(id);
-    if (el) el.classList.toggle('visible', t >= start && t <= end);
+    if (!el) continue;
+    if (t >= times.start && t <= times.end) el.classList.add('visible');
+    else el.classList.remove('visible');
   }
 }
 
 function updateProgress(t) {
-  document.getElementById('progress-bar').style.width = (t / TOTAL_DURATION * 100) + '%';
-  const m = Math.floor(t / 60), s = Math.floor(t % 60);
-  document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} / 05:00`;
+  const pct = (t / TOTAL_DURATION) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  const mins = Math.floor(t / 60);
+  const secs = Math.floor(t % 60);
+  document.getElementById('timer').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 05:00`;
 }
 
 function updateDoorTitle(t) {
   const title = document.getElementById('door-title');
-  title.classList.toggle('visible', t < 4);
+  if (t < 4) title.classList.add('visible');
+  else if (t > 6) title.classList.remove('visible');
 }
 
-// Main choreography
-function updateScene(t) {
-  // 0-5: Wide establishing
-  if (t < 5) {
-    setSceneState('scene-wide');
-    hideInterior();
-  }
-  // 5-8: Zoom to foundation
-  else if (t < 8) {
-    setSceneState('scene-foundation');
-    hideInterior();
-  }
-  // 8-25: Hold foundation
-  else if (t < 25) {
-    setSceneState('scene-foundation');
-    hideInterior();
-    activateCrack('crack-main');
-  }
-  // 25-30: Pull back
-  else if (t < 30) {
-    setSceneState('scene-wide');
-    hideInterior();
-    darkenFloor(1);
-  }
-  // 30-35: Zoom floor 1
-  else if (t < 35) {
-    setSceneState('scene-floor1');
-    showInterior(1);
-  }
-  // 35-55: Hold floor 1
-  else if (t < 55) {
-    setSceneState('scene-floor1');
-    showInterior(1);
-    activateCrack('crack-branch1');
-    darkenFloor(2);
-  }
-  // 55-60: Pull back
-  else if (t < 60) {
-    setSceneState('scene-wide');
-    hideInterior();
-  }
-  // 60-65: Zoom floor 2
-  else if (t < 65) {
-    setSceneState('scene-floor2');
-    showInterior(2);
-    document.getElementById('firewall-barrier').classList.add('dissolving');
-  }
-  // 65-85: Hold floor 2
-  else if (t < 85) {
-    setSceneState('scene-floor2');
-    showInterior(2);
-    activateCrack('crack-branch2');
-    darkenFloor(3);
-  }
-  // 85-90: Pull back
-  else if (t < 90) {
-    setSceneState('scene-wide');
-    hideInterior();
-  }
-  // 90-95: Zoom floor 3
-  else if (t < 95) {
-    setSceneState('scene-floor3');
-    showInterior(3);
-  }
-  // 95-115: Hold floor 3
-  else if (t < 115) {
-    setSceneState('scene-floor3');
-    showInterior(3);
-    activateCrack('crack-branch3');
-    darkenFloor(4);
-  }
-  // 115-120: Pull back
-  else if (t < 120) {
-    setSceneState('scene-wide');
-    hideInterior();
-  }
-  // 120-125: Zoom floor 4
-  else if (t < 125) {
-    setSceneState('scene-floor4');
-    showInterior(4);
-  }
-  // 125-145: Hold floor 4
-  else if (t < 145) {
-    setSceneState('scene-floor4');
-    showInterior(4);
-    activateCrack('crack-side');
-    darkenFloor(5);
-  }
-  // 145-150: Pull back
-  else if (t < 150) {
-    setSceneState('scene-wide');
-    hideInterior();
-  }
-  // 150-155: Zoom floor 5
-  else if (t < 155) {
-    setSceneState('scene-floor5');
-    showInterior(5);
-  }
-  // 155-175: Hold floor 5
-  else if (t < 175) {
-    setSceneState('scene-floor5');
-    showInterior(5);
-    activateCrack('crack-corner');
-    document.getElementById('corrector-figure').classList.add('visible');
-  }
-  // 175-180: Pull back, rotate side
-  else if (t < 180) {
-    setSceneState('scene-side');
-    hideInterior();
-  }
-  // 180-200: Side view, lean
-  else if (t < 200) {
-    setSceneState('scene-lean');
-    hideInterior();
-  }
-  // 200-230: Intervention
-  else if (t < 230) {
-    setSceneState('scene-lean');
-    hideInterior();
-    foundationGlow.classList.add('active');
-    showBeam('beam-anchor1');
-    showBeam('beam-left');
-    showBeam('beam-anchor2');
-    showBeam('beam-right');
-    showBeam('beam-cross');
-  }
-  // 230-260: Rotate back, straighten
-  else if (t < 260) {
-    setSceneState('scene-repair');
-    hideInterior();
-    foundationGlow.classList.add('active');
-  }
-  // 260-300: Final wide
-  else {
-    setSceneState('scene-final');
-    hideInterior();
-    foundationGlow.classList.add('active');
-  }
+// ANIMATION LOOP
+const clock = new THREE.Clock();
 
-  // Always update elevator
-  updateElevator(t);
-
-  // UI
-  updateLabels(t);
-  updateProgress(t);
-  updateDoorTitle(t);
-}
-
-// Animation loop
-let lastTime = 0;
-function loop(timestamp) {
-  if (!lastTime) lastTime = timestamp;
-  const delta = (timestamp - lastTime) / 1000;
-  lastTime = timestamp;
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
 
   if (isPlaying) {
     elapsed += delta;
@@ -1128,8 +827,154 @@ function loop(timestamp) {
     }
   }
 
-  updateScene(elapsed);
-  requestAnimationFrame(loop);
+  const t = elapsed;
+
+  // Camera
+  const camState = getCameraState(t);
+  camera.position.lerp(camState.position, 0.04);
+  camera.lookAt(camState.target);
+
+  // Building lean
+  updateBuildingLean(t);
+
+  // Windows
+  updateWindows(t);
+
+  // Cracks
+  cracks.forEach(crack => {
+    if (t >= crack.startTime && t <= crack.endTime + 15) {
+      const p = Math.min((t - crack.startTime) / (crack.endTime - crack.startTime), 1);
+      const ease = p * p * (3 - 2 * p);
+      crack.mesh.material.opacity = Math.min(ease * crack.glowIntensity, 0.7);
+      crack.mesh.material.emissive = new THREE.Color(0x6db3d4);
+      crack.mesh.material.emissiveIntensity = 0.2 + Math.sin(t * 2.5) * 0.08;
+    }
+  });
+
+  // Beams
+  beams.forEach(beam => {
+    if (t >= beam.startTime && t <= beam.endTime + 25) {
+      const p = Math.min((t - beam.startTime) / (beam.endTime - beam.startTime), 1);
+      const ease = p * p * (3 - 2 * p);
+      beam.mesh.scale.set(ease, ease, ease);
+      beam.mesh.traverse(child => {
+        if (child.material && child.material.emissiveIntensity !== undefined) {
+          child.material.emissiveIntensity = 0.15 + ease * 0.4;
+        }
+      });
+    }
+  });
+
+  // Foundation glow
+  if (t >= 180 && t <= 300) {
+    const p = Math.min((t - 180) / 60, 1);
+    foundationGlow.intensity = p * 2.5;
+  }
+
+  // Warning light blink
+  const warningBlink = Math.sin(t * 3) > 0 ? 0.8 : 0.3;
+  building.children.forEach(child => {
+    if (child.geometry && child.geometry.type === 'SphereGeometry' && child.material.color.r > 0.5) {
+      child.material.opacity = warningBlink;
+    }
+  });
+
+  // Interior light flicker
+  building.traverse(child => {
+    if (child.userData && child.userData.flickerSpeed) {
+      const flicker = Math.sin(t * child.userData.flickerSpeed + child.userData.offset);
+      child.material.opacity = child.userData.baseOpacity + flicker * 0.08;
+    }
+  });
+
+  // Elevator movement
+  const elevatorCar = elevatorShaft.children[1];
+  if (elevatorCar && elevatorCar.userData.type === 'elevator') {
+    const cycle = (t % 20) / 20;
+    const ease = cycle < 0.5 ? cycle * cycle * (3 - 2 * cycle) * 2 : 1 - (cycle - 0.5) * (cycle - 0.5) * (3 - 2 * (cycle - 0.5)) * 2;
+    elevatorCar.position.y = elevatorCar.userData.minY + ease * (elevatorCar.userData.maxY - elevatorCar.userData.minY);
+  }
+
+  // Floor 1: Papers drift slightly
+  if (floorInteriorObjects[0]) {
+    floorInteriorObjects[0].traverse(child => {
+      if (child.userData && child.userData.type === 'paper') {
+        child.position.y = child.userData.baseY + Math.sin(t * child.userData.driftSpeed) * 0.01;
+        child.rotation.z += Math.sin(t * 0.5) * 0.0005;
+      }
+      if (child.userData && child.userData.type === 'worker') {
+        child.rotation.y = Math.sin(t * child.userData.speed) * 0.3;
+      }
+    });
+  }
+
+  // Floor 2: Meeting people subtle movement
+  if (floorInteriorObjects[1]) {
+    floorInteriorObjects[1].traverse(child => {
+      if (child.userData && child.userData.type === 'meeting') {
+        child.position.y = child.userData.baseY + Math.sin(t * 1.5 + child.userData.idx) * 0.02;
+      }
+      if (child.userData && child.userData.type === 'firewall') {
+        const pulse = 0.1 + Math.sin(t * 2) * 0.05;
+        child.material.opacity = pulse;
+      }
+    });
+  }
+
+  // Floor 3: Raised hand animation
+  if (floorInteriorObjects[2]) {
+    floorInteriorObjects[2].traverse(child => {
+      if (child.userData && child.userData.type === 'raisedHand') {
+        const handPhase = Math.sin(t * 1.2) * 0.5 + 0.5;
+        child.position.y = child.userData.baseY + (child.userData.targetY - child.userData.baseY) * handPhase;
+      }
+      if (child.userData && child.userData.type === 'committee') {
+        child.position.y = child.userData.baseY + Math.sin(t + child.userData.idx) * 0.015;
+      }
+    });
+  }
+
+  // Floor 4: Screen pulsing
+  if (floorInteriorObjects[3]) {
+    floorInteriorObjects[3].traverse(child => {
+      if (child.userData && child.userData.type === 'amyloidScreen') {
+        child.material.opacity = child.userData.baseOpacity + Math.sin(t * 1.5) * 0.1;
+      }
+      if (child.userData && child.userData.type === 'cognitionScreen') {
+        child.material.opacity = child.userData.baseOpacity + Math.sin(t * 1.5 + Math.PI) * 0.1;
+      }
+      if (child.userData && child.userData.type === 'labWorker') {
+        child.position.y = child.userData.baseY + Math.sin(t * 0.8) * 0.02;
+      }
+    });
+  }
+
+  // Floor 5: Corrector walks in
+  if (floorInteriorObjects[4]) {
+    floorInteriorObjects[4].traverse(child => {
+      if (child.userData && child.userData.type === 'corrector') {
+        const walkPhase = Math.min((t - 150) / 30, 1);
+        const ease = walkPhase * walkPhase * (3 - 2 * walkPhase);
+        if (t > 150) {
+          child.position.z = child.userData.baseZ + (child.userData.targetZ - child.userData.baseZ) * ease;
+        }
+      }
+    });
+  }
+
+  // Window silhouettes subtle movement
+  building.traverse(child => {
+    if (child.userData && child.userData.type === 'windowSil') {
+      child.position.x = child.userData.baseX + Math.sin(t * child.userData.speed) * 0.05;
+    }
+  });
+
+  // UI
+  updateLabels(t);
+  updateProgress(t);
+  updateDoorTitle(t);
+
+  renderer.render(scene, camera);
 }
 
 // Controls
@@ -1140,12 +985,17 @@ document.addEventListener('keydown', (e) => {
   if (e.code === 'KeyR') { elapsed = 0; isPlaying = false; }
 });
 
-document.getElementById('scene').addEventListener('click', () => {
+container.addEventListener('click', () => {
   if (!isPlaying && elapsed === 0) isPlaying = true;
 });
 
-// Start
-requestAnimationFrame(loop);
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
 setTimeout(() => { isPlaying = true; }, 1200);
 </script>
 </body>
