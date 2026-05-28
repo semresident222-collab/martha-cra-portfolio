@@ -5,608 +5,671 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Door 1 — Aduhelm | Martha Wuya Koroma</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1520;overflow:hidden;font-family:'IBM Plex Mono',monospace}
+canvas{position:fixed;top:0;left:0;z-index:1}
 
-  :root {
-    --navy: #0d1520;
-    --blue-cold: #4a7a96;
-    --blue-bright: #6db3d4;
-    --copper: #b87b4f;
-    --cream: #e8ddd0;
-    --white: #f4f0ea;
-    --muted: rgba(232,221,208,0.4);
-    --crack: #6db3d4;
-    --beam: #b87b4f;
-    --danger: rgba(109,179,212,0.15);
-  }
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:.8rem 2rem;display:flex;justify-content:space-between;align-items:center;
+  background:rgba(13,21,32,.92);border-bottom:1px solid rgba(74,122,150,.12)
+}
+#nav a{color:#4a7a96;font-size:.6rem;letter-spacing:.15em;text-decoration:none;text-transform:uppercase;transition:color .2s}
+#nav a:hover{color:#e8ddd0}
+.nav-title{font-size:.55rem;color:rgba(232,221,208,.28);letter-spacing:.2em;text-transform:uppercase}
+.nav-pdf{border:1px solid rgba(74,122,150,.22);padding:.28rem .75rem}
 
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--navy);
-    font-family: 'IBM Plex Mono', monospace;
-  }
+#panel-left{
+  position:fixed;left:1.2rem;top:52px;bottom:40px;z-index:50;
+  display:flex;flex-direction:column;justify-content:center;gap:.55rem;
+  width:190px;pointer-events:none
+}
+.fl{opacity:0;transform:translateX(-14px);transition:opacity .7s ease,transform .7s ease}
+.fl.show{opacity:1;transform:translateX(0)}
+.fl-num{font-size:.5rem;color:#6db3d4;letter-spacing:.18em;text-transform:uppercase;display:block}
+.fl-name{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;color:#e8ddd0;display:block;line-height:1.2}
+.fl-sub{font-size:.52rem;color:rgba(232,221,208,.38);line-height:1.4;display:block;margin-top:.1rem}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 1rem 2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(13,21,32,0.9);
-    border-bottom: 1px solid rgba(74,122,150,0.15);
-  }
-  nav a { color: var(--blue-cold); font-size: 0.65rem; letter-spacing: 0.15em; text-decoration: none; text-transform: uppercase; }
-  nav a:hover { color: var(--cream); }
-  .nav-center { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
-  .nav-pdf {
-    border: 1px solid rgba(74,122,150,0.3);
-    padding: 0.35rem 0.9rem;
-    transition: all 0.2s;
-  }
-  .nav-pdf:hover { background: rgba(74,122,150,0.1); border-color: var(--blue-cold); }
+#panel-right{
+  position:fixed;right:1.2rem;top:52px;bottom:40px;z-index:50;
+  display:flex;flex-direction:column;justify-content:center;gap:.8rem;
+  width:210px;text-align:right;pointer-events:none
+}
+.bm{opacity:0;transform:translateX(14px);transition:opacity .7s ease,transform .7s ease}
+.bm.show{opacity:1;transform:translateX(0)}
+.bm-tag{font-size:.5rem;color:#b87b4f;letter-spacing:.18em;text-transform:uppercase;display:block}
+.bm-name{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;color:#e8ddd0;display:block;line-height:1.2}
+.bm-sub{font-size:.52rem;color:rgba(232,221,208,.38);line-height:1.4;display:block;margin-top:.1rem}
 
-  /* MAIN STAGE */
-  .stage {
-    position: fixed; inset: 0;
-    padding-top: 52px;
-    display: grid;
-    grid-template-columns: 1fr 420px 1fr;
-    grid-template-rows: auto 1fr auto;
-    gap: 0;
-  }
+#anchor{
+  position:fixed;bottom:2.8rem;left:50%;transform:translateX(-50%);
+  text-align:center;pointer-events:none;z-index:50;
+  opacity:0;transition:opacity 1.8s ease;white-space:nowrap
+}
+#anchor.show{opacity:1}
+#anchor p{
+  font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;
+  color:#e8ddd0;letter-spacing:.02em
+}
 
-  /* LEFT PANEL — collapse narrative */
-  .panel-left {
-    grid-column: 1; grid-row: 2;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 2rem 1.5rem 2rem 2.5rem;
-    gap: 0.8rem;
-  }
+#statusbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  padding:.42rem 2rem;display:flex;justify-content:space-between;align-items:center;
+  background:rgba(13,21,32,.75);border-top:1px solid rgba(74,122,150,.08)
+}
+#status-msg{font-size:.55rem;color:rgba(232,221,208,.32);letter-spacing:.07em;transition:color .6s}
+#status-msg.critical{color:#6db3d4}
+#status-msg.stable{color:#b87b4f}
+.reg-txt{font-size:.5rem;color:rgba(232,221,208,.18);letter-spacing:.05em}
 
-  .crack-label {
-    display: flex; flex-direction: column; gap: 0.2rem;
-    opacity: 0;
-    transform: translateX(-12px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .crack-label.visible { opacity: 1; transform: translateX(0); }
-  .crack-num { font-size: 0.55rem; color: var(--blue-cold); letter-spacing: 0.2em; text-transform: uppercase; }
-  .crack-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600; color: var(--white); }
-  .crack-sub { font-size: 0.6rem; color: var(--muted); line-height: 1.5; }
-
-  /* RIGHT PANEL — intervention narrative */
-  .panel-right {
-    grid-column: 3; grid-row: 2;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 2rem 2.5rem 2rem 1.5rem;
-    gap: 1.2rem;
-  }
-
-  .beam-label {
-    display: flex; flex-direction: column; gap: 0.2rem;
-    opacity: 0;
-    transform: translateX(12px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .beam-label.visible { opacity: 1; transform: translateX(0); }
-  .beam-tag { font-size: 0.55rem; color: var(--copper); letter-spacing: 0.2em; text-transform: uppercase; }
-  .beam-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600; color: var(--white); }
-  .beam-sub { font-size: 0.6rem; color: var(--muted); line-height: 1.5; }
-
-  /* BOTTOM — status */
-  .status-bar {
-    grid-column: 1 / -1; grid-row: 3;
-    padding: 0.6rem 2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid rgba(74,122,150,0.1);
-  }
-  .status-text {
-    font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em;
-    transition: color 0.8s ease;
-  }
-  .status-text.critical { color: var(--blue-bright); }
-  .status-text.stable { color: var(--copper); }
-  .reg-anchors { font-size: 0.55rem; color: rgba(232,221,208,0.25); letter-spacing: 0.08em; }
-
-  /* SVG CANVAS */
-  .building-wrap {
-    grid-column: 2; grid-row: 1 / -1;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-
-  #building-svg {
-    width: 100%;
-    max-width: 420px;
-    height: calc(100vh - 52px);
-    overflow: visible;
-  }
-
-  /* SVG element classes */
-  .bldg-outline { fill: none; stroke: rgba(232,221,208,0.12); stroke-width: 1.5; }
-  .bldg-face { fill: rgba(74,122,150,0.06); stroke: rgba(74,122,150,0.12); stroke-width: 0.5; }
-  .window { fill: rgba(74,122,150,0.08); stroke: rgba(74,122,150,0.2); stroke-width: 0.5; }
-  .window.lit { fill: rgba(109,179,212,0.15); stroke: rgba(109,179,212,0.4); }
-  .floor-div { stroke: rgba(232,221,208,0.08); stroke-width: 0.5; }
-  .vert-div { stroke: rgba(232,221,208,0.06); stroke-width: 0.5; }
-  .roof-line { stroke: rgba(232,221,208,0.2); stroke-width: 1.5; fill: none; }
-
-  /* Cracks — hidden by default */
-  .crack {
-    fill: none; stroke: var(--crack);
-    stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;
-    opacity: 0;
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-    transition: opacity 0.3s ease;
-    filter: drop-shadow(0 0 3px rgba(109,179,212,0.5));
-  }
-  .crack.draw {
-    opacity: 1;
-    animation: drawCrack 1.2s ease forwards;
-  }
-  @keyframes drawCrack {
-    to { stroke-dashoffset: 0; }
-  }
-
-  /* Foundation crack — more dramatic */
-  .foundation-crack {
-    fill: none; stroke: var(--crack);
-    stroke-width: 1.5; stroke-linecap: round;
-    opacity: 0;
-    stroke-dasharray: 300; stroke-dashoffset: 300;
-    filter: drop-shadow(0 0 5px rgba(109,179,212,0.7));
-    transition: opacity 0.3s ease;
-  }
-  .foundation-crack.draw {
-    opacity: 1;
-    animation: drawCrack 2s ease forwards;
-  }
-
-  /* Floor danger flash */
-  .floor-zone {
-    fill: transparent;
-    transition: fill 1s ease;
-  }
-  .floor-zone.danger { fill: var(--danger); }
-
-  /* Lean — whole building tilts slightly */
-  .building-group {
-    transform-origin: 200px 600px;
-    transition: transform 4s ease;
-  }
-  .building-group.leaning { transform: rotate(1.2deg); }
-
-  /* Retrofit beams */
-  .beam-h, .beam-v {
-    stroke: var(--beam); stroke-width: 2.5; stroke-linecap: square;
-    fill: none;
-    opacity: 0;
-    stroke-dasharray: 300; stroke-dashoffset: 300;
-    filter: drop-shadow(0 0 4px rgba(184,123,79,0.6));
-  }
-  .beam-h.draw, .beam-v.draw {
-    opacity: 1;
-    animation: drawBeam 1.5s ease forwards;
-  }
-  @keyframes drawBeam {
-    to { stroke-dashoffset: 0; }
-  }
-
-  /* Foundation block */
-  .foundation { fill: rgba(13,21,32,0.8); stroke: rgba(74,122,150,0.25); stroke-width: 1; }
-  .foundation-text { font-family: 'IBM Plex Mono', monospace; font-size: 8px; fill: var(--muted); }
-
-  /* Floor label in SVG */
-  .floor-tag { font-family: 'IBM Plex Mono', monospace; font-size: 7px; fill: rgba(232,221,208,0.35); letter-spacing: 0.1em; }
-
-  /* STABILISED glow when intervention complete */
-  .stabilised-glow {
-    fill: none; stroke: var(--beam);
-    stroke-width: 1; opacity: 0;
-    transition: opacity 2s ease;
-  }
-  .stabilised-glow.visible { opacity: 0.3; filter: blur(6px); }
-
+#hint{
+  position:fixed;bottom:2rem;right:1.5rem;z-index:50;
+  font-size:.48rem;color:rgba(232,221,208,.12);letter-spacing:.1em;text-transform:uppercase
+}
 </style>
 </head>
 <body>
 
-<nav>
+<div id="nav">
   <a href="index.html">← Lobby</a>
-  <span class="nav-center">Door 01 — Aduhelm — Governance Autopsy</span>
+  <span class="nav-title">Door 01 — Aduhelm — Governance Autopsy</span>
   <a href="assets/door-1/ADUHELM-CRA-Portfolio.pdf" class="nav-pdf" download>PDF ↓</a>
-</nav>
-
-<div class="stage">
-
-  <!-- LEFT: Collapse narrative -->
-  <div class="panel-left">
-    <div class="crack-label" id="lbl-foundation">
-      <span class="crack-num">Foundation</span>
-      <span class="crack-title">Independence became optional</span>
-      <span class="crack-sub">115 FDA–Biogen meetings. 66 unrecorded.</span>
-    </div>
-    <div class="crack-label" id="lbl-f1">
-      <span class="crack-num">Floor 01</span>
-      <span class="crack-title">Post-Hoc Salvage</span>
-      <span class="crack-sub">Sponsor reversed DMC futility. No independent audit.</span>
-    </div>
-    <div class="crack-label" id="lbl-f2">
-      <span class="crack-num">Floor 02</span>
-      <span class="crack-title">Firewall Collapse</span>
-      <span class="crack-sub">FDA drafted joint briefing documents with Biogen.</span>
-    </div>
-    <div class="crack-label" id="lbl-f3">
-      <span class="crack-num">Floor 03</span>
-      <span class="crack-title">Committee Bypass</span>
-      <span class="crack-sub">Advisory vote: 10 against, 0 for. Approved anyway.</span>
-    </div>
-    <div class="crack-label" id="lbl-f4">
-      <span class="crack-num">Floor 04</span>
-      <span class="crack-title">Surrogate Substitution</span>
-      <span class="crack-sub">Clinical endpoint failed. Amyloid proxy substituted.</span>
-    </div>
-    <div class="crack-label" id="lbl-f5">
-      <span class="crack-num">Floor 05</span>
-      <span class="crack-title">External Correction</span>
-      <span class="crack-sub">3 resignations. Congressional inquiry. EU withdrawal.</span>
-    </div>
-  </div>
-
-  <!-- CENTRE: Building SVG -->
-  <div class="building-wrap">
-    <svg id="building-svg" viewBox="0 0 400 680" xmlns="http://www.w3.org/2000/svg">
-
-      <!-- BUILDING GROUP (will lean) -->
-      <g class="building-group" id="bldg-group">
-
-        <!-- Roof detail -->
-        <path class="roof-line" d="M 120 80 L 200 50 L 280 80" />
-        <line x1="200" y1="50" x2="200" y2="80" stroke="rgba(232,221,208,0.12)" stroke-width="1"/>
-
-        <!-- Main building outline -->
-        <rect class="bldg-outline" x="120" y="80" width="160" height="480" />
-
-        <!-- Building face fill -->
-        <rect class="bldg-face" x="121" y="81" width="158" height="478" />
-
-        <!-- Floor zones (for danger flash) -->
-        <rect class="floor-zone" id="zone-f1" x="121" y="465" width="158" height="95" />
-        <rect class="floor-zone" id="zone-f2" x="121" y="369" width="158" height="96" />
-        <rect class="floor-zone" id="zone-f3" x="121" y="273" width="158" height="96" />
-        <rect class="floor-zone" id="zone-f4" x="121" y="177" width="158" height="96" />
-        <rect class="floor-zone" id="zone-f5" x="121" y="81" width="158" height="96" />
-
-        <!-- Floor divisions -->
-        <line class="floor-div" x1="120" y1="177" x2="280" y2="177" />
-        <line class="floor-div" x1="120" y1="273" x2="280" y2="273" />
-        <line class="floor-div" x1="120" y1="369" x2="280" y2="369" />
-        <line class="floor-div" x1="120" y1="465" x2="280" y2="465" />
-
-        <!-- Vertical divisions -->
-        <line class="vert-div" x1="168" y1="80" x2="168" y2="560" />
-        <line class="vert-div" x1="216" y1="80" x2="216" y2="560" />
-        <line class="vert-div" x1="232" y1="80" x2="232" y2="560" />
-
-        <!-- Windows — Floor 5 -->
-        <rect class="window" x="130" y="95" width="28" height="18" rx="1"/>
-        <rect class="window" x="170" y="95" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="95" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="95" width="28" height="18" rx="1"/>
-        <rect class="window" id="w5a" x="130" y="120" width="28" height="18" rx="1"/>
-        <rect class="window" id="w5b" x="170" y="120" width="28" height="18" rx="1"/>
-        <rect class="window" id="w5c" x="222" y="120" width="28" height="18" rx="1"/>
-        <rect class="window" id="w5d" x="242" y="120" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="148" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="148" width="28" height="18" rx="1"/>
-
-        <!-- Windows — Floor 4 -->
-        <rect class="window" x="130" y="191" width="28" height="18" rx="1"/>
-        <rect class="window" id="w4a" x="170" y="191" width="28" height="18" rx="1"/>
-        <rect class="window" id="w4b" x="222" y="191" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="191" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="220" width="28" height="18" rx="1"/>
-        <rect class="window" id="w4c" x="170" y="220" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="220" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="220" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="248" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="248" width="28" height="18" rx="1"/>
-
-        <!-- Windows — Floor 3 -->
-        <rect class="window" id="w3a" x="130" y="287" width="28" height="18" rx="1"/>
-        <rect class="window" x="170" y="287" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="287" width="28" height="18" rx="1"/>
-        <rect class="window" id="w3b" x="242" y="287" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="316" width="28" height="18" rx="1"/>
-        <rect class="window" id="w3c" x="170" y="316" width="28" height="18" rx="1"/>
-        <rect class="window" id="w3d" x="222" y="316" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="316" width="28" height="18" rx="1"/>
-        <rect class="window" x="170" y="344" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="344" width="28" height="18" rx="1"/>
-
-        <!-- Windows — Floor 2 -->
-        <rect class="window" x="130" y="383" width="28" height="18" rx="1"/>
-        <rect class="window" id="w2a" x="170" y="383" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="383" width="28" height="18" rx="1"/>
-        <rect class="window" id="w2b" x="242" y="383" width="28" height="18" rx="1"/>
-        <rect class="window" id="w2c" x="130" y="412" width="28" height="18" rx="1"/>
-        <rect class="window" x="170" y="412" width="28" height="18" rx="1"/>
-        <rect class="window" id="w2d" x="222" y="412" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="412" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="440" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="440" width="28" height="18" rx="1"/>
-
-        <!-- Windows — Floor 1 -->
-        <rect class="window" id="w1a" x="130" y="479" width="28" height="18" rx="1"/>
-        <rect class="window" x="170" y="479" width="28" height="18" rx="1"/>
-        <rect class="window" id="w1b" x="222" y="479" width="28" height="18" rx="1"/>
-        <rect class="window" x="242" y="479" width="28" height="18" rx="1"/>
-        <rect class="window" x="130" y="508" width="28" height="18" rx="1"/>
-        <rect class="window" id="w1c" x="170" y="508" width="28" height="18" rx="1"/>
-        <rect class="window" x="222" y="508" width="28" height="18" rx="1"/>
-        <rect class="window" id="w1d" x="242" y="508" width="28" height="18" rx="1"/>
-
-        <!-- Floor labels -->
-        <text class="floor-tag" x="126" y="174">FLOOR 01</text>
-        <text class="floor-tag" x="126" y="270">FLOOR 02</text>
-        <text class="floor-tag" x="126" y="366">FLOOR 03</text>
-        <text class="floor-tag" x="126" y="462">FLOOR 04</text>
-
-        <!-- CRACKS — foundation level -->
-        <path class="foundation-crack" id="crack-base"
-          d="M 185 560 L 178 545 L 188 528 L 176 510 L 182 490 L 172 472 L 180 455"/>
-        <path class="foundation-crack" id="crack-base2"
-          d="M 225 560 L 232 542 L 222 525 L 235 505 L 228 488 L 238 470 L 229 455"/>
-
-        <!-- CRACKS — floor 1 -->
-        <path class="crack" id="crack-f1a"
-          d="M 180 455 L 174 435 L 182 418 L 170 400 L 176 382 L 168 369"/>
-        <path class="crack" id="crack-f1b"
-          d="M 229 455 L 236 438 L 226 420 L 234 402 L 226 383 L 232 369"/>
-
-        <!-- CRACKS — floor 2 -->
-        <path class="crack" id="crack-f2a"
-          d="M 168 369 L 174 350 L 164 332 L 172 314 L 165 298 L 170 273"/>
-        <path class="crack" id="crack-f2b"
-          d="M 232 369 L 226 351 L 234 333 L 226 315 L 233 298 L 228 273"/>
-
-        <!-- CRACKS — floor 3 -->
-        <path class="crack" id="crack-f3a"
-          d="M 170 273 L 164 256 L 172 238 L 163 221 L 170 204 L 165 177"/>
-        <path class="crack" id="crack-f3b"
-          d="M 228 273 L 234 255 L 226 237 L 233 220 L 227 203 L 232 177"/>
-
-        <!-- CRACKS — floor 4 -->
-        <path class="crack" id="crack-f4a"
-          d="M 165 177 L 170 158 L 162 140 L 168 122 L 160 105 L 165 81"/>
-        <path class="crack" id="crack-f4b"
-          d="M 232 177 L 228 159 L 234 141 L 228 123 L 234 106 L 230 81"/>
-
-        <!-- INTERVENTION BEAMS — A: DMC Governance Lock -->
-        <!-- Horizontal cross-brace -->
-        <line class="beam-h" id="beam-a1" x1="60" y1="320" x2="200" y2="320"/>
-        <line class="beam-v" id="beam-a2" x1="60" y1="200" x2="60" y2="560"/>
-        <line class="beam-h" id="beam-a3" x1="60" y1="200" x2="150" y2="200"/>
-        <!-- Diagonal brace -->
-        <line class="beam-v" id="beam-a4" x1="60" y1="320" x2="120" y2="500"/>
-
-        <!-- INTERVENTION BEAMS — B: Audit Trail -->
-        <line class="beam-h" id="beam-b1" x1="200" y1="260" x2="340" y2="260"/>
-        <line class="beam-v" id="beam-b2" x1="340" y1="160" x2="340" y2="520"/>
-        <line class="beam-h" id="beam-b3" x1="250" y1="160" x2="340" y2="160"/>
-        <line class="beam-v" id="beam-b4" x1="280" y1="260" x2="340" y2="420"/>
-
-        <!-- Stabilised glow overlay -->
-        <rect class="stabilised-glow" id="stable-glow" x="60" y="50" width="280" height="530" rx="2"/>
-
-      </g>
-
-      <!-- FOUNDATION BLOCK (outside leaning group) -->
-      <rect class="foundation" x="100" y="558" width="200" height="60" rx="2"/>
-      <text class="foundation-text" x="200" y="578" text-anchor="middle" fill="rgba(109,179,212,0.5)" font-size="7" letter-spacing="0.15em">FOUNDATION</text>
-      <text class="foundation-text" x="200" y="596" text-anchor="middle" fill="rgba(232,221,208,0.5)" font-size="8" font-family="Cormorant Garamond, serif" font-style="italic" font-weight="600">Independence became optional</text>
-
-      <!-- Foundation cracks below building -->
-      <path class="foundation-crack" id="crack-fd1"
-        d="M 160 558 L 155 570 L 148 580 L 152 595 L 145 610"/>
-      <path class="foundation-crack" id="crack-fd2"
-        d="M 240 558 L 245 571 L 252 582 L 248 597 L 255 612"/>
-
-      <!-- Beam labels (outside building group, won't lean) -->
-      <text id="beam-label-a" font-family="IBM Plex Mono, monospace" font-size="7" fill="rgba(184,123,79,0)" letter-spacing="0.1em"
-        x="30" y="186" text-anchor="start"
-        style="transition: fill 0.8s ease; text-transform: uppercase;">DMC LOCK</text>
-      <text id="beam-label-b" font-family="IBM Plex Mono, monospace" font-size="7" fill="rgba(184,123,79,0)" letter-spacing="0.1em"
-        x="345" y="246" text-anchor="start"
-        style="transition: fill 0.8s ease; text-transform: uppercase;">AUDIT TRAIL</text>
-
-    </svg>
-  </div>
-
-  <!-- RIGHT: Intervention narrative -->
-  <div class="panel-right">
-    <div class="beam-label" id="lbl-intA">
-      <span class="beam-tag">Intervention A</span>
-      <span class="beam-title">DMC Governance Lock</span>
-      <span class="beam-sub">Futility binding. Analytical error claims require independent biostatistical audit. DMC reconvenes within 30 days.</span>
-      <span class="beam-sub" style="margin-top:0.3rem; color: rgba(184,123,79,0.5);">ICH E6(R2) §5.19 · ICH E9</span>
-    </div>
-    <div class="beam-label" id="lbl-intB">
-      <span class="beam-tag">Intervention B</span>
-      <span class="beam-title">Interaction Audit Trail</span>
-      <span class="beam-sub">Every FDA–sponsor interaction logged. Paragraph-level authorship on all briefing documents. Committee sees full log 14 days before vote.</span>
-      <span class="beam-sub" style="margin-top:0.3rem; color: rgba(184,123,79,0.5);">ICH E6(R2) §5.18 · FDA Formal Meetings Guidance</span>
-    </div>
-    <div class="beam-label" id="lbl-ieiu" style="margin-top: 0.4rem; padding-top: 0.8rem; border-top: 1px solid rgba(184,123,79,0.2);">
-      <span class="beam-tag">Governance Body</span>
-      <span class="beam-title">Independent Evidence Integrity Unit</span>
-      <span class="beam-sub">Firewalled from sponsor, regulator, and DMC. Protects the conditions under which truth can be evaluated without institutional momentum replacing it.</span>
-    </div>
-  </div>
-
-  <!-- BOTTOM STATUS -->
-  <div class="status-bar">
-    <span class="status-text" id="status-msg">Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</span>
-    <span class="reg-anchors">ICH E6(R2) · ICH E9 · ICH E9(R1) · FDA Adaptive Design Guidance · 21 CFR 312.32</span>
-  </div>
-
 </div>
 
+<div id="panel-left">
+  <div class="fl" id="lbl-fd">
+    <span class="fl-num">Foundation</span>
+    <span class="fl-name">Independence became optional</span>
+    <span class="fl-sub">115 meetings. 66 unrecorded.</span>
+  </div>
+  <div class="fl" id="lbl-f1">
+    <span class="fl-num">Floor 01</span>
+    <span class="fl-name">Post-Hoc Salvage</span>
+    <span class="fl-sub">DMC overridden. No independent audit.</span>
+  </div>
+  <div class="fl" id="lbl-f2">
+    <span class="fl-num">Floor 02</span>
+    <span class="fl-name">Firewall Collapse</span>
+    <span class="fl-sub">FDA drafted Biogen's briefing documents.</span>
+  </div>
+  <div class="fl" id="lbl-f3">
+    <span class="fl-num">Floor 03</span>
+    <span class="fl-name">Committee Bypass</span>
+    <span class="fl-sub">10 against. 0 for. Approved anyway.</span>
+  </div>
+  <div class="fl" id="lbl-f4">
+    <span class="fl-num">Floor 04</span>
+    <span class="fl-name">Surrogate Substitution</span>
+    <span class="fl-sub">Clinical endpoint failed. Proxy substituted.</span>
+  </div>
+  <div class="fl" id="lbl-f5">
+    <span class="fl-num">Floor 05</span>
+    <span class="fl-name">External Correction</span>
+    <span class="fl-sub">3 resignations. Congress. EU withdrawal.</span>
+  </div>
+</div>
+
+<div id="panel-right">
+  <div class="bm" id="lbl-ia">
+    <span class="bm-tag">Intervention A</span>
+    <span class="bm-name">DMC Governance Lock</span>
+    <span class="bm-sub">Futility binding. Independent audit mandatory.<br>ICH E6(R2) §5.19 · ICH E9</span>
+  </div>
+  <div class="bm" id="lbl-ib">
+    <span class="bm-tag">Intervention B</span>
+    <span class="bm-name">Interaction Audit Trail</span>
+    <span class="bm-sub">Every meeting logged. Full record before committee votes.<br>ICH E6(R2) §5.18</span>
+  </div>
+  <div class="bm" id="lbl-ieiu" style="padding-top:.6rem;border-top:1px solid rgba(184,123,79,.18);margin-top:.2rem">
+    <span class="bm-tag">Governance Body</span>
+    <span class="bm-name">IEIU</span>
+    <span class="bm-sub">Firewalled. Independent. Cannot be overridden by institutional momentum.</span>
+  </div>
+</div>
+
+<div id="anchor">
+  <p>"The instinct to look underneath is what I am building a career on."</p>
+</div>
+
+<div id="statusbar">
+  <span id="status-msg">Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021</span>
+  <span class="reg-txt">ICH E6(R2) · ICH E9 · ICH E9(R1) · FDA Adaptive Design Guidance · 21 CFR 312.32</span>
+</div>
+
+<div id="hint">Space to pause</div>
+
 <script>
-// Animation timeline — keyed to ~5 min pitch
-// Each step: delay in ms, action function
+// ── SCENE SETUP ──────────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1520);
+scene.fog = new THREE.FogExp2(0x0d1520, 0.025);
 
-function show(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('visible');
+const W = window.innerWidth, H = window.innerHeight;
+const camera = new THREE.PerspectiveCamera(42, W/H, 0.1, 300);
+camera.position.set(9, 5, 24);
+camera.lookAt(0, 5, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ── LIGHTS ───────────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x1a2a3a, 2.0));
+const sun = new THREE.DirectionalLight(0x4a6a8a, 1.0);
+sun.position.set(12, 20, 12);
+sun.castShadow = true;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x1a3040, 0.5);
+fill.position.set(-10, 6, -8);
+scene.add(fill);
+
+// Ground
+const gnd = new THREE.Mesh(
+  new THREE.PlaneGeometry(120, 120),
+  new THREE.MeshPhongMaterial({ color: 0x080e16, shininess: 30, specular: 0x1a2a3a })
+);
+gnd.rotation.x = -Math.PI/2;
+gnd.position.y = -1.2;
+gnd.receiveShadow = true;
+scene.add(gnd);
+
+const grid = new THREE.GridHelper(80, 60, 0x0f1a24, 0x0b1520);
+grid.position.y = -1.18;
+scene.add(grid);
+
+// ── BUILDING ─────────────────────────────────────────────────────────────────
+const bW=4, bD=2, flH=2, nF=5, bH=flH*nF;
+const bldg = new THREE.Group();
+scene.add(bldg);
+
+// Foundation block
+const fndMesh = new THREE.Mesh(
+  new THREE.BoxGeometry(bW+.7, 1.4, bD+.7),
+  new THREE.MeshPhongMaterial({ color: 0x0e1a28, shininess: 20, emissive: 0x0a1420, emissiveIntensity: .6 })
+);
+fndMesh.position.set(0, -.7, 0);
+fndMesh.castShadow = true;
+bldg.add(fndMesh);
+const fndEdge = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW+.7, 1.4, bD+.7)),
+  new THREE.LineBasicMaterial({ color: 0x4a7a96, opacity:.35, transparent:true })
+);
+fndEdge.position.copy(fndMesh.position);
+bldg.add(fndEdge);
+
+// Foundation text label in 3D (via canvas texture)
+function makeTextSprite(text, size, col) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.font = `${size}px IBM Plex Mono, monospace`;
+  ctx.fillStyle = col;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, 256, 44);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(3.2, 0.4, 1);
+  return sprite;
+}
+const fdLabel = makeTextSprite('FOUNDATION — Independence became optional', 22, 'rgba(109,179,212,0.55)');
+fdLabel.position.set(0, -.7, bD/2+.5);
+fdLabel.visible = false;
+bldg.add(fdLabel);
+
+// Glass curtain wall
+const glassMat = new THREE.MeshPhongMaterial({
+  color: 0x2a4a62, transparent: true, opacity: .16,
+  side: THREE.DoubleSide, shininess: 120, specular: 0x4a8ab0
+});
+const glassMesh = new THREE.Mesh(new THREE.BoxGeometry(bW, bH, bD), glassMat);
+glassMesh.position.set(0, bH/2, 0);
+bldg.add(glassMesh);
+
+// Structural frame edges
+const frameEdge = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW, bH, bD)),
+  new THREE.LineBasicMaterial({ color: 0x6db3d4, opacity: .4, transparent: true })
+);
+frameEdge.position.set(0, bH/2, 0);
+bldg.add(frameEdge);
+
+// Floor slabs
+const slabGeo = new THREE.BoxGeometry(bW+.12, .07, bD+.12);
+const slabMat = new THREE.MeshPhongMaterial({ color:0x3a5a72, emissive:0x1a3040, emissiveIntensity:.3 });
+for (let i=1; i<nF; i++) {
+  const s = new THREE.Mesh(slabGeo, slabMat);
+  s.position.set(0, i*flH, 0);
+  bldg.add(s);
 }
 
-function drawSVG(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('draw');
+// Columns — 4 front + 4 back
+const colGeo = new THREE.BoxGeometry(.1, bH, .1);
+const colMat = new THREE.MeshPhongMaterial({ color:0x3a5a72, emissive:0x1a2a38, emissiveIntensity:.2 });
+[-1.8, -.6, .6, 1.8].forEach(x => {
+  [bD/2, -bD/2].forEach(z => {
+    const c = new THREE.Mesh(colGeo, colMat);
+    c.position.set(x, bH/2, z);
+    bldg.add(c);
+  });
+});
+
+// Roof
+const roofMesh = new THREE.Mesh(
+  new THREE.BoxGeometry(bW+.2, .18, bD+.2),
+  new THREE.MeshPhongMaterial({ color:0x1e3045, emissive:0x1a2a3a, emissiveIntensity:.5, shininess:60 })
+);
+roofMesh.position.set(0, bH+.09, 0);
+bldg.add(roofMesh);
+const roofEdge = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(bW+.2, .18, bD+.2)),
+  new THREE.LineBasicMaterial({ color:0x6db3d4, opacity:.55, transparent:true })
+);
+roofEdge.position.copy(roofMesh.position);
+bldg.add(roofEdge);
+
+// ── WINDOWS ──────────────────────────────────────────────────────────────────
+const winGeo = new THREE.PlaneGeometry(.3, .24);
+const wins = [];
+const winsByFloor = [[],[],[],[],[]];
+
+function addWin(x, y, z, rotY, floor) {
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0x4a8fb5, transparent: true, opacity: .75, side: THREE.FrontSide
+  });
+  const m = new THREE.Mesh(winGeo, mat);
+  m.position.set(x, y, z);
+  if (rotY) m.rotation.y = rotY;
+  bldg.add(m);
+  const w = {
+    mesh: m, floor, off: false, meeting: false, elev: false,
+    flickerPhase: Math.random()*Math.PI*2,
+    flickerSpeed: .4 + Math.random()*1.8
+  };
+  wins.push(w);
+  if (floor>=0 && floor<5) winsByFloor[floor].push(w);
+  return w;
 }
 
-function danger(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('danger');
-}
+const fZ = bD/2+.012, bkZ = -(bD/2+.012);
+const xCols = [-1.65, -.55, .55, 1.65];
+const yRows = [.32, .82, 1.32];
 
-function litWindow(...ids) {
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('lit');
+for (let fl=0; fl<nF; fl++) {
+  const fb = fl*flH;
+  xCols.forEach(x => {
+    yRows.forEach(yr => {
+      addWin(x, fb+yr, fZ, 0, fl);
+      if (Math.random()>.35) addWin(x, fb+yr, bkZ, Math.PI, fl);
+    });
+  });
+  // Side windows
+  [-.6, .6].forEach(z => {
+    [.55, 1.05].forEach(yr => {
+      addWin(-bW/2-.012, fb+yr, z, -Math.PI/2, fl);
+      addWin( bW/2+.012, fb+yr, z,  Math.PI/2, fl);
+    });
   });
 }
 
-function dimWindow(...ids) {
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('lit');
-  });
+// Meeting room — floor 2, positive x, front face — warm amber
+winsByFloor[2].filter(w => w.mesh.position.x > 0 && w.mesh.position.z > 0)
+  .forEach(w => { w.meeting = true; });
+
+// Elevator shaft — rightmost x col, front face, all floors
+wins.filter(w => Math.abs(w.mesh.position.x-1.65)<.1 && w.mesh.position.z>0)
+  .forEach(w => { w.elev = true; });
+
+// ── ELEVATOR ─────────────────────────────────────────────────────────────────
+const elev = new THREE.Mesh(
+  new THREE.BoxGeometry(.14, .2, .06),
+  new THREE.MeshBasicMaterial({ color:0x8ac8e8, transparent:true, opacity:.9 })
+);
+elev.position.set(1.65, .4, fZ-.03);
+bldg.add(elev);
+
+// Shaft line
+const shaftPts = [
+  new THREE.Vector3(1.65, 0, fZ-.03),
+  new THREE.Vector3(1.65, bH, fZ-.03)
+];
+bldg.add(new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints(shaftPts),
+  new THREE.LineBasicMaterial({ color:0x1a4a62, opacity:.25, transparent:true })
+));
+
+// ── SILHOUETTES ──────────────────────────────────────────────────────────────
+const silGeo = new THREE.PlaneGeometry(.1, .18);
+const sils = [];
+[
+  [-1.65, 3.32, fZ+.01],
+  [-.55,  5.82, fZ+.01],
+  [.55,   1.82, fZ+.01],
+  [1.65,  7.32, fZ+.01]
+].forEach(([x,y,z]) => {
+  const m = new THREE.Mesh(silGeo, new THREE.MeshBasicMaterial({ color:0x0a1520, transparent:true, opacity:.85 }));
+  m.position.set(x, y, z);
+  bldg.add(m);
+  sils.push({ mesh:m, baseX:x, phase:Math.random()*Math.PI*2 });
+});
+
+// ── CRACKS ───────────────────────────────────────────────────────────────────
+const crackMat = new THREE.LineBasicMaterial({ color:0x6db3d4, transparent:true, opacity:.9 });
+
+function makeCrackFromPath(ptArr) {
+  const pts = ptArr.map(p => new THREE.Vector3(p[0], p[1], p[2]));
+  const line = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([pts[0]]),
+    crackMat.clone()
+  );
+  bldg.add(line);
+  return { line, pts, progress:0, active:false, speed:.018 };
 }
 
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  if (!el) return;
-  el.className = 'status-text' + (cls ? ' ' + cls : '');
-  el.textContent = msg;
-}
+const z0 = fZ+.005;
 
-function showBeamLabel(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.fill = 'rgba(184,123,79,0.7)';
-}
-
-const timeline = [
-  // 0:00 — Building stands quietly. Windows softly lit.
-  [200, () => {
-    litWindow('w5a','w5b','w5c','w5d','w4a','w4b','w4c','w3a','w3b','w3c','w3d','w2a','w2b','w2c','w2d','w1a','w1b','w1c','w1d');
-    setStatus('Biogen/Eisai · Anti-Amyloid mAb · Alzheimer's Disease · Phase III · Accelerated Approval June 2021');
-  }],
-
-  // 0:25 — Foundation crack appears
-  [7000, () => {
-    drawSVG('crack-fd1');
-    drawSVG('crack-fd2');
-    show('lbl-foundation');
-    setStatus('FOUNDATION FAILURE: Independence became optional', 'critical');
-  }],
-
-  // 0:45 — Crack enters building base
-  [12000, () => {
-    drawSVG('crack-base');
-    drawSVG('crack-base2');
-  }],
-
-  // 1:00 — Floor 1 compromised
-  [17000, () => {
-    drawSVG('crack-f1a');
-    drawSVG('crack-f1b');
-    danger('zone-f1');
-    show('lbl-f1');
-    dimWindow('w1a','w1b','w1c','w1d');
-    setStatus('FLOOR 01 COMPROMISED: Post-Hoc Salvage — DMC overridden without audit', 'critical');
-  }],
-
-  // 1:30 — Floor 2 compromised
-  [25000, () => {
-    drawSVG('crack-f2a');
-    drawSVG('crack-f2b');
-    danger('zone-f2');
-    show('lbl-f2');
-    dimWindow('w2a','w2b','w2c','w2d');
-    setStatus('FLOOR 02 COMPROMISED: Firewall Collapse — 66 unrecorded meetings', 'critical');
-  }],
-
-  // 2:00 — Floor 3 compromised
-  [33000, () => {
-    drawSVG('crack-f3a');
-    drawSVG('crack-f3b');
-    danger('zone-f3');
-    show('lbl-f3');
-    dimWindow('w3a','w3b','w3c','w3d');
-    setStatus('FLOOR 03 COMPROMISED: Committee Bypass — 10 against, 0 for, approved anyway', 'critical');
-  }],
-
-  // 2:30 — Floor 4 compromised + lean begins
-  [41000, () => {
-    drawSVG('crack-f4a');
-    drawSVG('crack-f4b');
-    danger('zone-f4');
-    show('lbl-f4');
-    dimWindow('w4a','w4b','w4c');
-    document.getElementById('bldg-group').classList.add('leaning');
-    setStatus('FLOOR 04 COMPROMISED: Surrogate Substitution — clinical endpoint abandoned', 'critical');
-  }],
-
-  // 3:00 — Floor 5 — external correction
-  [49000, () => {
-    danger('zone-f5');
-    show('lbl-f5');
-    dimWindow('w5a','w5b','w5c','w5d');
-    setStatus('FLOOR 05: External Correction — 3 resignations, congressional inquiry, EU withdrawal', 'critical');
-  }],
-
-  // 3:30 — Intervention A appears
-  [57000, () => {
-    drawSVG('beam-a1');
-    setTimeout(() => drawSVG('beam-a2'), 400);
-    setTimeout(() => drawSVG('beam-a3'), 800);
-    setTimeout(() => drawSVG('beam-a4'), 1200);
-    setTimeout(() => showBeamLabel('beam-label-a'), 1600);
-    show('lbl-intA');
-    setStatus('INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory', 'stable');
-  }],
-
-  // 4:15 — Intervention B appears
-  [68000, () => {
-    drawSVG('beam-b1');
-    setTimeout(() => drawSVG('beam-b2'), 400);
-    setTimeout(() => drawSVG('beam-b3'), 800);
-    setTimeout(() => drawSVG('beam-b4'), 1200);
-    setTimeout(() => showBeamLabel('beam-label-b'), 1600);
-    show('lbl-intB');
-    setStatus('INTERVENTION B: Audit Trail — every interaction logged, authorship attributed, committee informed', 'stable');
-  }],
-
-  // 4:45 — IEIU + building stabilises
-  [77000, () => {
-    show('lbl-ieiu');
-    document.getElementById('bldg-group').classList.remove('leaning');
-    document.getElementById('stable-glow').classList.add('visible');
-    // Re-light some windows — partial recovery
-    litWindow('w5a','w4b','w3c','w2a','w1d');
-    setStatus('STABILISED — not rebuilt, but structurally sound. The audit trail holds.', 'stable');
-  }],
+// Foundation cracks
+const CRACKS = [
+  makeCrackFromPath([[.1,-1.1,z0],[.0,-.65,z0],[-.12,-.2,z0],[.05,.12,z0]]),
+  makeCrackFromPath([[-.2,-1.0,z0],[-.08,-.55,z0],[-.22,-.18,z0],[-.08,.15,z0]]),
+  // Floor 1
+  makeCrackFromPath([[.05,.12,z0],[-.08,.62,z0],[.1,1.22,z0],[-.06,1.85,z0],[.0,2.08,z0]]),
+  makeCrackFromPath([[-.08,.15,z0],[-.22,.68,z0],[-.06,1.28,z0],[-.2,1.88,z0],[-.1,2.08,z0]]),
+  // Floor 2
+  makeCrackFromPath([[.0,2.08,z0],[.14,2.62,z0],[-.1,3.22,z0],[.08,3.85,z0],[.0,4.08,z0]]),
+  makeCrackFromPath([[-.1,2.08,z0],[-.24,2.68,z0],[-.08,3.28,z0],[-.2,3.88,z0],[-.1,4.08,z0]]),
+  // Floor 3
+  makeCrackFromPath([[.0,4.08,z0],[-.12,4.65,z0],[.1,5.25,z0],[-.06,5.85,z0],[.0,6.08,z0]]),
+  makeCrackFromPath([[-.1,4.08,z0],[-.22,4.7,z0],[-.06,5.3,z0],[-.18,5.9,z0],[-.08,6.08,z0]]),
+  // Floor 4
+  makeCrackFromPath([[.0,6.08,z0],[.12,6.65,z0],[-.1,7.25,z0],[.06,7.85,z0],[.0,8.08,z0]]),
+  makeCrackFromPath([[-.08,6.08,z0],[-.2,6.7,z0],[-.06,7.3,z0],[-.18,7.9,z0],[-.08,8.08,z0]]),
+  // Floor 5
+  makeCrackFromPath([[.0,8.08,z0],[-.1,8.65,z0],[.1,9.25,z0],[-.06,9.85,z0],[.0,10.05,z0]]),
+  makeCrackFromPath([[-.08,8.08,z0],[-.2,8.7,z0],[-.06,9.3,z0],[-.16,9.9,z0],[-.06,10.05,z0]])
 ];
 
-// Run timeline
-timeline.forEach(([delay, fn]) => {
-  setTimeout(fn, delay);
-});
-</script>
+function startCrack(c, spd) {
+  c.active = true; c.speed = spd||.018; c.progress = 0;
+}
 
+function updateCracks() {
+  CRACKS.forEach(c => {
+    if (!c.active) return;
+    c.progress = Math.min(1, c.progress + c.speed);
+    const n = c.pts.length;
+    const pi = c.progress*(n-1);
+    const fi = Math.floor(pi);
+    const fr = pi - fi;
+    const disp = [];
+    for (let i=0; i<=fi && i<n-1; i++) disp.push(c.pts[i]);
+    if (fi < n-1) {
+      const a=c.pts[fi], b=c.pts[fi+1];
+      disp.push(new THREE.Vector3(a.x+(b.x-a.x)*fr, a.y+(b.y-a.y)*fr, a.z+(b.z-a.z)*fr));
+    }
+    if (disp.length >= 2) {
+      c.line.geometry.dispose();
+      c.line.geometry = new THREE.BufferGeometry().setFromPoints(disp);
+    }
+    if (c.progress >= 1) c.active = false;
+  });
+}
+
+// ── COPPER BEAMS ─────────────────────────────────────────────────────────────
+const bMat = new THREE.MeshPhongMaterial({ color:0xb87b4f, emissive:0x8a5a30, emissiveIntensity:.5, shininess:70 });
+const BEAMS = [];
+
+function makeBeam(x,y,z,w,h,d) {
+  const geo = new THREE.BoxGeometry(w,h,d);
+  const mesh = new THREE.Mesh(geo, bMat.clone());
+  mesh.position.set(x,y,z);
+  mesh.scale.set(0,0,0);
+  bldg.add(mesh);
+  const eg = new THREE.LineSegments(new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({ color:0xd4a070, opacity:.65, transparent:true }));
+  mesh.add(eg);
+  const bd = { mesh, eg, cur:0, active:false, speed:.055 };
+  BEAMS.push(bd);
+  return bd;
+}
+
+// Left side — Intervention A
+makeBeam(-bW/2-.45, bH/2, 0, .18, bH, .18);        // vertical bar
+makeBeam(-bW/2-.45, bH*.28, 0, .35, .18, .18);      // cross low
+makeBeam(-bW/2-.45, bH*.72, 0, .35, .18, .18);      // cross high
+makeBeam(-bW/2-.22, bH*.5, 0, .12, bH*.65, .12);    // inner rib
+
+// Right side — Intervention B
+makeBeam(bW/2+.45, bH/2, 0, .18, bH, .18);
+makeBeam(bW/2+.45, bH*.22, 0, .35, .18, .18);
+makeBeam(bW/2+.45, bH*.68, 0, .35, .18, .18);
+makeBeam(bW/2+.22, bH*.5, 0, .12, bH*.55, .12);
+
+function activateBeams(from, to, spd) {
+  for (let i=from; i<to; i++) {
+    const b = BEAMS[i];
+    setTimeout(() => { b.active = true; b.speed = spd||.055; }, (i-from)*350);
+  }
+}
+
+function updateBeams() {
+  BEAMS.forEach(b => {
+    if (!b.active) return;
+    b.cur = Math.min(1, b.cur+b.speed);
+    b.mesh.scale.setScalar(b.cur);
+  });
+}
+
+// ── CAMERA SYSTEM ────────────────────────────────────────────────────────────
+const camKF = [
+  { pos:[9,5,24],  look:[0,5,0],  dur:6000  },   // 0 wide establishing
+  { pos:[3,.6,13], look:[0,.4,0], dur:5000  },   // 1 descend to foundation
+  { pos:[7,5,19],  look:[0,5,0],  dur:5000  },   // 2 pull back full view
+  { pos:[7,5,19],  look:[0,5,0],  dur:40000 },   // 3 hold — cracks propagate
+  { pos:[22,5,3],  look:[0,4,0],  dur:9000  },   // 4 side view — lean visible
+  { pos:[22,5,3],  look:[0,4,0],  dur:28000 },   // 5 hold side — interventions
+  { pos:[0,5,23],  look:[0,5,0],  dur:9000  },   // 6 return front
+  { pos:[0,5,23],  look:[0,5,0],  dur:99999 }    // 7 hold final
+];
+
+let camPhase=0, camPhaseT=0;
+const camCur  = { pos:new THREE.Vector3(9,5,24), look:new THREE.Vector3(0,5,0) };
+const camNext = { pos:new THREE.Vector3(), look:new THREE.Vector3() };
+
+function updateCamera(elapsed) {
+  const kf  = camKF[camPhase];
+  const nxt = camKF[Math.min(camPhase+1, camKF.length-1)];
+  const t   = Math.min(1, (elapsed-camPhaseT) / kf.dur);
+  const s   = t<.5 ? 2*t*t : -1+(4-2*t)*t;
+
+  camNext.pos.set(...nxt.pos); camNext.look.set(...nxt.look);
+  camCur.pos.set(...kf.pos);   camCur.look.set(...kf.look);
+
+  camera.position.lerpVectors(camCur.pos, camNext.pos, s);
+  const lk = new THREE.Vector3().lerpVectors(camCur.look, camNext.look, s);
+  camera.lookAt(lk);
+
+  if (t>=1 && camPhase<camKF.length-2) { camPhase++; camPhaseT=elapsed; }
+}
+
+// ── LEAN SYSTEM ──────────────────────────────────────────────────────────────
+let leanCur=0, leanTarget=0;
+function updateLean() {
+  leanCur += (leanTarget-leanCur)*.004;
+  bldg.rotation.z = leanCur;
+}
+
+// ── WINDOW LIFE ──────────────────────────────────────────────────────────────
+let elevY=.4, elevDir=1;
+
+function updateLife(t) {
+  // Elevator
+  elevY += elevDir*.007;
+  if (elevY > bH-.3) elevDir=-1;
+  if (elevY < .3) elevDir=1;
+  elev.position.y = elevY;
+
+  // Silhouettes sway subtly
+  sils.forEach(s => {
+    s.mesh.position.x = s.baseX + Math.sin(t*.28+s.phase)*.04;
+    s.mesh.position.y += Math.sin(t*.15+s.phase*.7)*.0008;
+  });
+
+  // Window flicker
+  wins.forEach(w => {
+    if (w.off) return;
+    if (w.meeting) {
+      const p = .5 + .5*Math.sin(t*.35+w.flickerPhase);
+      w.mesh.material.color.setRGB(.28+p*.2, .22+p*.12, .08+p*.04);
+      w.mesh.material.opacity = .55+p*.25;
+    } else if (w.elev) {
+      const near = Math.max(0, 1-Math.abs(w.mesh.position.y-elevY)/1.5);
+      w.mesh.material.opacity = .35+near*.5;
+    } else {
+      if (Math.random()<.0008) {
+        const orig = w.mesh.material.opacity;
+        w.mesh.material.opacity = .15+Math.random()*.25;
+        setTimeout(()=>{ if(!w.off) w.mesh.material.opacity=orig; }, 60+Math.random()*180);
+      }
+    }
+  });
+}
+
+// ── TIMELINE ─────────────────────────────────────────────────────────────────
+const triggered = new Set();
+const TL = [
+  { t:7000, fn:()=>{
+    startCrack(CRACKS[0],.012); startCrack(CRACKS[1],.010);
+    fdLabel.visible=true; show('lbl-fd');
+    setS('FOUNDATION: Independence became optional — 66 unrecorded FDA–Biogen meetings','critical');
+  }},
+  { t:14000, fn:()=>{
+    startCrack(CRACKS[2],.016); startCrack(CRACKS[3],.014);
+    show('lbl-f1'); dimFloor(0);
+    setS('FLOOR 01: Post-Hoc Salvage — DMC overridden. No independent audit.','critical');
+  }},
+  { t:24000, fn:()=>{
+    startCrack(CRACKS[4],.016); startCrack(CRACKS[5],.014);
+    show('lbl-f2'); dimFloor(1);
+    setS('FLOOR 02: Firewall Collapse — FDA drafted Biogen's own briefing documents','critical');
+  }},
+  { t:34000, fn:()=>{
+    startCrack(CRACKS[6],.016); startCrack(CRACKS[7],.014);
+    show('lbl-f3'); dimFloor(2);
+    setS('FLOOR 03: Committee Bypass — 10 against. 0 for. Approved anyway.','critical');
+  }},
+  { t:44000, fn:()=>{
+    startCrack(CRACKS[8],.016); startCrack(CRACKS[9],.014);
+    show('lbl-f4'); dimFloor(3); leanTarget=.022;
+    setS('FLOOR 04: Surrogate Substitution — clinical endpoint abandoned mid-trial','critical');
+  }},
+  { t:54000, fn:()=>{
+    startCrack(CRACKS[10],.016); startCrack(CRACKS[11],.014);
+    show('lbl-f5'); dimFloor(4);
+    setS('FLOOR 05: External Correction — 3 resignations. Congressional inquiry. EU withdrawal.','critical');
+  }},
+  { t:66000, fn:()=>{
+    activateBeams(0,4,.052); show('lbl-ia');
+    setS('INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory','stable');
+  }},
+  { t:78000, fn:()=>{
+    activateBeams(4,8,.052); show('lbl-ib');
+    setS('INTERVENTION B: Interaction Audit Trail — every meeting logged, authorship attributed','stable');
+  }},
+  { t:88000, fn:()=>{
+    show('lbl-ieiu'); leanTarget=0; relightWins();
+    setS('STABILISED — not rebuilt, but structurally sound. The record is intact.','stable');
+  }},
+  { t:95000, fn:()=>{ document.getElementById('anchor').classList.add('show'); }}
+];
+
+function checkTL(e) {
+  TL.forEach((ev,i)=>{ if(!triggered.has(i)&&e>=ev.t){ triggered.add(i); ev.fn(); } });
+}
+
+function show(id){ const el=document.getElementById(id); if(el) el.classList.add('show'); }
+
+function setS(msg,cls){
+  const el=document.getElementById('status-msg');
+  if(!el) return;
+  el.classList.remove('critical','stable');
+  if(cls) el.classList.add(cls);
+  el.textContent=msg;
+}
+
+function dimFloor(f){
+  winsByFloor[f].forEach(w=>{
+    if(Math.random()>.25){
+      const delay=Math.random()*1800;
+      setTimeout(()=>{
+        w.mesh.material.color.set(0x1a2838);
+        w.mesh.material.opacity=.2;
+        w.off=true;
+      }, delay);
+    }
+  });
+}
+
+function relightWins(){
+  wins.forEach(w=>{
+    if(w.off&&Math.random()>.45){
+      setTimeout(()=>{
+        w.mesh.material.color.set(0x4a8fb5);
+        w.mesh.material.opacity=.65;
+        w.off=false;
+      }, Math.random()*3500);
+    }
+  });
+}
+
+// ── MOUSE SUBTLE PARALLAX ────────────────────────────────────────────────────
+let mX=0, mY=0;
+document.addEventListener('mousemove', e=>{
+  mX=(e.clientX/innerWidth-.5)*.6;
+  mY=(e.clientY/innerHeight-.5)*.3;
+});
+
+// ── PAUSE CONTROL ────────────────────────────────────────────────────────────
+let paused=false;
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space'){ paused=!paused; e.preventDefault(); }
+});
+
+// ── RENDER LOOP ──────────────────────────────────────────────────────────────
+const clock=new THREE.Clock();
+let elapsed=0;
+
+(function animate(){
+  requestAnimationFrame(animate);
+  if(!paused){
+    const dt=clock.getDelta();
+    elapsed+=dt*1000;
+    const t=elapsed/1000;
+
+    checkTL(elapsed);
+    updateCamera(elapsed);
+    updateCracks();
+    updateBeams();
+    updateLean();
+    updateLife(t);
+
+    // Subtle mouse parallax offset on top of scripted camera
+    camera.position.x += (mX*1.2 - camera.position.x*.04)*.008;
+    camera.position.y += (-mY*.8 - camera.position.y*.0)*.004;
+  }
+  renderer.render(scene, camera);
+})();
+</script>
 </body>
 </html>
