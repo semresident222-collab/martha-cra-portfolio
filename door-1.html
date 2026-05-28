@@ -552,44 +552,44 @@ const TL = [
   { t:7000, fn:()=>{
     startCrack(CRACKS[0],.012); startCrack(CRACKS[1],.010);
     fdLabel.visible=true; show('lbl-fd');
-    setS('FOUNDATION: Independence became optional — 66 unrecorded FDA–Biogen meetings','critical');
+    setS("FOUNDATION: Independence became optional — 66 unrecorded FDA–Biogen meetings","critical");
   }},
   { t:14000, fn:()=>{
     startCrack(CRACKS[2],.016); startCrack(CRACKS[3],.014);
     show('lbl-f1'); dimFloor(0);
-    setS('FLOOR 01: Post-Hoc Salvage — DMC overridden. No independent audit.','critical');
+    setS("FLOOR 01: Post-Hoc Salvage — DMC overridden. No independent audit.","critical");
   }},
   { t:24000, fn:()=>{
     startCrack(CRACKS[4],.016); startCrack(CRACKS[5],.014);
     show('lbl-f2'); dimFloor(1);
-    setS('FLOOR 02: Firewall Collapse — FDA drafted Biogen's own briefing documents','critical');
+    setS("FLOOR 02: Firewall Collapse — FDA drafted Biogen own briefing documents","critical");
   }},
   { t:34000, fn:()=>{
     startCrack(CRACKS[6],.016); startCrack(CRACKS[7],.014);
     show('lbl-f3'); dimFloor(2);
-    setS('FLOOR 03: Committee Bypass — 10 against. 0 for. Approved anyway.','critical');
+    setS("FLOOR 03: Committee Bypass — 10 against. 0 for. Approved anyway.","critical");
   }},
   { t:44000, fn:()=>{
     startCrack(CRACKS[8],.016); startCrack(CRACKS[9],.014);
     show('lbl-f4'); dimFloor(3); leanTarget=.022;
-    setS('FLOOR 04: Surrogate Substitution — clinical endpoint abandoned mid-trial','critical');
+    setS("FLOOR 04: Surrogate Substitution — clinical endpoint abandoned mid-trial","critical");
   }},
   { t:54000, fn:()=>{
     startCrack(CRACKS[10],.016); startCrack(CRACKS[11],.014);
     show('lbl-f5'); dimFloor(4);
-    setS('FLOOR 05: External Correction — 3 resignations. Congressional inquiry. EU withdrawal.','critical');
+    setS("FLOOR 05: External Correction — 3 resignations. Congressional inquiry. EU withdrawal.","critical");
   }},
   { t:66000, fn:()=>{
     activateBeams(0,4,.052); show('lbl-ia');
-    setS('INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory','stable');
+    setS("INTERVENTION A: DMC Governance Lock — futility binding, independent audit mandatory","stable");
   }},
   { t:78000, fn:()=>{
     activateBeams(4,8,.052); show('lbl-ib');
-    setS('INTERVENTION B: Interaction Audit Trail — every meeting logged, authorship attributed','stable');
+    setS("INTERVENTION B: Interaction Audit Trail — every meeting logged, authorship attributed","stable");
   }},
   { t:88000, fn:()=>{
     show('lbl-ieiu'); leanTarget=0; relightWins();
-    setS('STABILISED — not rebuilt, but structurally sound. The record is intact.','stable');
+    setS("STABILISED — not rebuilt, but structurally sound. The record is intact.","stable");
   }},
   { t:95000, fn:()=>{ document.getElementById('anchor').classList.add('show'); }}
 ];
