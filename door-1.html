@@ -36,9 +36,9 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     opacity: 0;
-    transition: opacity 1.2s ease;
+    transition: opacity 2.5s ease;
     pointer-events: none;
-    text-shadow: 0 0 20px rgba(13,21,32,0.9);
+    text-shadow: 0 0 30px rgba(13,21,32,1), 0 0 60px rgba(13,21,32,0.8);
   }
   .label.visible { opacity: 1; }
   .floor-label {
@@ -46,25 +46,29 @@
     font-weight: 400;
     left: 50%;
     transform: translateX(-50%);
+    font-size: 12px;
+    letter-spacing: 3px;
   }
   .beam-label {
     color: #b87b4f;
     font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 2px;
   }
   .anchor-phrase {
     position: absolute;
-    bottom: 18%;
+    bottom: 16%;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 16px;
+    font-size: 17px;
     font-style: italic;
     color: #e8ddd0;
     opacity: 0;
-    transition: opacity 2s ease;
+    transition: opacity 3s ease;
     text-align: center;
-    max-width: 600px;
-    line-height: 1.6;
-    text-shadow: 0 0 30px rgba(13,21,32,1);
+    max-width: 560px;
+    line-height: 1.7;
+    text-shadow: 0 0 40px rgba(13,21,32,1), 0 0 80px rgba(13,21,32,0.9);
   }
   .anchor-phrase.visible { opacity: 1; }
   .cta {
@@ -73,7 +77,7 @@
     font-size: 10px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(232,221,208,0.4);
+    color: rgba(232,221,208,0.35);
     transition: color 0.6s ease, opacity 0.6s ease;
     pointer-events: auto;
     cursor: pointer;
@@ -82,7 +86,7 @@
   .cta:hover { color: #e8ddd0; }
   #cta-pdf { right: 24px; }
   #cta-next { right: 140px; }
-  #cta-prev { right: 240px; opacity: 0.2; pointer-events: none; }
+  #cta-prev { right: 240px; opacity: 0.15; pointer-events: none; }
   .door-title {
     position: absolute;
     top: 50%;
@@ -90,31 +94,32 @@
     transform: translate(-50%, -50%);
     text-align: center;
     opacity: 0;
-    transition: opacity 2s ease;
+    transition: opacity 2.5s ease;
     z-index: 20;
   }
   .door-title.visible { opacity: 1; }
   .door-title h1 {
-    font-size: 14px;
-    letter-spacing: 6px;
+    font-size: 13px;
+    letter-spacing: 8px;
     text-transform: uppercase;
-    color: rgba(232,221,208,0.5);
-    margin-bottom: 16px;
+    color: rgba(232,221,208,0.4);
+    margin-bottom: 20px;
     font-weight: 400;
   }
   .door-title h2 {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 400;
     color: #e8ddd0;
-    letter-spacing: 2px;
-    line-height: 1.3;
+    letter-spacing: 4px;
+    line-height: 1.2;
   }
   .door-title h3 {
-    font-size: 13px;
-    color: rgba(232,221,208,0.4);
-    margin-top: 12px;
+    font-size: 14px;
+    color: rgba(232,221,208,0.35);
+    margin-top: 16px;
     font-weight: 400;
     font-style: italic;
+    letter-spacing: 1px;
   }
   #progress-bar {
     position: fixed;
@@ -132,9 +137,32 @@
     left: 24px;
     font-size: 10px;
     letter-spacing: 1px;
-    color: rgba(232,221,208,0.25);
+    color: rgba(232,221,208,0.2);
     z-index: 30;
     font-family: 'Courier New', monospace;
+  }
+  .floor-detail {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s ease;
+    pointer-events: none;
+  }
+  .floor-detail.visible { opacity: 1; }
+  .floor-detail .detail-title {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(109,179,212,0.6);
+    margin-bottom: 8px;
+  }
+  .floor-detail .detail-text {
+    font-size: 13px;
+    color: rgba(232,221,208,0.5);
+    line-height: 1.6;
+    max-width: 400px;
   }
 </style>
 <base target="_blank">
@@ -150,18 +178,40 @@
     <h3>The Building That Passed Inspection</h3>
   </div>
 
-  <!-- Floor Labels -->
-  <div id="fl1" class="label floor-label" style="top:72%;">Floor 01 — Post-Hoc Salvage</div>
-  <div id="fl2" class="label floor-label" style="top:58%;">Floor 02 — Firewall Collapse</div>
-  <div id="fl3" class="label floor-label" style="top:44%;">Floor 03 — Committee Bypass</div>
-  <div id="fl4" class="label floor-label" style="top:30%;">Floor 04 — Surrogate Substitution</div>
-  <div id="fl5" class="label floor-label" style="top:16%;">Floor 05 — External Correction</div>
-  <div id="fl-foundation" class="label floor-label" style="bottom:8%; color:#b87b4f;">Foundation: Independence became optional</div>
+  <!-- Floor Labels (stay visible once shown) -->
+  <div id="fl1" class="label floor-label" style="top:68%;">Floor 01 — Post-Hoc Salvage</div>
+  <div id="fl2" class="label floor-label" style="top:54%;">Floor 02 — Firewall Collapse</div>
+  <div id="fl3" class="label floor-label" style="top:40%;">Floor 03 — Committee Bypass</div>
+  <div id="fl4" class="label floor-label" style="top:26%;">Floor 04 — Surrogate Substitution</div>
+  <div id="fl5" class="label floor-label" style="top:12%;">Floor 05 — External Correction</div>
+  <div id="fl-foundation" class="label floor-label" style="bottom:10%; color:#b87b4f; font-size:10px;">Foundation: Independence became optional</div>
+
+  <!-- Floor Detail Overlays (appear during zoom-in) -->
+  <div id="fd1" class="floor-detail" style="top:55%;">
+    <div class="detail-title">Floor 01 — Post-Hoc Salvage</div>
+    <div class="detail-text">Data re-analysed after the trial closed.<br>The building was already occupied when the foundation cracked.</div>
+  </div>
+  <div id="fd2" class="floor-detail" style="top:55%;">
+    <div class="detail-title">Floor 02 — Firewall Collapse</div>
+    <div class="detail-text">116 meetings. The firewall between sponsor and regulator dissolved.<br>Independence became optional.</div>
+  </div>
+  <div id="fd3" class="floor-detail" style="top:55%;">
+    <div class="detail-title">Floor 03 — Committee Bypass</div>
+    <div class="detail-text">Advisory committee overruled. The vote that mattered<br>was not the vote that counted.</div>
+  </div>
+  <div id="fd4" class="floor-detail" style="top:55%;">
+    <div class="detail-title">Floor 04 — Surrogate Substitution</div>
+    <div class="detail-text">Amyloid replaced cognition as the endpoint.<br>The proxy became the purpose.</div>
+  </div>
+  <div id="fd5" class="floor-detail" style="top:55%;">
+    <div class="detail-title">Floor 05 — External Correction</div>
+    <div class="detail-text">The correction came from outside the building.<br>Not repair — rescue.</div>
+  </div>
 
   <!-- Beam Labels -->
-  <div id="bl-left" class="label beam-label" style="bottom:35%; left:18%;">DMC GOVERNANCE LOCK</div>
-  <div id="bl-right" class="label beam-label" style="bottom:35%; right:18%;">AUDIT TRAIL</div>
-  <div id="bl-center" class="label beam-label" style="bottom:28%; left:50%; transform:translateX(-50%);">IEIU</div>
+  <div id="bl-left" class="label beam-label" style="bottom:30%; left:15%;">DMC GOVERNANCE LOCK</div>
+  <div id="bl-right" class="label beam-label" style="bottom:30%; right:15%;">AUDIT TRAIL</div>
+  <div id="bl-center" class="label beam-label" style="bottom:22%; left:50%; transform:translateX(-50%);">IEIU</div>
 
   <div id="anchor" class="anchor-phrase">"The instinct to look underneath is what I am building a career on."</div>
 
@@ -175,24 +225,22 @@
 
 <script>
 // ============================================
-// META VOXA CRA PORTFOLIO — DOOR 1: ADUHELM
-// Three.js — Corporate Building, Cracks, Copper Beams
-// 5-minute arc, no scrolling, screen-share ready
+// META VOXA CRA PORTFOLIO — DOOR 1: ADUHELM v2
+// Real building architecture, per-floor zoom, heavy beams
 // ============================================
 
-const TOTAL_DURATION = 300; // 5 minutes in seconds
+const TOTAL_DURATION = 300;
 let elapsed = 0;
 let isPlaying = false;
 let animationId;
 
-// Scene setup
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0d1520);
-scene.fog = new THREE.FogExp2(0x0d1520, 0.015);
+scene.fog = new THREE.FogExp2(0x0d1520, 0.012);
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
-camera.position.set(0, 8, 35);
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 300);
+camera.position.set(0, 10, 40);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -202,51 +250,66 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.4);
+const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.35);
 scene.add(ambientLight);
 
-const moonLight = new THREE.DirectionalLight(0x4a7a96, 0.6);
-moonLight.position.set(15, 30, 20);
+const moonLight = new THREE.DirectionalLight(0x5a8aaa, 0.5);
+moonLight.position.set(20, 40, 25);
 moonLight.castShadow = true;
-moonLight.shadow.mapSize.width = 2048;
-moonLight.shadow.mapSize.height = 2048;
+moonLight.shadow.mapSize.width = 4096;
+moonLight.shadow.mapSize.height = 4096;
+moonLight.shadow.camera.near = 0.5;
+moonLight.shadow.camera.far = 100;
+moonLight.shadow.camera.left = -30;
+moonLight.shadow.camera.right = 30;
+moonLight.shadow.camera.top = 30;
+moonLight.shadow.camera.bottom = -30;
+moonLight.shadow.bias = -0.0005;
 scene.add(moonLight);
 
-const fillLight = new THREE.DirectionalLight(0x2a4050, 0.3);
-fillLight.position.set(-10, 10, -10);
-scene.add(fillLight);
+const rimLight = new THREE.DirectionalLight(0x3a5a6a, 0.3);
+rimLight.position.set(-15, 15, -20);
+scene.add(rimLight);
 
-const foundationGlow = new THREE.PointLight(0xb87b4f, 0, 15);
-foundationGlow.position.set(0, -2, 5);
+const foundationGlow = new THREE.PointLight(0xb87b4f, 0, 20);
+foundationGlow.position.set(0, -3, 8);
 scene.add(foundationGlow);
 
 // Materials
 const glassMat = new THREE.MeshPhysicalMaterial({
-  color: 0x4a7a96,
+  color: 0x3a6078,
   transparent: true,
-  opacity: 0.25,
-  roughness: 0.1,
-  metalness: 0.9,
+  opacity: 0.2,
+  roughness: 0.05,
+  metalness: 0.95,
   side: THREE.DoubleSide,
-  envMapIntensity: 1
+  clearcoat: 1.0,
+  clearcoatRoughness: 0.1,
+  envMapIntensity: 2
 });
 
 const frameMat = new THREE.MeshStandardMaterial({
+  color: 0x1e2e3e,
+  roughness: 0.6,
+  metalness: 0.5
+});
+
+const concreteMat = new THREE.MeshStandardMaterial({
   color: 0x2a3a4a,
-  roughness: 0.7,
-  metalness: 0.3
+  roughness: 0.85,
+  metalness: 0.15
 });
 
 const windowLitMat = new THREE.MeshBasicMaterial({
-  color: 0xc8d8e8,
+  color: 0xd8e4f0,
   transparent: true,
-  opacity: 0.6
+  opacity: 0.5
 });
 
 const windowDarkMat = new THREE.MeshBasicMaterial({
-  color: 0x1a2530,
+  color: 0x121820,
   transparent: true,
-  opacity: 0.8
+  opacity: 0.85
 });
 
 const crackMat = new THREE.MeshBasicMaterial({
@@ -257,15 +320,29 @@ const crackMat = new THREE.MeshBasicMaterial({
 });
 
 const beamMat = new THREE.MeshStandardMaterial({
-  color: 0xb87b4f,
-  roughness: 0.4,
-  metalness: 0.7,
-  emissive: 0x4a3018,
-  emissiveIntensity: 0.2
+  color: 0xa06838,
+  roughness: 0.35,
+  metalness: 0.8,
+  emissive: 0x3a2010,
+  emissiveIntensity: 0.15
+});
+
+const beamRivetMat = new THREE.MeshStandardMaterial({
+  color: 0xc08850,
+  roughness: 0.3,
+  metalness: 0.9,
+  emissive: 0x4a2810,
+  emissiveIntensity: 0.3
 });
 
 const groundMat = new THREE.MeshStandardMaterial({
-  color: 0x0a1018,
+  color: 0x080e14,
+  roughness: 0.95,
+  metalness: 0.05
+});
+
+const sidewalkMat = new THREE.MeshStandardMaterial({
+  color: 0x101820,
   roughness: 0.9,
   metalness: 0.1
 });
@@ -274,95 +351,210 @@ const groundMat = new THREE.MeshStandardMaterial({
 const building = new THREE.Group();
 scene.add(building);
 
-// Ground
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), groundMat);
+// Ground plane
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), groundMat);
 ground.rotation.x = -Math.PI / 2;
-ground.position.y = -4;
+ground.position.y = -5;
 ground.receiveShadow = true;
 scene.add(ground);
 
-// Building dimensions
-const bWidth = 8;
-const bDepth = 6;
-const floorHeight = 2.2;
+// Sidewalk
+const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(40, 0.3, 30), sidewalkMat);
+sidewalk.position.set(0, -4.85, 5);
+sidewalk.receiveShadow = true;
+scene.add(sidewalk);
+
+// Curb
+const curb = new THREE.Mesh(new THREE.BoxGeometry(40, 0.5, 0.4), concreteMat);
+curb.position.set(0, -4.75, 20.2);
+scene.add(curb);
+
+// ============================================
+// REAL BUILDING ARCHITECTURE
+// ============================================
+const bWidth = 10;
+const bDepth = 8;
+const floorHeight = 2.8;
 const numFloors = 6;
-const bHeight = numFloors * floorHeight;
+const lobbyHeight = 4.5;
 
-// Floor windows storage for darkening
+// Store references
 const floorWindows = [];
+const floorGroups = [];
 
-// Build floors
-for (let f = 0; f < numFloors; f++) {
-  const yBase = f * floorHeight - 4;
+// === LOBBY (Ground Floor) ===
+const lobbyGroup = new THREE.Group();
+
+// Lobby columns — thicker, more architectural
+const lobbyColGeo = new THREE.BoxGeometry(0.6, lobbyHeight, 0.6);
+const lobbyCols = [
+  [-bWidth/2 + 0.8, -5 + lobbyHeight/2, -bDepth/2 + 0.8],
+  [bWidth/2 - 0.8, -5 + lobbyHeight/2, -bDepth/2 + 0.8],
+  [-bWidth/2 + 0.8, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [bWidth/2 - 0.8, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [0, -5 + lobbyHeight/2, bDepth/2 - 0.8],
+  [0, -5 + lobbyHeight/2, -bDepth/2 + 0.8]
+];
+lobbyCols.forEach(pos => {
+  const col = new THREE.Mesh(lobbyColGeo, frameMat);
+  col.position.set(...pos);
+  col.castShadow = true;
+  lobbyGroup.add(col);
+});
+
+// Lobby glass walls (taller, more impressive)
+const lobbyGlassGeo = new THREE.PlaneGeometry(bWidth - 2, lobbyHeight - 0.5);
+const lobbyFront = new THREE.Mesh(lobbyGlassGeo, glassMat.clone());
+lobbyFront.position.set(0, -5 + lobbyHeight/2, bDepth/2 + 0.02);
+lobbyGroup.add(lobbyFront);
+
+const lobbyBack = new THREE.Mesh(lobbyGlassGeo, glassMat.clone());
+lobbyBack.position.set(0, -5 + lobbyHeight/2, -bDepth/2 - 0.02);
+lobbyBack.rotation.y = Math.PI;
+lobbyGroup.add(lobbyBack);
+
+// Lobby entrance — recessed, with canopy
+const entrance = new THREE.Mesh(
+  new THREE.BoxGeometry(3, 2.5, 0.3),
+  new THREE.MeshStandardMaterial({ color: 0x0a1018, roughness: 0.3, metalness: 0.7 })
+);
+entrance.position.set(0, -5 + 1.25, bDepth/2 + 0.15);
+lobbyGroup.add(entrance);
+
+// Canopy over entrance
+const canopy = new THREE.Mesh(
+  new THREE.BoxGeometry(4, 0.15, 2),
+  new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.4, metalness: 0.6 })
+);
+canopy.position.set(0, -5 + 2.8, bDepth/2 + 1);
+lobbyGroup.add(canopy);
+
+// Canopy supports
+const canopySupportGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.8, 8);
+[-1.5, 1.5].forEach(x => {
+  const sup = new THREE.Mesh(canopySupportGeo, frameMat);
+  sup.position.set(x, -5 + 1.4, bDepth/2 + 1.8);
+  lobbyGroup.add(sup);
+});
+
+// Lobby ceiling/floor slab
+const lobbySlab = new THREE.Mesh(
+  new THREE.BoxGeometry(bWidth + 0.3, 0.25, bDepth + 0.3),
+  concreteMat
+);
+lobbySlab.position.y = -5 + lobbyHeight;
+lobbySlab.castShadow = true;
+lobbyGroup.add(lobbySlab);
+
+// Lobby interior lights
+for (let i = 0; i < 6; i++) {
+  const light = new THREE.Mesh(
+    new THREE.SphereGeometry(0.06, 8, 8),
+    new THREE.MeshBasicMaterial({ color: 0xffe8c0, transparent: true, opacity: 0.4 })
+  );
+  light.position.set(
+    (Math.random() - 0.5) * (bWidth - 2),
+    -5 + lobbyHeight - 0.3,
+    (Math.random() - 0.5) * (bDepth - 2)
+  );
+  light.userData = { baseOpacity: 0.4, flickerSpeed: 0.5 + Math.random() * 2, offset: Math.random() * 10 };
+  lobbyGroup.add(light);
+}
+
+building.add(lobbyGroup);
+floorGroups.push(lobbyGroup);
+
+// === UPPER FLOORS ===
+for (let f = 1; f < numFloors; f++) {
+  const yBase = -5 + lobbyHeight + (f - 1) * floorHeight;
   const floorGroup = new THREE.Group();
 
-  // Floor slab
-  const slab = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.2, 0.15, bDepth + 0.2), frameMat);
+  // Floor slab with overhang
+  const slab = new THREE.Mesh(
+    new THREE.BoxGeometry(bWidth + 0.4, 0.2, bDepth + 0.4),
+    concreteMat
+  );
   slab.position.y = yBase + floorHeight;
   slab.castShadow = true;
   floorGroup.add(slab);
 
-  // Columns (4 corners)
-  const colGeo = new THREE.BoxGeometry(0.3, floorHeight, 0.3);
-  const positions = [
-    [-bWidth/2 + 0.3, yBase + floorHeight/2, -bDepth/2 + 0.3],
-    [bWidth/2 - 0.3, yBase + floorHeight/2, -bDepth/2 + 0.3],
-    [-bWidth/2 + 0.3, yBase + floorHeight/2, bDepth/2 - 0.3],
-    [bWidth/2 - 0.3, yBase + floorHeight/2, bDepth/2 - 0.3]
+  // Spandrel panels (the solid part between floors)
+  const spandrelGeo = new THREE.BoxGeometry(bWidth - 0.2, 0.5, 0.15);
+  const spandrelFront = new THREE.Mesh(spandrelGeo, frameMat);
+  spandrelFront.position.set(0, yBase + 0.25, bDepth/2 + 0.08);
+  floorGroup.add(spandrelFront);
+
+  const spandrelBack = new THREE.Mesh(spandrelGeo, frameMat);
+  spandrelBack.position.set(0, yBase + 0.25, -bDepth/2 - 0.08);
+  floorGroup.add(spandrelBack);
+
+  // Columns — I-beam profile simulation with 3 boxes
+  const colW = 0.35;
+  const colD = 0.25;
+  const colPositions = [
+    [-bWidth/2 + 0.6, yBase + floorHeight/2, -bDepth/2 + 0.6],
+    [bWidth/2 - 0.6, yBase + floorHeight/2, -bDepth/2 + 0.6],
+    [-bWidth/2 + 0.6, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [bWidth/2 - 0.6, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [0, yBase + floorHeight/2, bDepth/2 - 0.6],
+    [0, yBase + floorHeight/2, -bDepth/2 + 0.6]
   ];
-  positions.forEach(pos => {
-    const col = new THREE.Mesh(colGeo, frameMat);
-    col.position.set(...pos);
-    col.castShadow = true;
-    floorGroup.add(col);
+  colPositions.forEach(pos => {
+    // I-beam: web + two flanges
+    const web = new THREE.Mesh(new THREE.BoxGeometry(0.08, floorHeight, colD), frameMat);
+    web.position.set(pos[0], pos[1], pos[2]);
+    floorGroup.add(web);
+    const flange1 = new THREE.Mesh(new THREE.BoxGeometry(colW, 0.06, colD + 0.05), frameMat);
+    flange1.position.set(pos[0], pos[1] + floorHeight/2 - 0.03, pos[2]);
+    floorGroup.add(flange1);
+    const flange2 = new THREE.Mesh(new THREE.BoxGeometry(colW, 0.06, colD + 0.05), frameMat);
+    flange2.position.set(pos[0], pos[1] - floorHeight/2 + 0.03, pos[2]);
+    floorGroup.add(flange2);
   });
 
-  // Glass walls (front and back)
-  const glassGeo = new THREE.PlaneGeometry(bWidth - 0.8, floorHeight - 0.3);
+  // Glass curtain wall
+  const glassH = floorHeight - 0.6;
+  const glassGeo = new THREE.PlaneGeometry(bWidth - 1.4, glassH);
 
-  // Front glass
   const frontGlass = new THREE.Mesh(glassGeo, glassMat.clone());
-  frontGlass.position.set(0, yBase + floorHeight/2, bDepth/2 + 0.01);
+  frontGlass.position.set(0, yBase + 0.5 + glassH/2, bDepth/2 + 0.02);
   floorGroup.add(frontGlass);
 
-  // Back glass
   const backGlass = new THREE.Mesh(glassGeo, glassMat.clone());
-  backGlass.position.set(0, yBase + floorHeight/2, -bDepth/2 - 0.01);
+  backGlass.position.set(0, yBase + 0.5 + glassH/2, -bDepth/2 - 0.02);
   backGlass.rotation.y = Math.PI;
   floorGroup.add(backGlass);
 
-  // Side glasses
-  const sideGlassGeo = new THREE.PlaneGeometry(bDepth - 0.8, floorHeight - 0.3);
+  const sideGlassGeo = new THREE.PlaneGeometry(bDepth - 1.4, glassH);
   const leftGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
-  leftGlass.position.set(-bWidth/2 - 0.01, yBase + floorHeight/2, 0);
+  leftGlass.position.set(-bWidth/2 - 0.02, yBase + 0.5 + glassH/2, 0);
   leftGlass.rotation.y = -Math.PI/2;
   floorGroup.add(leftGlass);
 
   const rightGlass = new THREE.Mesh(sideGlassGeo, glassMat.clone());
-  rightGlass.position.set(bWidth/2 + 0.01, yBase + floorHeight/2, 0);
+  rightGlass.position.set(bWidth/2 + 0.02, yBase + 0.5 + glassH/2, 0);
   rightGlass.rotation.y = Math.PI/2;
   floorGroup.add(rightGlass);
 
-  // Windows (grid of small lit panels)
+  // Window grid — individual lit panels
   const winRows = 2;
-  const winCols = 4;
-  const winW = (bWidth - 1.2) / winCols;
-  const winH = (floorHeight - 0.5) / winRows;
+  const winCols = 5;
+  const winW = (bWidth - 2) / winCols;
+  const winH = (glassH - 0.4) / winRows;
   const floorWins = [];
 
   for (let r = 0; r < winRows; r++) {
     for (let c = 0; c < winCols; c++) {
-      const winGeo = new THREE.PlaneGeometry(winW * 0.7, winH * 0.7);
+      const winGeo = new THREE.PlaneGeometry(winW * 0.75, winH * 0.75);
       const win = new THREE.Mesh(winGeo, windowLitMat.clone());
-      const wx = -bWidth/2 + 0.6 + c * winW + winW/2;
-      const wy = yBase + 0.4 + r * winH + winH/2;
-      win.position.set(wx, wy, bDepth/2 + 0.02);
+      const wx = -bWidth/2 + 1 + c * winW + winW/2;
+      const wy = yBase + 0.7 + r * winH + winH/2;
+      win.position.set(wx, wy, bDepth/2 + 0.03);
       floorGroup.add(win);
       floorWins.push(win);
 
-      // Back windows too
       const winBack = win.clone();
-      winBack.position.set(wx, wy, -bDepth/2 - 0.02);
+      winBack.position.set(wx, wy, -bDepth/2 - 0.03);
       winBack.rotation.y = Math.PI;
       floorGroup.add(winBack);
       floorWins.push(winBack);
@@ -370,299 +562,508 @@ for (let f = 0; f < numFloors; f++) {
   }
   floorWindows.push(floorWins);
 
-  // Life inside — subtle office lights flickering
-  if (f > 0 && f < numFloors - 1) {
-    for (let i = 0; i < 3; i++) {
-      const lightGeo = new THREE.SphereGeometry(0.04, 4, 4);
-      const lightMat = new THREE.MeshBasicMaterial({
-        color: 0xffe8c8,
-        transparent: true,
-        opacity: 0.3 + Math.random() * 0.3
-      });
-      const light = new THREE.Mesh(lightGeo, lightMat);
-      light.position.set(
-        (Math.random() - 0.5) * (bWidth - 1),
-        yBase + 0.5 + Math.random() * (floorHeight - 0.8),
-        (Math.random() - 0.5) * (bDepth - 1)
-      );
-      light.userData = { 
-        baseOpacity: lightMat.opacity,
-        flickerSpeed: 1 + Math.random() * 3,
-        flickerOffset: Math.random() * 10
-      };
-      floorGroup.add(light);
-    }
+  // Office lights inside
+  for (let i = 0; i < 4; i++) {
+    const light = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04, 6, 6),
+      new THREE.MeshBasicMaterial({ 
+        color: 0xffe8c0, 
+        transparent: true, 
+        opacity: 0.25 + Math.random() * 0.25 
+      })
+    );
+    light.position.set(
+      (Math.random() - 0.5) * (bWidth - 2),
+      yBase + 0.5 + Math.random() * (glassH - 0.5),
+      (Math.random() - 0.5) * (bDepth - 2)
+    );
+    light.userData = { 
+      baseOpacity: light.material.opacity,
+      flickerSpeed: 1 + Math.random() * 3,
+      offset: Math.random() * 10
+    };
+    floorGroup.add(light);
   }
 
+  // Elevator shaft indicator (tiny light on each floor)
+  const elevatorLight = new THREE.Mesh(
+    new THREE.SphereGeometry(0.03, 4, 4),
+    new THREE.MeshBasicMaterial({ color: 0x6db3d4, transparent: true, opacity: 0.3 })
+  );
+  elevatorLight.position.set(bWidth/2 - 0.3, yBase + floorHeight - 0.2, bDepth/2 + 0.04);
+  floorGroup.add(elevatorLight);
+
   building.add(floorGroup);
+  floorGroups.push(floorGroup);
 }
 
 // Roof
-const roof = new THREE.Mesh(new THREE.BoxGeometry(bWidth + 0.4, 0.3, bDepth + 0.4), frameMat);
-roof.position.y = bHeight - 4 + 0.15;
+const roofOverhang = 0.6;
+const roof = new THREE.Mesh(
+  new THREE.BoxGeometry(bWidth + roofOverhang, 0.4, bDepth + roofOverhang),
+  new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.5, metalness: 0.5 })
+);
+const roofY = -5 + lobbyHeight + (numFloors - 1) * floorHeight + 0.2;
+roof.position.y = roofY;
+roof.castShadow = true;
 building.add(roof);
 
-// Foundation slab (visible base)
-const foundation = new THREE.Mesh(
-  new THREE.BoxGeometry(bWidth + 1, 0.5, bDepth + 1),
-  new THREE.MeshStandardMaterial({ color: 0x1a2530, roughness: 0.8 })
+// Roof mechanical penthouse
+const penthouse = new THREE.Mesh(
+  new THREE.BoxGeometry(3, 1.5, 2.5),
+  new THREE.MeshStandardMaterial({ color: 0x152030, roughness: 0.7, metalness: 0.3 })
 );
-foundation.position.y = -4.25;
-building.add(foundation);
+penthouse.position.set(1.5, roofY + 0.95, -1);
+building.add(penthouse);
+
+// Antenna
+const antenna = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.03, 0.06, 3, 8),
+  new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.2 })
+);
+antenna.position.set(1.5, roofY + 2.5, -1);
+building.add(antenna);
+
+// Red aircraft warning light
+const warningLight = new THREE.Mesh(
+  new THREE.SphereGeometry(0.08, 8, 8),
+  new THREE.MeshBasicMaterial({ color: 0xff3333, transparent: true, opacity: 0.8 })
+);
+warningLight.position.set(1.5, roofY + 4, -1);
+building.add(warningLight);
 
 // ============================================
-// CRACKS — procedural fracture lines
+// CRACKS — more realistic, wider, with glow
 // ============================================
 const cracks = [];
 
-function createCrack(start, end, segments = 8, width = 0.02) {
+function createCrack(start, end, segments = 10, width = 0.04) {
   const points = [];
   points.push(start.clone());
   for (let i = 1; i < segments; i++) {
     const t = i / segments;
     const pos = new THREE.Vector3().lerpVectors(start, end, t);
-    pos.x += (Math.random() - 0.5) * 0.3;
-    pos.z += (Math.random() - 0.5) * 0.2;
+    pos.x += (Math.random() - 0.5) * 0.4;
+    pos.z += (Math.random() - 0.5) * 0.3;
+    pos.y += (Math.random() - 0.5) * 0.15;
     points.push(pos);
   }
   points.push(end.clone());
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tubeGeo = new THREE.TubeGeometry(curve, segments * 3, width, 4, false);
+  const tubeGeo = new THREE.TubeGeometry(curve, segments * 4, width, 6, false);
   const crack = new THREE.Mesh(tubeGeo, crackMat.clone());
   crack.material.opacity = 0;
   scene.add(crack);
   return crack;
 }
 
-// Main vertical crack from foundation up
-const mainCrackStart = new THREE.Vector3(0.5, -3.8, bDepth/2 + 0.03);
-const mainCrackEnd = new THREE.Vector3(1.2, bHeight - 4, bDepth/2 + 0.03);
-cracks.push({ mesh: createCrack(mainCrackStart, mainCrackEnd, 12, 0.025), startTime: 5, endTime: 30 });
+// Main foundation crack
+const mainCrack = createCrack(
+  new THREE.Vector3(0.3, -4.8, bDepth/2 + 0.04),
+  new THREE.Vector3(1.5, roofY - 1, bDepth/2 + 0.04),
+  14, 0.05
+);
+cracks.push({ mesh: mainCrack, startTime: 5, endTime: 35, glowIntensity: 0.6 });
 
-// Secondary cracks branching
-const branch1Start = new THREE.Vector3(0.5, -1, bDepth/2 + 0.03);
-const branch1End = new THREE.Vector3(-0.8, 2, bDepth/2 + 0.03);
-cracks.push({ mesh: createCrack(branch1Start, branch1End, 8, 0.018), startTime: 25, endTime: 50 });
+// Branch cracks
+const branch1 = createCrack(
+  new THREE.Vector3(0.5, -2, bDepth/2 + 0.04),
+  new THREE.Vector3(-1.2, 3, bDepth/2 + 0.04),
+  10, 0.035
+);
+cracks.push({ mesh: branch1, startTime: 30, endTime: 65, glowIntensity: 0.5 });
 
-const branch2Start = new THREE.Vector3(0.8, 1, bDepth/2 + 0.03);
-const branch2End = new THREE.Vector3(2, 4, bDepth/2 + 0.03);
-cracks.push({ mesh: createCrack(branch2Start, branch2End, 8, 0.015), startTime: 40, endTime: 70 });
+const branch2 = createCrack(
+  new THREE.Vector3(1.0, 2, bDepth/2 + 0.04),
+  new THREE.Vector3(2.5, 7, bDepth/2 + 0.04),
+  10, 0.03
+);
+cracks.push({ mesh: branch2, startTime: 50, endTime: 90, glowIntensity: 0.45 });
 
-const branch3Start = new THREE.Vector3(-0.3, 3, bDepth/2 + 0.03);
-const branch3End = new THREE.Vector3(-1.5, 6, bDepth/2 + 0.03);
-cracks.push({ mesh: createCrack(branch3Start, branch3End, 8, 0.02), startTime: 60, endTime: 90 });
+const branch3 = createCrack(
+  new THREE.Vector3(-0.5, 5, bDepth/2 + 0.04),
+  new THREE.Vector3(-2, 10, bDepth/2 + 0.04),
+  10, 0.04
+);
+cracks.push({ mesh: branch3, startTime: 75, endTime: 115, glowIntensity: 0.5 });
 
 // Side cracks (visible during rotation)
-const sideCrackStart = new THREE.Vector3(bWidth/2 + 0.03, -3, 0.5);
-const sideCrackEnd = new THREE.Vector3(bWidth/2 + 0.03, 5, -1);
-cracks.push({ mesh: createCrack(sideCrackStart, sideCrackEnd, 10, 0.02), startTime: 80, endTime: 110 });
+const sideCrack = createCrack(
+  new THREE.Vector3(bWidth/2 + 0.04, -3.5, 0.5),
+  new THREE.Vector3(bWidth/2 + 0.04, 8, -1.5),
+  12, 0.04
+);
+cracks.push({ mesh: sideCrack, startTime: 95, endTime: 140, glowIntensity: 0.5 });
+
+// Corner crack
+const cornerCrack = createCrack(
+  new THREE.Vector3(bWidth/2 - 0.2, -4.5, bDepth/2 + 0.04),
+  new THREE.Vector3(bWidth/2 + 0.5, 5, bDepth/2 + 0.5),
+  10, 0.035
+);
+cracks.push({ mesh: cornerCrack, startTime: 110, endTime: 150, glowIntensity: 0.4 });
 
 // ============================================
-// COPPER INTERVENTION BEAMS
+// HEAVY COPPER INTERVENTION BEAMS
 // ============================================
 const beams = [];
 
-function createBeam(start, end, radius = 0.12) {
+function createHeavyBeam(start, end, mainRadius = 0.25, hasRivets = true) {
   const dir = new THREE.Vector3().subVectors(end, start);
   const len = dir.length();
-  const beamGeo = new THREE.CylinderGeometry(radius, radius, len, 8);
-  const beam = new THREE.Mesh(beamGeo, beamMat.clone());
+  const beamGroup = new THREE.Group();
 
-  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
-  beam.position.copy(mid);
-  beam.lookAt(end);
-  beam.rotateX(Math.PI / 2);
-  beam.scale.y = 0; // Start invisible
+  // Main I-beam: web + flanges
+  const web = new THREE.Mesh(
+    new THREE.BoxGeometry(0.15, len, 0.4),
+    beamMat.clone()
+  );
+  web.position.y = len / 2;
+  beamGroup.add(web);
 
-  scene.add(beam);
-  return beam;
-}
+  // Top flange
+  const topFlange = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5, 0.08, 0.5),
+    beamMat.clone()
+  );
+  topFlange.position.y = len - 0.04;
+  beamGroup.add(topFlange);
 
-// Left beam — diagonal from ground to mid-building
-const leftBeamStart = new THREE.Vector3(-8, -4, 8);
-const leftBeamEnd = new THREE.Vector3(-bWidth/2 - 0.5, 2, bDepth/2 + 0.5);
-const leftBeam = createBeam(leftBeamStart, leftBeamEnd, 0.15);
-beams.push({ mesh: leftBeam, startTime: 210, endTime: 240 });
+  // Bottom flange
+  const botFlange = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5, 0.08, 0.5),
+    beamMat.clone()
+  );
+  botFlange.position.y = 0.04;
+  beamGroup.add(botFlange);
 
-// Right beam — diagonal from ground to mid-building
-const rightBeamStart = new THREE.Vector3(8, -4, 8);
-const rightBeamEnd = new THREE.Vector3(bWidth/2 + 0.5, 2, bDepth/2 + 0.5);
-const rightBeam = createBeam(rightBeamStart, rightBeamEnd, 0.15);
-beams.push({ mesh: rightBeam, startTime: 240, endTime: 270 });
+  // Rivets along the beam
+  if (hasRivets) {
+    const rivetGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.06, 8);
+    const numRivets = Math.floor(len / 0.8);
+    for (let i = 1; i < numRivets; i++) {
+      const rivet = new THREE.Mesh(rivetGeo, beamRivetMat.clone());
+      rivet.rotation.z = Math.PI / 2;
+      rivet.position.set(0.08, i * 0.8, 0.2);
+      beamGroup.add(rivet);
 
-// Connecting node (horizontal beam between the two)
-const nodeBeamStart = new THREE.Vector3(-bWidth/2 - 0.3, 1.8, bDepth/2 + 0.3);
-const nodeBeamEnd = new THREE.Vector3(bWidth/2 + 0.3, 1.8, bDepth/2 + 0.3);
-const nodeBeam = createBeam(nodeBeamStart, nodeBeamEnd, 0.1);
-beams.push({ mesh: nodeBeam, startTime: 255, endTime: 280 });
+      const rivet2 = rivet.clone();
+      rivet2.position.set(0.08, i * 0.8, -0.2);
+      beamGroup.add(rivet2);
 
-// ============================================
-// CAMERA ANIMATION PATH
-// ============================================
-function getCameraState(t) {
-  // t is 0-300 seconds
-  let pos, target, fov = 45;
+      const rivet3 = rivet.clone();
+      rivet3.position.set(-0.08, i * 0.8, 0.2);
+      beamGroup.add(rivet3);
 
-  if (t < 5) {
-    // 0-5s: Establishing shot — wide, still, impressive
-    const ease = t / 5;
-    pos = new THREE.Vector3(0, 8, 35);
-    target = new THREE.Vector3(0, 3, 0);
-  } else if (t < 25) {
-    // 5-25s: Slow zoom toward foundation, camera descends
-    const p = (t - 5) / 20;
-    const ease = p * p * (3 - 2 * p); // smoothstep
-    pos = new THREE.Vector3(
-      0,
-      8 - ease * 6,
-      35 - ease * 20
-    );
-    target = new THREE.Vector3(0, -2 + ease * 2, 0);
-  } else if (t < 60) {
-    // 25-60s: Pull back to full view, cracks propagate floor by floor
-    const p = (t - 25) / 35;
-    const ease = p * p * (3 - 2 * p);
-    pos = new THREE.Vector3(
-      0,
-      2 + ease * 6,
-      15 + ease * 15
-    );
-    target = new THREE.Vector3(0, 3, 0);
-  } else if (t < 90) {
-    // 60-90s: Rotate to side view, building leans
-    const p = (t - 60) / 30;
-    const ease = p * p * (3 - 2 * p);
-    const angle = ease * (15 * Math.PI / 180);
-    const dist = 25;
-    pos = new THREE.Vector3(
-      Math.sin(angle) * dist,
-      8,
-      Math.cos(angle) * dist
-    );
-    target = new THREE.Vector3(0, 3, 0);
-  } else if (t < 150) {
-    // 90-150s: Hold side view, building at max stress
-    const p = (t - 90) / 60;
-    const lean = Math.sin(p * Math.PI) * 0.03; // subtle sway
-    pos = new THREE.Vector3(
-      Math.sin(15 * Math.PI / 180) * 25 + lean * 2,
-      8,
-      Math.cos(15 * Math.PI / 180) * 25
-    );
-    target = new THREE.Vector3(0, 3, 0);
-  } else if (t < 180) {
-    // 150-180s: Pause at max stress
-    pos = new THREE.Vector3(
-      Math.sin(15 * Math.PI / 180) * 25,
-      8,
-      Math.cos(15 * Math.PI / 180) * 25
-    );
-    target = new THREE.Vector3(0, 3, 0);
-  } else if (t < 240) {
-    // 180-240s: Intervention — beams bolt on, hold side view
-    const p = (t - 180) / 60;
-    const ease = p * p * (3 - 2 * p);
-    pos = new THREE.Vector3(
-      Math.sin(15 * Math.PI / 180) * 25,
-      8,
-      Math.cos(15 * Math.PI / 180) * 25
-    );
-    target = new THREE.Vector3(0, 2, 0);
-  } else if (t < 270) {
-    // 240-270s: Rotate back to front, building straightens
-    const p = (t - 240) / 30;
-    const ease = p * p * (3 - 2 * p);
-    const angle = (1 - ease) * (15 * Math.PI / 180);
-    const dist = 25 + ease * 5;
-    pos = new THREE.Vector3(
-      Math.sin(angle) * dist,
-      8,
-      Math.cos(angle) * dist
-    );
-    target = new THREE.Vector3(0, 3, 0);
-  } else {
-    // 270-300s: Slow zoom out, full exterior with repair work visible
-    const p = Math.min((t - 270) / 30, 1);
-    const ease = p * p * (3 - 2 * p);
-    pos = new THREE.Vector3(
-      0,
-      8 + ease * 4,
-      30 + ease * 10
-    );
-    target = new THREE.Vector3(0, 3, 0);
+      const rivet4 = rivet.clone();
+      rivet4.position.set(-0.08, i * 0.8, -0.2);
+      beamGroup.add(rivet4);
+    }
   }
 
-  return { position: pos, target: target, fov: fov };
+  // Anchor plates at connection points
+  const plateGeo = new THREE.BoxGeometry(1.2, 0.6, 0.8);
+  const topPlate = new THREE.Mesh(plateGeo, beamMat.clone());
+  topPlate.position.y = len;
+  beamGroup.add(topPlate);
+
+  const botPlate = new THREE.Mesh(plateGeo, beamMat.clone());
+  botPlate.position.y = 0;
+  beamGroup.add(botPlate);
+
+  // Position and orient
+  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+  beamGroup.position.copy(mid);
+  beamGroup.lookAt(end);
+  beamGroup.rotateX(Math.PI / 2);
+  beamGroup.scale.set(0, 0, 0); // Start invisible
+
+  scene.add(beamGroup);
+  return beamGroup;
+}
+
+// Left beam — massive diagonal from ground to upper floors
+const leftBeamStart = new THREE.Vector3(-10, -5, 12);
+const leftBeamEnd = new THREE.Vector3(-bWidth/2 - 0.3, 6, bDepth/2 + 0.5);
+const leftBeam = createHeavyBeam(leftBeamStart, leftBeamEnd, 0.3, true);
+beams.push({ mesh: leftBeam, startTime: 200, endTime: 230 });
+
+// Right beam — massive diagonal
+const rightBeamStart = new THREE.Vector3(10, -5, 12);
+const rightBeamEnd = new THREE.Vector3(bWidth/2 + 0.3, 6, bDepth/2 + 0.5);
+const rightBeam = createHeavyBeam(rightBeamStart, rightBeamEnd, 0.3, true);
+beams.push({ mesh: rightBeam, startTime: 225, endTime: 255 });
+
+// Cross brace between beams
+const crossStart = new THREE.Vector3(-bWidth/2 - 0.2, 4, bDepth/2 + 0.4);
+const crossEnd = new THREE.Vector3(bWidth/2 + 0.2, 4, bDepth/2 + 0.4);
+const crossBeam = createHeavyBeam(crossStart, crossEnd, 0.2, false);
+beams.push({ mesh: crossBeam, startTime: 240, endTime: 270 });
+
+// Foundation anchor beams (horizontal, grounding the intervention)
+const anchorBeam1 = createHeavyBeam(
+  new THREE.Vector3(-12, -4.7, 10),
+  new THREE.Vector3(-8, -4.7, 10),
+  0.2, false
+);
+beams.push({ mesh: anchorBeam1, startTime: 195, endTime: 210 });
+
+const anchorBeam2 = createHeavyBeam(
+  new THREE.Vector3(8, -4.7, 10),
+  new THREE.Vector3(12, -4.7, 10),
+  0.2, false
+);
+beams.push({ mesh: anchorBeam2, startTime: 220, endTime: 235 });
+
+// ============================================
+// CAMERA — per-floor zoom choreography
+// ============================================
+function getCameraState(t) {
+  let pos, target;
+
+  if (t < 5) {
+    // 0-5: Wide establishing
+    const ease = t / 5;
+    pos = new THREE.Vector3(0, 10, 45);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 8) {
+    // 5-8: Zoom to foundation
+    const p = (t - 5) / 3;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 10 - ease * 8, 45 - ease * 30);
+    target = new THREE.Vector3(0, -2 + ease * 3, 0);
+  } else if (t < 25) {
+    // 8-25: Hold on foundation, crack appears
+    pos = new THREE.Vector3(0, 2, 15);
+    target = new THREE.Vector3(0, -1, 0);
+  } else if (t < 30) {
+    // 25-30: Pull back to full building
+    const p = (t - 25) / 5;
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 2 + ease * 8, 15 + ease * 20);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 35) {
+    // 30-35: Zoom to Floor 1
+    const p = (t - 30) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor1Y, 0);
+  } else if (t < 55) {
+    // 35-55: Hold on Floor 1 — "Post-Hoc Salvage"
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y, 7);
+    target = new THREE.Vector3(0, floor1Y, 0);
+  } else if (t < 60) {
+    // 55-60: Pull back
+    const p = (t - 55) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor1Y = -5 + lobbyHeight + 0.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor1Y + ease * 4, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 65) {
+    // 60-65: Zoom to Floor 2
+    const p = (t - 60) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor2Y, 0);
+  } else if (t < 85) {
+    // 65-85: Hold on Floor 2 — "Firewall Collapse"
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y, 7);
+    target = new THREE.Vector3(0, floor2Y, 0);
+  } else if (t < 90) {
+    // 85-90: Pull back
+    const p = (t - 85) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor2Y = -5 + lobbyHeight + 1.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor2Y + ease * 3, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 95) {
+    // 90-95: Zoom to Floor 3
+    const p = (t - 90) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor3Y, 0);
+  } else if (t < 115) {
+    // 95-115: Hold on Floor 3 — "Committee Bypass"
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y, 7);
+    target = new THREE.Vector3(0, floor3Y, 0);
+  } else if (t < 120) {
+    // 115-120: Pull back
+    const p = (t - 115) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor3Y = -5 + lobbyHeight + 2.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor3Y + ease * 2, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 125) {
+    // 120-125: Zoom to Floor 4
+    const p = (t - 120) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor4Y, 0);
+  } else if (t < 145) {
+    // 125-145: Hold on Floor 4 — "Surrogate Substitution"
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y, 7);
+    target = new THREE.Vector3(0, floor4Y, 0);
+  } else if (t < 150) {
+    // 145-150: Pull back
+    const p = (t - 145) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor4Y = -5 + lobbyHeight + 3.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor4Y + ease * 2, 7 + ease * 18);
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 155) {
+    // 150-155: Zoom to Floor 5
+    const p = (t - 150) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const floor5Y = -5 + lobbyHeight + 4.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor5Y, 15 - ease * 8);
+    target = new THREE.Vector3(0, floor5Y, 0);
+  } else if (t < 175) {
+    // 155-175: Hold on Floor 5 — "External Correction"
+    const floor5Y = -5 + lobbyHeight + 4.5 * floorHeight;
+    pos = new THREE.Vector3(0, floor5Y, 7);
+    target = new THREE.Vector3(0, floor5Y, 0);
+  } else if (t < 180) {
+    // 175-180: Pull back, rotate to side
+    const p = (t - 175) / 5;
+    const ease = p * p * (3 - 2 * p);
+    const angle = ease * (20 * Math.PI / 180);
+    pos = new THREE.Vector3(
+      Math.sin(angle) * 30,
+      8,
+      Math.cos(angle) * 30
+    );
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 200) {
+    // 180-200: Side view, building at max stress
+    pos = new THREE.Vector3(
+      Math.sin(20 * Math.PI / 180) * 30,
+      8,
+      Math.cos(20 * Math.PI / 180) * 30
+    );
+    target = new THREE.Vector3(0, 4, 0);
+  } else if (t < 230) {
+    // 200-230: Intervention begins, hold side view
+    pos = new THREE.Vector3(
+      Math.sin(20 * Math.PI / 180) * 30,
+      8,
+      Math.cos(20 * Math.PI / 180) * 30
+    );
+    target = new THREE.Vector3(0, 3, 0);
+  } else if (t < 260) {
+    // 230-260: Beams complete, rotate back to front
+    const p = (t - 230) / 30;
+    const ease = p * p * (3 - 2 * p);
+    const angle = (1 - ease) * (20 * Math.PI / 180);
+    pos = new THREE.Vector3(
+      Math.sin(angle) * 32,
+      8,
+      Math.cos(angle) * 32
+    );
+    target = new THREE.Vector3(0, 4, 0);
+  } else {
+    // 260-300: Final wide shot with repair visible
+    const p = Math.min((t - 260) / 40, 1);
+    const ease = p * p * (3 - 2 * p);
+    pos = new THREE.Vector3(0, 10 + ease * 5, 35 + ease * 15);
+    target = new THREE.Vector3(0, 4, 0);
+  }
+
+  return { position: pos, target: target };
 }
 
 // ============================================
-// BUILDING LEAN ANIMATION
+// BUILDING LEAN
 // ============================================
 function updateBuildingLean(t) {
-  // Building leans during 60-180s, then straightens 240-270s
   let leanAngle = 0;
 
-  if (t >= 60 && t < 180) {
-    const p = Math.min((t - 60) / 30, 1);
+  if (t >= 150 && t < 180) {
+    const p = Math.min((t - 150) / 20, 1);
     const ease = p * p * (3 - 2 * p);
-    leanAngle = ease * 0.08; // max lean
-  } else if (t >= 180 && t < 240) {
-    leanAngle = 0.08; // hold
-  } else if (t >= 240 && t < 270) {
-    const p = (t - 240) / 30;
+    leanAngle = ease * 0.06;
+  } else if (t >= 180 && t < 230) {
+    leanAngle = 0.06;
+  } else if (t >= 230 && t < 260) {
+    const p = (t - 230) / 30;
     const ease = p * p * (3 - 2 * p);
-    leanAngle = 0.08 * (1 - ease);
+    leanAngle = 0.06 * (1 - ease);
   }
 
   building.rotation.z = leanAngle;
 }
 
 // ============================================
-// WINDOW DARKENING — floor by floor
+// WINDOW DARKENING
 // ============================================
 function updateWindows(t) {
-  // Floor 1 darkens 25-60s, Floor 2 at 60-90s, etc.
-  const floorTimes = [25, 60, 90, 120, 150, 180];
+  const floorTimes = [25, 55, 85, 115, 145, 175];
 
   for (let f = 0; f < floorWindows.length; f++) {
     const startDark = floorTimes[f] || 25;
-    const endDark = startDark + 30;
+    const endDark = startDark + 25;
 
     let darkAmount = 0;
     if (t > startDark) {
-      const p = Math.min((t - startDark) / 30, 1);
+      const p = Math.min((t - startDark) / 25, 1);
       darkAmount = p * p * (3 - 2 * p);
     }
 
     floorWindows[f].forEach(win => {
-      const r = 0.78 + (0.1 - 0.78) * darkAmount;
-      const g = 0.85 + (0.16 - 0.85) * darkAmount;
-      const b = 0.91 + (0.19 - 0.91) * darkAmount;
+      const r = 0.85 + (0.07 - 0.85) * darkAmount;
+      const g = 0.90 + (0.13 - 0.90) * darkAmount;
+      const b = 0.94 + (0.13 - 0.94) * darkAmount;
       win.material.color.setRGB(r, g, b);
-      win.material.opacity = 0.6 * (1 - darkAmount * 0.7);
+      win.material.opacity = 0.5 * (1 - darkAmount * 0.65);
     });
   }
 }
 
 // ============================================
-// UI LABEL MANAGEMENT
+// UI LABELS
 // ============================================
 function updateLabels(t) {
   const labelTimes = {
-    'fl-foundation': { start: 5, end: 300 },
-    'fl1': { start: 25, end: 300 },
-    'fl2': { start: 60, end: 300 },
-    'fl3': { start: 90, end: 300 },
-    'fl4': { start: 120, end: 300 },
-    'fl5': { start: 150, end: 300 },
-    'bl-left': { start: 210, end: 300 },
-    'bl-right': { start: 240, end: 300 },
-    'bl-center': { start: 255, end: 300 },
-    'anchor': { start: 270, end: 300 }
+    'fl-foundation': { start: 8, end: 300 },
+    'fl1': { start: 35, end: 300 },
+    'fl2': { start: 65, end: 300 },
+    'fl3': { start: 95, end: 300 },
+    'fl4': { start: 125, end: 300 },
+    'fl5': { start: 155, end: 300 },
+    'bl-left': { start: 205, end: 300 },
+    'bl-right': { start: 230, end: 300 },
+    'bl-center': { start: 245, end: 300 },
+    'anchor': { start: 275, end: 300 }
   };
 
   for (const [id, times] of Object.entries(labelTimes)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (t >= times.start && t <= times.end) {
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
+  }
+
+  // Floor detail overlays
+  const detailTimes = {
+    'fd1': { start: 35, end: 55 },
+    'fd2': { start: 65, end: 85 },
+    'fd3': { start: 95, end: 115 },
+    'fd4': { start: 125, end: 145 },
+    'fd5': { start: 155, end: 175 }
+  };
+
+  for (const [id, times] of Object.entries(detailTimes)) {
     const el = document.getElementById(id);
     if (!el) continue;
     if (t >= times.start && t <= times.end) {
@@ -682,29 +1083,23 @@ function updateProgress(t) {
 
   const mins = Math.floor(t / 60);
   const secs = Math.floor(t % 60);
-  const totalMins = Math.floor(TOTAL_DURATION / 60);
-  const totalSecs = Math.floor(TOTAL_DURATION % 60);
   document.getElementById('timer').textContent = 
-    `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / ${String(totalMins).padStart(2,'0')}:${String(totalSecs).padStart(2,'0')}`;
+    `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 05:00`;
 }
 
-// ============================================
-// DOOR TITLE
-// ============================================
 function updateDoorTitle(t) {
   const title = document.getElementById('door-title');
-  if (t < 3) {
+  if (t < 4) {
     title.classList.add('visible');
-  } else if (t > 5) {
+  } else if (t > 6) {
     title.classList.remove('visible');
   }
 }
 
 // ============================================
-// MAIN ANIMATION LOOP
+// MAIN LOOP
 // ============================================
 const clock = new THREE.Clock();
-let lastTime = 0;
 
 function animate() {
   animationId = requestAnimationFrame(animate);
@@ -723,10 +1118,8 @@ function animate() {
 
   // Camera
   const camState = getCameraState(t);
-  camera.position.lerp(camState.position, 0.05);
+  camera.position.lerp(camState.position, 0.04);
   camera.lookAt(camState.target);
-  camera.fov = camState.fov;
-  camera.updateProjectionMatrix();
 
   // Building lean
   updateBuildingLean(t);
@@ -736,38 +1129,49 @@ function animate() {
 
   // Cracks
   cracks.forEach(crack => {
-    if (t >= crack.startTime && t <= crack.endTime + 10) {
+    if (t >= crack.startTime && t <= crack.endTime + 15) {
       const p = Math.min((t - crack.startTime) / (crack.endTime - crack.startTime), 1);
       const ease = p * p * (3 - 2 * p);
-      // Fade in then hold
-      crack.mesh.material.opacity = Math.min(ease * 0.9, 0.7);
-      // Glow pulse
+      crack.mesh.material.opacity = Math.min(ease * crack.glowIntensity, 0.7);
       crack.mesh.material.emissive = new THREE.Color(0x6db3d4);
-      crack.mesh.material.emissiveIntensity = 0.3 + Math.sin(t * 3) * 0.1;
+      crack.mesh.material.emissiveIntensity = 0.2 + Math.sin(t * 2.5) * 0.08;
     }
   });
 
   // Beams
   beams.forEach(beam => {
-    if (t >= beam.startTime && t <= beam.endTime + 20) {
+    if (t >= beam.startTime && t <= beam.endTime + 25) {
       const p = Math.min((t - beam.startTime) / (beam.endTime - beam.startTime), 1);
       const ease = p * p * (3 - 2 * p);
-      beam.mesh.scale.y = ease;
-      beam.mesh.material.emissiveIntensity = 0.2 + ease * 0.5;
+      beam.mesh.scale.set(ease, ease, ease);
+      beam.mesh.traverse(child => {
+        if (child.material && child.material.emissiveIntensity !== undefined) {
+          child.material.emissiveIntensity = 0.15 + ease * 0.4;
+        }
+      });
     }
   });
 
-  // Foundation glow during intervention
+  // Foundation glow
   if (t >= 180 && t <= 300) {
     const p = Math.min((t - 180) / 60, 1);
-    foundationGlow.intensity = p * 2;
+    foundationGlow.intensity = p * 2.5;
   }
 
-  // Life inside — flicker
+  // Warning light blink
+  const warningBlink = Math.sin(t * 3) > 0 ? 0.8 : 0.3;
+  building.children.forEach(child => {
+    if (child.geometry && child.geometry.type === 'SphereGeometry' && 
+        child.material.color.r > 0.5) {
+      child.material.opacity = warningBlink;
+    }
+  });
+
+  // Interior light flicker
   building.traverse(child => {
     if (child.userData && child.userData.flickerSpeed) {
-      const flicker = Math.sin(t * child.userData.flickerSpeed + child.userData.flickerOffset);
-      child.material.opacity = child.userData.baseOpacity + flicker * 0.1;
+      const flicker = Math.sin(t * child.userData.flickerSpeed + child.userData.offset);
+      child.material.opacity = child.userData.baseOpacity + flicker * 0.08;
     }
   });
 
@@ -779,9 +1183,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// ============================================
-// CONTROLS
-// ============================================
+// Controls
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
     e.preventDefault();
@@ -799,27 +1201,20 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Click to start
 container.addEventListener('click', () => {
   if (!isPlaying && elapsed === 0) {
     isPlaying = true;
   }
 });
 
-// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Start
 animate();
-
-// Auto-start after 1s
-setTimeout(() => {
-  isPlaying = true;
-}, 1000);
+setTimeout(() => { isPlaying = true; }, 1200);
 
 </script>
 </body>
