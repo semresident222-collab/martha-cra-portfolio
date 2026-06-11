@@ -1,911 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MetaVoxa CRA Portfolio — Door 2: KEYNOTE-991</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #0a1410;
-    overflow: hidden;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    color: #e8ddd0;
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaVoxa CRA Portfolio — Door 1: ADUHELM</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0d1520;
+      color: #e8ddd0;
+      font-family: 'Georgia', serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-  /* ============================================
-     SCENE CONTAINER
-     ============================================ */
-  #scene {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    overflow: hidden;
-    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* Full-screen video container */
+    #video-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
 
-  /* ============================================
-     BACKGROUND ATMOSPHERE
-     ============================================ */
-  .bg-atmosphere {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(ellipse at 50% 30%, rgba(45,90,61,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 70%, rgba(74,122,150,0.05) 0%, transparent 50%);
-    pointer-events: none;
-  }
+    #video-stage iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-  /* ============================================
-     WILLOW TREE — SVG layered
-     ============================================ */
-  .tree-layer {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px;
-    height: 700px;
-    z-index: 10;
-  }
+    /* UI overlay — minimal, non-intrusive */
+    #ui-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
 
-  /* Canopy — upper branches */
-  #tree-canopy {
-    z-index: 15;
-  }
-  #tree-canopy svg {
-    width: 100%; height: 100%;
-    filter: drop-shadow(0 0 30px rgba(45,90,61,0.1));
-  }
+    /* Top: Door identity */
+    .door-header {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .door-header.visible {
+      opacity: 1;
+    }
+    .door-header h1 {
+      font-size: 11px;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: rgba(232,221,208,0.4);
+      font-weight: 400;
+    }
+    .door-header h2 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #e8ddd0;
+      letter-spacing: 4px;
+      margin-top: 8px;
+    }
 
-  /* Trunk */
-  #tree-trunk {
-    z-index: 12;
-  }
-  #tree-trunk svg {
-    width: 100%; height: 100%;
-  }
+    /* Bottom: PDF access + navigation */
+    .door-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .door-footer.visible {
+      opacity: 1;
+    }
 
-  /* ============================================
-     UNDERGROUND — soil cross-section
-     ============================================ */
-  .underground {
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 45%;
-    z-index: 5;
-    overflow: hidden;
-  }
+    .pdf-access {
+      pointer-events: auto;
+    }
+    .pdf-access a {
+      color: rgba(232,221,208,0.35);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.6s ease;
+    }
+    .pdf-access a:hover {
+      color: #e8ddd0;
+    }
 
-  .soil-surface {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 3px;
-    background: linear-gradient(90deg, #1a2a1a, #2d3d2d, #1a2a1a);
-    z-index: 8;
-  }
+    .door-nav {
+      display: flex;
+      gap: 20px;
+      pointer-events: auto;
+    }
+    .door-nav a {
+      color: rgba(232,221,208,0.35);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.6s ease;
+    }
+    .door-nav a:hover {
+      color: #e8ddd0;
+    }
 
-  .soil-layer {
-    position: absolute;
-    top: 3px; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(to bottom, 
-      #1a2518 0%, 
-      #0f1a0d 30%, 
-      #0a1208 60%, 
-      #050a04 100%);
-  }
+    /* Progress bar */
+    #progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: #b87b4f;
+      width: 0%;
+      transition: width 0.1s linear;
+      z-index: 20;
+    }
 
-  /* Root system */
-  #root-system {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 500px;
-    height: 100%;
-    z-index: 6;
-  }
-  #root-system svg {
-    width: 100%; height: 100%;
-  }
-  .root-path {
-    fill: none;
-    stroke: #2d5a3d;
-    stroke-width: 3;
-    stroke-linecap: round;
-    opacity: 0.6;
-    transition: stroke 3s ease, opacity 3s ease;
-  }
-  .root-path.infected {
-    stroke: #c44b2b;
-    opacity: 0.9;
-    filter: drop-shadow(0 0 8px rgba(196,75,43,0.4));
-  }
-  .root-path.healed {
-    stroke: #b87b4f;
-    opacity: 0.8;
-    filter: drop-shadow(0 0 6px rgba(184,123,79,0.3));
-  }
+    /* Timer */
+    #timer {
+      position: fixed;
+      bottom: 6px;
+      left: 24px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: rgba(232,221,208,0.2);
+      font-family: 'Courier New', monospace;
+      z-index: 20;
+    }
 
-  /* Root labels */
-  .root-label {
-    position: absolute;
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(196,75,43,0.6);
-    opacity: 0;
-    transition: opacity 2s ease;
-    white-space: nowrap;
-  }
-  .root-label.visible { opacity: 1; }
-
-  /* ============================================
-     DASHBOARD OVERLAY — translucent clinical data
-     ============================================ */
-  .dashboard-layer {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 3s ease;
-  }
-  .dashboard-layer.visible {
-    opacity: 1;
-  }
-
-  /* Kaplan-Meier curves */
-  .km-curve {
-    position: absolute;
-    width: 200px;
-    height: 120px;
-    border: 1px solid rgba(168,200,216,0.15);
-    background: rgba(10,20,16,0.4);
-  }
-  .km-curve .curve-line {
-    position: absolute;
-    bottom: 20px; left: 20px;
-    width: 160px;
-    height: 80px;
-  }
-  .km-curve .curve-pembro {
-    stroke: #4a7a96;
-    stroke-width: 2;
-    fill: none;
-    opacity: 0.6;
-  }
-  .km-curve .curve-placebo {
-    stroke: #666666;
-    stroke-width: 2;
-    fill: none;
-    opacity: 0.5;
-    stroke-dasharray: 4,3;
-  }
-  .km-curve .dmc-line {
-    position: absolute;
-    left: 45%;
-    top: 10%;
-    width: 1px;
-    height: 80%;
-    background: #e03030;
-    opacity: 0.7;
-  }
-  .km-curve .dmc-label {
-    position: absolute;
-    left: 48%;
-    top: 5%;
-    font-size: 8px;
-    color: #e03030;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0.8;
-  }
-  .km-curve .tail-label {
-    position: absolute;
-    right: 10px;
-    bottom: 30px;
-    font-size: 9px;
-    color: rgba(232,221,208,0.4);
-    font-style: italic;
-  }
-
-  /* Dose intensity bar */
-  .dose-bar {
-    position: absolute;
-    width: 180px;
-    height: 8px;
-    background: rgba(26,37,48,0.5);
-    border: 1px solid rgba(74,122,150,0.2);
-  }
-  .dose-bar .dose-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4a7a96, #6db3d4);
-    width: 66.6%;
-    transition: width 4s ease;
-    opacity: 0.5;
-  }
-  .dose-bar .dose-label {
-    position: absolute;
-    top: -16px;
-    font-size: 8px;
-    color: rgba(168,200,216,0.5);
-    letter-spacing: 1px;
-  }
-
-  /* Discontinuation counter */
-  .discontinue-counter {
-    position: absolute;
-    font-size: 28px;
-    font-weight: 400;
-    color: #c44b2b;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 2px;
-    opacity: 0;
-    transition: opacity 2s ease;
-  }
-  .discontinue-counter.visible {
-    opacity: 0.7;
-  }
-  .discontinue-counter .counter-label {
-    font-size: 9px;
-    color: rgba(232,221,208,0.4);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  /* ============================================
-     INTERVENTION — copper treatment on roots
-     ============================================ */
-  .intervention-layer {
-    position: absolute;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 500px;
-    height: 45%;
-    z-index: 7;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 3s ease;
-  }
-  .intervention-layer.visible {
-    opacity: 1;
-  }
-  .intervention-layer svg {
-    width: 100%; height: 100%;
-  }
-  .treatment-path {
-    fill: none;
-    stroke: #b87b4f;
-    stroke-width: 4;
-    stroke-linecap: round;
-    opacity: 0;
-    transition: opacity 2s ease;
-  }
-  .treatment-path.visible {
-    opacity: 0.7;
-  }
-
-  /* ============================================
-     CAMERA STATES
-     ============================================ */
-  .scene-aerial {
-    transform: scale(1) translate(0, 0);
-  }
-  .scene-descend-canopy {
-    transform: scale(1.3) translate(0, 50px);
-  }
-  .scene-dashboard {
-    transform: scale(1.1) translate(0, 0);
-  }
-  .scene-soil-surface {
-    transform: scale(1.5) translate(0, 150px);
-  }
-  .scene-underground {
-    transform: scale(2) translate(0, 250px);
-  }
-  .scene-infected-root {
-    transform: scale(2.5) translate(-30px, 280px);
-  }
-  .scene-track-up {
-    transform: scale(1.8) translate(0, 100px);
-  }
-  .scene-surface-return {
-    transform: scale(1.3) translate(0, 50px);
-  }
-  .scene-intervention {
-    transform: scale(2) translate(0, 250px);
-  }
-  .scene-aerial-final {
-    transform: scale(0.9) translate(0, 0);
-  }
-
-  /* ============================================
-     LEAF ANIMATION — canopy losing/gaining leaves
-     ============================================ */
-  .leaf {
-    position: absolute;
-    width: 8px;
-    height: 4px;
-    background: #2d5a3d;
-    border-radius: 50% 0;
-    opacity: 0.6;
-    transition: opacity 4s ease, transform 4s ease;
-  }
-  .leaf.falling {
-    opacity: 0;
-    transform: translateY(100px) rotate(180deg);
-  }
-  .leaf.returning {
-    opacity: 0.6;
-    transform: translateY(0) rotate(0);
-  }
-
-  /* ============================================
-     UI LAYER
-     ============================================ */
-  #ui-layer {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100;
-    pointer-events: none;
-  }
-
-  .label {
-    position: absolute;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 2.5s ease;
-    pointer-events: none;
-    text-shadow: 0 0 30px rgba(10,20,16,1), 0 0 60px rgba(10,20,16,0.8);
-  }
-  .label.visible { opacity: 1; }
-  .root-label-ui {
-    color: #c44b2b;
-    font-weight: 400;
-    font-size: 10px;
-    letter-spacing: 2px;
-  }
-  .treatment-label-ui {
-    color: #b87b4f;
-    font-weight: 400;
-    font-size: 10px;
-    letter-spacing: 2px;
-  }
-  .anchor-phrase {
-    position: absolute;
-    bottom: 16%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 17px;
-    font-style: italic;
-    color: #e8ddd0;
-    opacity: 0;
-    transition: opacity 3s ease;
-    text-align: center;
-    max-width: 560px;
-    line-height: 1.7;
-    text-shadow: 0 0 40px rgba(10,20,16,1), 0 0 80px rgba(10,20,16,0.9);
-  }
-  .anchor-phrase.visible { opacity: 1; }
-  .cta {
-    position: absolute;
-    bottom: 24px;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(232,221,208,0.35);
-    transition: color 0.6s ease, opacity 0.6s ease;
-    pointer-events: auto;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .cta:hover { color: #e8ddd0; }
-  #cta-pdf { right: 24px; }
-  #cta-prev { right: 140px; }
-  #cta-next { right: 240px; opacity: 0.15; pointer-events: none; }
-  .door-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 2.5s ease;
-    z-index: 20;
-  }
-  .door-title.visible { opacity: 1; }
-  .door-title h1 {
-    font-size: 13px;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    color: rgba(232,221,208,0.4);
-    margin-bottom: 20px;
-    font-weight: 400;
-  }
-  .door-title h2 {
-    font-size: 36px;
-    font-weight: 400;
-    color: #e8ddd0;
-    letter-spacing: 4px;
-    line-height: 1.2;
-  }
-  .door-title h3 {
-    font-size: 14px;
-    color: rgba(232,221,208,0.35);
-    margin-top: 16px;
-    font-weight: 400;
-    font-style: italic;
-    letter-spacing: 1px;
-  }
-  #progress-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background: #b87b4f;
-    width: 0%;
-    transition: width 0.1s linear;
-    z-index: 200;
-  }
-  #timer {
-    position: fixed;
-    bottom: 6px;
-    left: 24px;
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: rgba(232,221,208,0.2);
-    z-index: 200;
-    font-family: 'Courier New', monospace;
-  }
-
-  /* ============================================
-     AMBIENT EFFECTS
-     ============================================ */
-  .forest-breath {
-    position: absolute;
-    width: 100%; height: 100%;
-    background: radial-gradient(ellipse at 50% 50%, rgba(45,90,61,0.03) 0%, transparent 70%);
-    animation: forestBreath 8s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes forestBreath {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-  }
-
-  .floating-particle {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: rgba(109,179,212,0.2);
-    border-radius: 50%;
-    animation: particleFloat 20s linear infinite;
-  }
-  @keyframes particleFloat {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 0.4; }
-    90% { opacity: 0.4; }
-    100% { transform: translateY(-400px) translateX(100px); opacity: 0; }
-  }
-</style>
-<base target="_blank">
+    /* Click to start overlay */
+    #start-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,21,32,0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 0.8s ease;
+    }
+    #start-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #start-overlay h2 {
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(232,221,208,0.6);
+      margin-bottom: 16px;
+    }
+    #start-overlay p {
+      font-size: 12px;
+      color: rgba(232,221,208,0.35);
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
 
-<div id="scene">
-  <div class="bg-atmosphere"></div>
-  <div class="forest-breath"></div>
+  <!-- Video Stage -->
+  <div id="video-stage">
+    <iframe 
+      src="https://player.vimeo.com/video/1200536217?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0&muted=1&background=1" 
+      allow="autoplay; fullscreen; picture-in-picture" 
+      referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+  </div>
 
-  <!-- Floating particles -->
-  <div class="floating-particle" style="left:20%; top:80%; animation-delay:0s;"></div>
-  <div class="floating-particle" style="left:60%; top:70%; animation-delay:7s;"></div>
-  <div class="floating-particle" style="left:40%; top:60%; animation-delay:14s;"></div>
-  <div class="floating-particle" style="left:80%; top:50%; animation-delay:3s;"></div>
-  <div class="floating-particle" style="left:30%; top:40%; animation-delay:10s;"></div>
-
-  <!-- Underground section -->
-  <div class="underground" id="underground">
-    <div class="soil-layer"></div>
-    <div class="soil-surface"></div>
-
-    <!-- Root system SVG -->
-    <div id="root-system">
-      <svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMin meet">
-        <!-- Main taproot -->
-        <path class="root-path" id="root-main" d="M250,0 L250,30 L245,60 L255,90 L248,120 L252,150 L245,180 L250,210 L248,240 L252,270 L250,300" />
-        <!-- Primary lateral roots -->
-        <path class="root-path" id="root-lat1" d="M250,30 L200,50 L160,70 L120,100 L80,130 L50,160" />
-        <path class="root-path" id="root-lat2" d="M250,60 L300,80 L340,100 L380,130 L420,160 L450,190" />
-        <path class="root-path" id="root-lat3" d="M248,120 L190,140 L150,170 L110,200 L70,230" />
-        <path class="root-path" id="root-lat4" d="M252,150 L310,170 L350,200 L390,230 L430,260" />
-        <path class="root-path" id="root-lat5" d="M245,180 L200,210 L160,240 L120,270 L90,300" />
-        <!-- Fine rootlets -->
-        <path class="root-path" id="root-fine1" d="M200,50 L180,40 L170,55" />
-        <path class="root-path" id="root-fine2" d="M300,80 L320,70 L330,85" />
-        <path class="root-path" id="root-fine3" d="M160,70 L140,60 L130,75" />
-        <path class="root-path" id="root-fine4" d="M340,100 L360,90 L370,105" />
-        <path class="root-path" id="root-fine5" d="M120,100 L100,90 L90,105" />
-        <path class="root-path" id="root-fine6" d="M380,130 L400,120 L410,135" />
-      </svg>
+  <!-- UI Layer -->
+  <div id="ui-layer">
+    <div class="door-header" id="door-header">
+      <h1>Door 01</h1>
+      <h2>ADUHELM</h2>
     </div>
 
-    <!-- Root labels -->
-    <div class="root-label" id="rl-infected" style="left:55%; top:25%;">Constant hazard assumption</div>
-    <div class="root-label" id="rl-secondary" style="left:30%; top:45%;">Discontinuation ≠ tolerability</div>
-    <div class="root-label" id="rl-third" style="left:65%; top:55%;">Rechallenge literature ignored</div>
-
-    <!-- Intervention layer -->
-    <div class="intervention-layer" id="intervention-layer">
-      <svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMin meet">
-        <!-- Treatment wrapping infected root -->
-        <path class="treatment-path" id="treat-main" d="M250,0 L255,30 L250,60 L260,90 L255,120 L265,150 L258,180 L262,210 L258,240 L265,270 L260,300" />
-        <path class="treatment-path" id="treat-lat1" d="M250,30 L205,50 L165,70 L125,100 L85,130 L55,160" />
-        <path class="treatment-path" id="treat-lat2" d="M250,60 L305,80 L345,100 L385,130 L425,160 L455,190" />
-        <path class="treatment-path" id="treat-lat3" d="M248,120 L195,140 L155,170 L115,200 L75,230" />
-        <path class="treatment-path" id="treat-lat4" d="M252,150 L315,170 L355,200 L395,230 L435,260" />
-        <path class="treatment-path" id="treat-lat5" d="M245,180 L205,210 L165,240 L125,270 L95,300" />
-      </svg>
+    <div class="door-footer" id="door-footer">
+      <div class="pdf-access">
+        <a href="aduhelm-protocol.pdf" target="_blank">View Protocol PDF</a>
+      </div>
+      <div class="door-nav">
+        <a href="door-2.html">Next Door →</a>
+      </div>
     </div>
   </div>
 
-  <!-- Tree trunk -->
-  <div class="tree-layer" id="tree-trunk">
-    <svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid meet">
-      <!-- Main trunk -->
-      <path d="M330,350 Q340,280 335,220 Q330,160 340,120 Q345,100 350,90" 
-            fill="none" stroke="#3d2b1f" stroke-width="18" stroke-linecap="round"/>
-      <!-- Trunk texture lines -->
-      <path d="M335,340 Q338,300 332,260" fill="none" stroke="#2a1e15" stroke-width="2" opacity="0.4"/>
-      <path d="M342,320 Q345,280 338,240" fill="none" stroke="#2a1e15" stroke-width="2" opacity="0.4"/>
-      <path d="M338,200 Q342,170 335,140" fill="none" stroke="#2a1e15" stroke-width="2" opacity="0.4"/>
-      <!-- Lower trunk flare -->
-      <path d="M320,350 Q310,370 300,380" fill="none" stroke="#3d2b1f" stroke-width="12" stroke-linecap="round"/>
-      <path d="M360,350 Q370,370 380,380" fill="none" stroke="#3d2b1f" stroke-width="12" stroke-linecap="round"/>
-      <!-- Buttress roots -->
-      <path d="M330,350 Q310,400 290,420" fill="none" stroke="#3d2b1f" stroke-width="8" stroke-linecap="round"/>
-      <path d="M340,350 Q360,400 380,420" fill="none" stroke="#3d2b1f" stroke-width="8" stroke-linecap="round"/>
-    </svg>
+  <!-- Progress & Timer -->
+  <div id="progress-bar"></div>
+  <div id="timer">00:00 / 03:30</div>
+
+  <!-- Start Overlay -->
+  <div id="start-overlay" onclick="startPresentation()">
+    <h2>Click to Begin</h2>
+    <p>Full-screen video with spoken narration</p>
   </div>
 
-  <!-- Tree canopy -->
-  <div class="tree-layer" id="tree-canopy">
-    <svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid meet">
-      <!-- Main canopy mass -->
-      <ellipse cx="350" cy="120" rx="200" ry="80" fill="#1a3020" opacity="0.6"/>
-      <ellipse cx="280" cy="100" rx="120" ry="60" fill="#1e3525" opacity="0.5"/>
-      <ellipse cx="420" cy="100" rx="120" ry="60" fill="#1e3525" opacity="0.5"/>
-      <ellipse cx="350" cy="80" rx="150" ry="50" fill="#223a2a" opacity="0.4"/>
-      <!-- Weeping branches -->
-      <path d="M200,140 Q180,200 170,280 Q165,340 168,400" fill="none" stroke="#1e3525" stroke-width="3" opacity="0.5"/>
-      <path d="M250,160 Q230,220 220,300 Q218,360 222,420" fill="none" stroke="#1e3525" stroke-width="2.5" opacity="0.4"/>
-      <path d="M300,170 Q285,230 278,310 Q276,370 280,430" fill="none" stroke="#1e3525" stroke-width="2" opacity="0.4"/>
-      <path d="M400,170 Q415,230 422,310 Q424,370 420,430" fill="none" stroke="#1e3525" stroke-width="2" opacity="0.4"/>
-      <path d="M450,160 Q470,220 480,300 Q482,360 478,420" fill="none" stroke="#1e3525" stroke-width="2.5" opacity="0.4"/>
-      <path d="M500,140 Q520,200 530,280 Q535,340 532,400" fill="none" stroke="#1e3525" stroke-width="3" opacity="0.5"/>
-      <!-- Branch forks -->
-      <path d="M350,90 Q320,110 300,130" fill="none" stroke="#2a3d2a" stroke-width="4" opacity="0.5"/>
-      <path d="M350,90 Q380,110 400,130" fill="none" stroke="#2a3d2a" stroke-width="4" opacity="0.5"/>
-      <path d="M350,90 Q340,70 330,50" fill="none" stroke="#2a3d2a" stroke-width="3" opacity="0.4"/>
-      <path d="M350,90 Q360,70 370,50" fill="none" stroke="#2a3d2a" stroke-width="3" opacity="0.4"/>
-    </svg>
-  </div>
+  <script>
+    const TOTAL_DURATION = 210; // 3:30 for Door 3, adjust per door
+    let elapsed = 0;
+    let isPlaying = false;
+    let animationId;
 
-  <!-- Leaf particles (generated by JS) -->
-  <div id="leaf-container" style="position:absolute; top:0; left:0; width:100%; height:50%; z-index:16; pointer-events:none;"></div>
+    const iframe = document.querySelector('#video-stage iframe');
+    const progressBar = document.getElementById('progress-bar');
+    const timer = document.getElementById('timer');
+    const doorHeader = document.getElementById('door-header');
+    const doorFooter = document.getElementById('door-footer');
+    const startOverlay = document.getElementById('start-overlay');
 
-  <!-- Dashboard overlay -->
-  <div class="dashboard-layer" id="dashboard-layer">
-    <!-- KM Curve top-left -->
-    <div class="km-curve" style="top:8%; left:8%;">
-      <svg class="curve-line" viewBox="0 0 160 80">
-        <path class="curve-pembro" d="M0,10 Q30,12 50,20 Q70,35 90,50 Q110,65 130,72 Q145,76 160,78" />
-        <path class="curve-placebo" d="M0,10 Q40,15 70,25 Q100,40 120,55 Q140,68 160,75" />
-      </svg>
-      <div class="dmc-line"></div>
-      <div class="dmc-label">DMC STOP</div>
-      <div class="tail-label">"The tail never got to speak"</div>
-    </div>
+    function startPresentation() {
+      startOverlay.classList.add('hidden');
+      
+      // Request fullscreen
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
 
-    <!-- Dose intensity bar -->
-    <div class="dose-bar" style="top:8%; right:12%;">
-      <div class="dose-label">DOSE INTENSITY</div>
-      <div class="dose-fill" id="dose-fill"></div>
-    </div>
+      // Show UI elements
+      setTimeout(() => {
+        doorHeader.classList.add('visible');
+        doorFooter.classList.add('visible');
+      }, 500);
 
-    <!-- Discontinuation counter -->
-    <div class="discontinue-counter" id="discontinue-counter" style="top:20%; right:12%;">
-      33.4%
-      <div class="counter-label">Discontinued</div>
-    </div>
+      // Start video
+      // Vimeo autoplay via postMessage (requires Froogaloop or Vimeo API)
+      // For simplicity, reload with autoplay=1
+      iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
 
-    <!-- Corrected monitoring architecture (ghosted, appears at end) -->
-    <div class="km-curve" id="corrected-arch" style="bottom:15%; left:50%; transform:translateX(-50%); opacity:0; transition:opacity 3s ease;">
-      <svg class="curve-line" viewBox="0 0 160 80">
-        <path class="curve-pembro" d="M0,10 Q20,12 40,15 Q60,20 80,28 Q100,38 120,50 Q140,62 160,70" style="stroke:#b87b4f; opacity:0.3;"/>
-        <path class="curve-placebo" d="M0,10 Q40,15 70,25 Q100,40 120,55 Q140,68 160,75" style="opacity:0.2;"/>
-      </svg>
-      <div style="position:absolute; bottom:-20px; left:0; font-size:8px; color:rgba(184,123,79,0.4); letter-spacing:1px; text-transform:uppercase;">Corrected Monitoring Architecture</div>
-    </div>
-  </div>
-</div>
-
-<!-- UI Layer -->
-<div id="ui-layer">
-  <div id="door-title" class="door-title">
-    <h1>Door 2</h1>
-    <h2>KEYNOTE-991</h2>
-    <h3>The Brakes Were Calibrated for a Different Kind of Drug</h3>
-  </div>
-
-  <div id="rl-infected-ui" class="label root-label-ui" style="bottom:30%; left:15%;">Constant hazard assumption</div>
-  <div id="rl-secondary-ui" class="label root-label-ui" style="bottom:22%; left:10%;">Discontinuation ≠ tolerability</div>
-  <div id="rl-third-ui" class="label root-label-ui" style="bottom:18%; right:15%;">Rechallenge literature ignored</div>
-
-  <div id="tl-adaptive" class="label treatment-label-ui" style="bottom:28%; left:20%;">ADAPTIVE FUTILITY BOUNDARY</div>
-  <div id="tl-dose" class="label treatment-label-ui" style="bottom:22%; right:20%;">DOSE-INTENSITY DASHBOARD</div>
-  <div id="tl-ipcw" class="label treatment-label-ui" style="bottom:15%; left:50%; transform:translateX(-50%);">IPCW-ADJUSTED ANALYSIS</div>
-
-  <div id="anchor" class="anchor-phrase">"The brakes were calibrated for a different kind of drug."</div>
-
-  <a id="cta-pdf" class="cta" href="#" onclick="alert('Protocol PDF — placeholder'); return false;">View Protocol PDF</a>
-  <a id="cta-prev" class="cta" href="#door1">← Previous Door</a>
-  <a id="cta-next" class="cta" href="#door3">Next Door →</a>
-</div>
-
-<div id="progress-bar"></div>
-<div id="timer">00:00 / 05:00</div>
-
-<script>
-const TOTAL_DURATION = 300;
-let elapsed = 0;
-let isPlaying = false;
-
-const scene = document.getElementById('scene');
-const dashboard = document.getElementById('dashboard-layer');
-const underground = document.getElementById('underground');
-const interventionLayer = document.getElementById('intervention-layer');
-const leafContainer = document.getElementById('leaf-container');
-const doseFill = document.getElementById('dose-fill');
-const discontinueCounter = document.getElementById('discontinue-counter');
-const correctedArch = document.getElementById('corrected-arch');
-
-// Generate leaves
-for (let i = 0; i < 40; i++) {
-  const leaf = document.createElement('div');
-  leaf.className = 'leaf';
-  leaf.style.left = (20 + Math.random() * 60) + '%';
-  leaf.style.top = (5 + Math.random() * 35) + '%';
-  leaf.style.transform = `rotate(${Math.random() * 360}deg)`;
-  leaf.dataset.idx = i;
-  leafContainer.appendChild(leaf);
-}
-
-function setSceneState(state) {
-  scene.className = '';
-  scene.classList.add(state);
-}
-
-function infectRoot(id) {
-  const root = document.getElementById(id);
-  if (root) root.classList.add('infected');
-}
-
-function healRoots() {
-  document.querySelectorAll('.root-path.infected').forEach(r => {
-    r.classList.remove('infected');
-    r.classList.add('healed');
-  });
-}
-
-function showTreatment(id) {
-  const treat = document.getElementById(id);
-  if (treat) treat.classList.add('visible');
-}
-
-function dropLeaves(count) {
-  const leaves = document.querySelectorAll('.leaf');
-  leaves.forEach((leaf, i) => {
-    if (i < count) {
-      leaf.classList.add('falling');
-      leaf.style.transitionDelay = (i * 0.1) + 's';
+      isPlaying = true;
+      animate();
     }
-  });
-}
 
-function returnLeaves() {
-  document.querySelectorAll('.leaf.falling').forEach(leaf => {
-    leaf.classList.remove('falling');
-    leaf.classList.add('returning');
-  });
-}
+    function animate() {
+      if (!isPlaying) return;
 
-function updateLabels(t) {
-  const times = {
-    'rl-infected-ui': [90, 300],
-    'rl-secondary-ui': [110, 300],
-    'rl-third-ui': [130, 300],
-    'tl-adaptive': [210, 300],
-    'tl-dose': [230, 300],
-    'tl-ipcw': [250, 300],
-    'anchor': [270, 300]
-  };
-  for (const [id, [start, end]] of Object.entries(times)) {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('visible', t >= start && t <= end);
-  }
+      elapsed += 0.1; // Approximate, replace with actual video time
+      if (elapsed > TOTAL_DURATION) {
+        elapsed = TOTAL_DURATION;
+        isPlaying = false;
+      }
 
-  // Root labels in underground
-  const rootLabels = {
-    'rl-infected': [90, 300],
-    'rl-secondary': [110, 300],
-    'rl-third': [130, 300]
-  };
-  for (const [id, [start, end]] of Object.entries(rootLabels)) {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('visible', t >= start && t <= end);
-  }
-}
+      // Update progress
+      const pct = (elapsed / TOTAL_DURATION) * 100;
+      progressBar.style.width = pct + '%';
 
-function updateProgress(t) {
-  document.getElementById('progress-bar').style.width = (t / TOTAL_DURATION * 100) + '%';
-  const m = Math.floor(t / 60), s = Math.floor(t % 60);
-  document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} / 05:00`;
-}
+      // Update timer
+      const mins = Math.floor(elapsed / 60);
+      const secs = Math.floor(elapsed % 60);
+      timer.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 03:30`;
 
-function updateDoorTitle(t) {
-  const title = document.getElementById('door-title');
-  title.classList.toggle('visible', t < 4);
-}
+      // Fade out header after 10 seconds
+      if (elapsed > 10) {
+        doorHeader.classList.remove('visible');
+      }
 
-// Main choreography
-function updateScene(t) {
-  // 0-5: Aerial canopy view
-  if (t < 5) {
-    setSceneState('scene-aerial');
-    dashboard.classList.remove('visible');
-  }
-  // 5-15: Slow descent through branches
-  else if (t < 15) {
-    setSceneState('scene-descend-canopy');
-    dashboard.classList.add('visible');
-  }
-  // 15-25: Dashboard data appears
-  else if (t < 25) {
-    setSceneState('scene-dashboard');
-    dashboard.classList.add('visible');
-  }
-  // 25-35: Reach soil surface
-  else if (t < 35) {
-    setSceneState('scene-soil-surface');
-    dashboard.classList.add('visible');
-    doseFill.style.width = '66.6%';
-  }
-  // 35-55: Underground, root system visible
-  else if (t < 55) {
-    setSceneState('scene-underground');
-    dashboard.classList.add('visible');
-    discontinueCounter.classList.add('visible');
-  }
-  // 55-85: Zoom to infected root
-  else if (t < 85) {
-    setSceneState('scene-infected-root');
-    dashboard.classList.add('visible');
-    infectRoot('root-main');
-    infectRoot('root-lat1');
-    dropLeaves(15);
-  }
-  // 85-115: Track infection upward
-  else if (t < 115) {
-    setSceneState('scene-track-up');
-    dashboard.classList.add('visible');
-    infectRoot('root-lat3');
-    infectRoot('root-lat5');
-    dropLeaves(25);
-    // Survival curve flatlines early
-    doseFill.style.width = '40%';
-  }
-  // 115-145: Surface return, tree diminished
-  else if (t < 145) {
-    setSceneState('scene-surface-return');
-    dashboard.classList.add('visible');
-    infectRoot('root-lat2');
-    infectRoot('root-lat4');
-    dropLeaves(35);
-    doseFill.style.width = '20%';
-  }
-  // 145-175: Pause at surface, diminished canopy
-  else if (t < 175) {
-    setSceneState('scene-surface-return');
-    dashboard.classList.add('visible');
-    dropLeaves(40);
-  }
-  // 175-205: Intervention — copper treatment on roots
-  else if (t < 205) {
-    setSceneState('scene-intervention');
-    dashboard.classList.add('visible');
-    interventionLayer.classList.add('visible');
-    showTreatment('treat-main');
-    showTreatment('treat-lat1');
-    showTreatment('treat-lat3');
-    showTreatment('treat-lat5');
-    healRoots();
-  }
-  // 205-235: Treatment spreads
-  else if (t < 235) {
-    setSceneState('scene-intervention');
-    dashboard.classList.add('visible');
-    interventionLayer.classList.add('visible');
-    showTreatment('treat-lat2');
-    showTreatment('treat-lat4');
-    returnLeaves();
-    correctedArch.style.opacity = '0.4';
-  }
-  // 235-265: Rise back through canopy
-  else if (t < 265) {
-    setSceneState('scene-descend-canopy');
-    dashboard.classList.add('visible');
-    interventionLayer.classList.add('visible');
-    returnLeaves();
-    doseFill.style.width = '66.6%';
-  }
-  // 265-300: Final aerial, corrected architecture ghosted
-  else {
-    setSceneState('scene-aerial-final');
-    dashboard.classList.add('visible');
-    interventionLayer.classList.add('visible');
-    correctedArch.style.opacity = '0.4';
-    returnLeaves();
-  }
-
-  updateLabels(t);
-  updateProgress(t);
-  updateDoorTitle(t);
-}
-
-// Animation loop
-let lastTime = 0;
-function loop(timestamp) {
-  if (!lastTime) lastTime = timestamp;
-  const delta = (timestamp - lastTime) / 1000;
-  lastTime = timestamp;
-
-  if (isPlaying) {
-    elapsed += delta;
-    if (elapsed > TOTAL_DURATION) {
-      elapsed = TOTAL_DURATION;
-      isPlaying = false;
+      animationId = requestAnimationFrame(animate);
     }
-  }
 
-  updateScene(elapsed);
-  requestAnimationFrame(loop);
-}
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying = !isPlaying;
+        if (isPlaying) animate();
+      }
+      if (e.code === 'ArrowRight') {
+        // Skip forward 10s (not precise without video API)
+        elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
+      }
+      if (e.code === 'ArrowLeft') {
+        elapsed = Math.max(elapsed - 10, 0);
+      }
+      if (e.code === 'KeyR') {
+        elapsed = 0;
+        isPlaying = false;
+        iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+        startOverlay.classList.remove('hidden');
+        doorHeader.classList.remove('visible');
+        doorFooter.classList.remove('visible');
+        progressBar.style.width = '0%';
+      }
+    });
 
-// Controls
-document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space') { e.preventDefault(); isPlaying = !isPlaying; }
-  if (e.code === 'ArrowRight') elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
-  if (e.code === 'ArrowLeft') elapsed = Math.max(elapsed - 10, 0);
-  if (e.code === 'KeyR') { elapsed = 0; isPlaying = false; }
-});
-
-document.getElementById('scene').addEventListener('click', () => {
-  if (!isPlaying && elapsed === 0) isPlaying = true;
-});
-
-// Start
-requestAnimationFrame(loop);
-setTimeout(() => { isPlaying = true; }, 1200);
-</script>
+    // Exit fullscreen handler
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        // Optional: pause when exiting fullscreen
+        isPlaying = false;
+      }
+    });
+  </script>
 </body>
 </html>
