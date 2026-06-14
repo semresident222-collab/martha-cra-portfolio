@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MetaVoxa CRA Portfolio — Door 2: KEYNOTE-991</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     body {
       background: #0d1520;
       color: #e8ddd0;
@@ -16,13 +17,9 @@
       overflow: hidden;
     }
 
-    /* Full-screen video container */
     #video-stage {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      inset: 0;
       z-index: 1;
     }
 
@@ -32,13 +29,9 @@
       border: none;
     }
 
-    /* UI overlay — minimal, non-intrusive */
     #ui-layer {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      inset: 0;
       z-index: 10;
       pointer-events: none;
       display: flex;
@@ -47,61 +40,41 @@
       padding: 24px;
     }
 
-    /* Top: Door identity */
-    .door-header {
+    .door-header,
+    .door-footer {
       opacity: 0;
       transition: opacity 1s ease;
     }
-    .door-header.visible {
+
+    .visible {
       opacity: 1;
     }
+
     .door-header h1 {
       font-size: 11px;
       letter-spacing: 8px;
       text-transform: uppercase;
       color: rgba(232,221,208,0.4);
-      font-weight: 400;
     }
+
     .door-header h2 {
       font-size: 28px;
-      font-weight: 400;
-      color: #e8ddd0;
       letter-spacing: 4px;
       margin-top: 8px;
     }
 
-    /* Bottom: PDF access + navigation */
     .door-footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-    .door-footer.visible {
-      opacity: 1;
     }
 
-    .pdf-access {
-      pointer-events: auto;
-    }
-    .pdf-access a {
-      color: rgba(232,221,208,0.35);
-      text-decoration: none;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: color 0.6s ease;
-    }
-    .pdf-access a:hover {
-      color: #e8ddd0;
-    }
-
+    .pdf-access,
     .door-nav {
-      display: flex;
-      gap: 20px;
       pointer-events: auto;
     }
+
+    .pdf-access a,
     .door-nav a {
       color: rgba(232,221,208,0.35);
       text-decoration: none;
@@ -110,11 +83,12 @@
       text-transform: uppercase;
       transition: color 0.6s ease;
     }
+
+    .pdf-access a:hover,
     .door-nav a:hover {
       color: #e8ddd0;
     }
 
-    /* Progress bar */
     #progress-bar {
       position: fixed;
       bottom: 0;
@@ -122,23 +96,19 @@
       height: 2px;
       background: #b87b4f;
       width: 0%;
-      transition: width 0.1s linear;
       z-index: 20;
     }
 
-    /* Timer */
     #timer {
       position: fixed;
       bottom: 6px;
       left: 24px;
       font-size: 10px;
-      letter-spacing: 1px;
       color: rgba(232,221,208,0.2);
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
       z-index: 20;
     }
 
-    /* Click to start overlay */
     #start-overlay {
       position: fixed;
       inset: 0;
@@ -151,36 +121,32 @@
       cursor: pointer;
       transition: opacity 0.8s ease;
     }
+
     #start-overlay.hidden {
       opacity: 0;
       pointer-events: none;
     }
+
     #start-overlay h2 {
-      font-size: 14px;
       letter-spacing: 4px;
-      text-transform: uppercase;
-      color: rgba(232,221,208,0.6);
       margin-bottom: 16px;
-    }
-    #start-overlay p {
-      font-size: 12px;
-      color: rgba(232,221,208,0.35);
-      font-style: italic;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Video Stage -->
+  <!-- VIDEO -->
   <div id="video-stage">
     <iframe 
-      src="https://player.vimeo.com/video/1200536217?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0&muted=1&background=1" 
-      allow="autoplay; fullscreen; picture-in-picture" 
-      referrerpolicy="strict-origin-when-cross-origin">
+      id="vimeo-player"
+      src="https://player.vimeo.com/video/1200536405?title=0&byline=0&portrait=0&autoplay=0&muted=1"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen>
     </iframe>
   </div>
 
-  <!-- UI Layer -->
+  <!-- UI -->
   <div id="ui-layer">
     <div class="door-header" id="door-header">
       <h1>Door 02</h1>
@@ -197,23 +163,21 @@
     </div>
   </div>
 
-  <!-- Progress & Timer -->
   <div id="progress-bar"></div>
   <div id="timer">00:00 / 03:30</div>
 
-  <!-- Start Overlay -->
+  <!-- START OVERLAY -->
   <div id="start-overlay" onclick="startPresentation()">
     <h2>Click to Begin</h2>
-    <p>Full-screen video with spoken narration</p>
+    <p>Full-screen video with narration</p>
   </div>
 
   <script>
-    const TOTAL_DURATION = 210; // 3:30 for Door 3, adjust per door
+    const TOTAL_DURATION = 210;
     let elapsed = 0;
     let isPlaying = false;
-    let animationId;
 
-    const iframe = document.querySelector('#video-stage iframe');
+    const player = document.getElementById('vimeo-player');
     const progressBar = document.getElementById('progress-bar');
     const timer = document.getElementById('timer');
     const doorHeader = document.getElementById('door-header');
@@ -222,22 +186,18 @@
 
     function startPresentation() {
       startOverlay.classList.add('hidden');
-      
-      // Request fullscreen
+
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       }
 
-      // Show UI elements
       setTimeout(() => {
         doorHeader.classList.add('visible');
         doorFooter.classList.add('visible');
       }, 500);
 
-      // Start video
-      // Vimeo autoplay via postMessage (requires Froogaloop or Vimeo API)
-      // For simplicity, reload with autoplay=1
-      <iframe src="https://player.vimeo.com/video/1200536405?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1920" height="1080" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Keynote"></iframe>;
+      // 🔥 START VIDEO
+      player.src = player.src.replace('autoplay=0', 'autoplay=1');
 
       isPlaying = true;
       animate();
@@ -246,61 +206,28 @@
     function animate() {
       if (!isPlaying) return;
 
-      elapsed += 0.1; // Approximate, replace with actual video time
+      elapsed += 0.1;
+
       if (elapsed > TOTAL_DURATION) {
         elapsed = TOTAL_DURATION;
         isPlaying = false;
       }
 
-      // Update progress
-      const pct = (elapsed / TOTAL_DURATION) * 100;
-      progressBar.style.width = pct + '%';
+      progressBar.style.width = (elapsed / TOTAL_DURATION) * 100 + '%';
 
-      // Update timer
       const mins = Math.floor(elapsed / 60);
       const secs = Math.floor(elapsed % 60);
-      timer.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 03:30`;
 
-      // Fade out header after 10 seconds
+      timer.textContent = 
+        `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 03:30`;
+
       if (elapsed > 10) {
         doorHeader.classList.remove('visible');
       }
 
-      animationId = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     }
-
-    // Keyboard controls
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        isPlaying = !isPlaying;
-        if (isPlaying) animate();
-      }
-      if (e.code === 'ArrowRight') {
-        // Skip forward 10s (not precise without video API)
-        elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
-      }
-      if (e.code === 'ArrowLeft') {
-        elapsed = Math.max(elapsed - 10, 0);
-      }
-      if (e.code === 'KeyR') {
-        elapsed = 0;
-        isPlaying = false;
-        iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
-        startOverlay.classList.remove('hidden');
-        doorHeader.classList.remove('visible');
-        doorFooter.classList.remove('visible');
-        progressBar.style.width = '0%';
-      }
-    });
-
-    // Exit fullscreen handler
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        // Optional: pause when exiting fullscreen
-        isPlaying = false;
-      }
-    });
   </script>
+
 </body>
 </html>
