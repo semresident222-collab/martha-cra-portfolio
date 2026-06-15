@@ -12,7 +12,8 @@
 
   <style>
     :root {
-      /* Door 1/3 palette — cinematic, atmospheric */
+      --hero-image: url("metavoxa-3doors-hero.png");
+
       --bg-deep: #0d1520;
       --bg-void: #080e14;
       --bg-surface: #111820;
@@ -76,7 +77,6 @@
       text-decoration: none;
     }
 
-    /* Atmospheric background — matches Door 1/3 depth */
     .lobby {
       min-height: 100vh;
       display: flex;
@@ -85,11 +85,13 @@
       align-items: center;
       padding: var(--space-xl);
       position: relative;
-      background:
-        radial-gradient(ellipse at 20% 0%, rgba(196, 149, 106, 0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 100%, rgba(109, 179, 212, 0.03) 0%, transparent 50%),
-        var(--bg-deep);
       overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(196, 149, 106, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(109, 179, 212, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(8, 14, 20, 0.75) 0%, rgba(8, 14, 20, 0.92) 100%),
+        var(--bg-deep);
     }
 
     .lobby::before {
@@ -97,17 +99,15 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 50% 50%, rgba(196, 149, 106, 0.02) 0%, transparent 60%);
+        linear-gradient(180deg, rgba(7, 12, 18, 0.44) 0%, rgba(7, 12, 18, 0.72) 100%),
+        var(--hero-image) center center / cover no-repeat;
+      transform: scale(1.02);
+      opacity: 0.48;
+      z-index: -2;
       pointer-events: none;
-      animation: breathe 8s ease-in-out infinite;
+      animation: breathe 10s ease-in-out infinite;
     }
 
-    @keyframes breathe {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.02); }
-    }
-
-    /* Structural grid overlay — architectural, like the building in Door 1 */
     .lobby::after {
       content: "";
       position: absolute;
@@ -116,16 +116,21 @@
         linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
       background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      z-index: -1;
       pointer-events: none;
     }
 
-    /* Header — centered, elevated, like the door title */
+    @keyframes breathe {
+      0%, 100% { opacity: 0.4; transform: scale(1.02); }
+      50% { opacity: 0.54; transform: scale(1.035); }
+    }
+
     .lobby-header {
       text-align: center;
       margin-bottom: var(--space-3xl);
       position: relative;
-      z-index: 1;
+      z-index: 2;
       animation: fadeInDown 1.2s ease forwards;
     }
 
@@ -136,7 +141,7 @@
       color: var(--text-cream);
       letter-spacing: -0.02em;
       margin-bottom: var(--space-sm);
-      text-shadow: 0 0 60px rgba(196, 149, 106, 0.08);
+      text-shadow: 0 0 60px rgba(196, 149, 106, 0.12);
     }
 
     .lobby-header .subtitle {
@@ -153,7 +158,7 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--amber-intense), transparent);
       margin: 0 auto;
-      opacity: 0.6;
+      opacity: 0.7;
     }
 
     .concept-statement {
@@ -166,12 +171,12 @@
       margin: 0 auto var(--space-3xl);
       line-height: 1.7;
       position: relative;
-      z-index: 1;
+      z-index: 2;
       animation: fadeIn 1.4s ease 0.3s both;
-      opacity: 0.8;
+      opacity: 0.86;
+      text-shadow: 0 0 25px rgba(0,0,0,0.35);
     }
 
-    /* Doors — architectural, immersive, cinematic */
     .doors-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -179,16 +184,13 @@
       max-width: 1200px;
       width: 100%;
       position: relative;
-      z-index: 1;
+      z-index: 2;
       perspective: 1200px;
     }
 
     .door-threshold {
       position: relative;
       aspect-ratio: 2 / 3;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 40%),
-        var(--bg-surface);
       border: 1px solid var(--amber-border);
       display: flex;
       flex-direction: column;
@@ -201,29 +203,34 @@
       opacity: 0;
       transform: translateY(24px) rotateX(2deg);
       transform-origin: center bottom;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(7, 12, 18, 0.26) 30%, rgba(7, 12, 18, 0.82) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        0 8px 30px rgba(0, 0, 0, 0.26);
+      isolation: isolate;
     }
 
-    /* Door interior glow — like the building windows in Door 1 */
     .door-threshold::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, transparent 50%, rgba(196, 149, 106, 0.06) 100%);
-      opacity: 0;
+        linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 35%, rgba(196, 149, 106, 0.08) 100%);
+      opacity: 0.75;
+      z-index: 0;
+      pointer-events: none;
       transition: opacity var(--transition-slow);
     }
 
-    /* Vertical accent line — structural, like the building columns */
     .door-threshold::after {
       content: "";
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 20%;
-      width: 1px;
-      background: linear-gradient(180deg, transparent, rgba(196, 149, 106, 0.15), transparent);
-      transition: opacity var(--transition-base);
+      inset: 0;
+      border: 1px solid rgba(255,255,255,0.02);
+      box-shadow: inset 0 0 0 1px rgba(196,149,106,0.06);
+      z-index: 3;
+      pointer-events: none;
     }
 
     .door-threshold:hover::before {
@@ -231,12 +238,55 @@
     }
 
     .door-threshold:hover {
-      border-color: rgba(196, 149, 106, 0.5);
+      border-color: rgba(196, 149, 106, 0.52);
       box-shadow:
-        0 12px 48px rgba(0, 0, 0, 0.5),
+        0 16px 56px rgba(0, 0, 0, 0.52),
         0 0 60px var(--amber-glow),
-        inset 0 0 40px rgba(196, 149, 106, 0.03);
+        inset 0 0 40px rgba(196, 149, 106, 0.04);
       transform: translateY(-6px) rotateX(0deg);
+    }
+
+    .door-visual {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background-repeat: no-repeat;
+      background-size: 300% 100%;
+      transition: transform var(--transition-slow), filter var(--transition-slow), opacity var(--transition-slow);
+      filter: saturate(0.92) brightness(0.9);
+    }
+
+    .door-threshold:hover .door-visual {
+      transform: scale(1.02);
+      filter: saturate(1.04) brightness(0.98);
+    }
+
+    .door-threshold[data-door="1"] .door-visual {
+      background-image:
+        linear-gradient(180deg, rgba(7,12,18,0.08) 0%, rgba(7,12,18,0.14) 30%, rgba(7,12,18,0.58) 100%),
+        var(--hero-image);
+      background-position: left center;
+    }
+
+    .door-threshold[data-door="2"] .door-visual {
+      background-image:
+        linear-gradient(180deg, rgba(7,12,18,0.04) 0%, rgba(7,12,18,0.18) 35%, rgba(7,12,18,0.58) 100%),
+        var(--hero-image);
+      background-position: center center;
+    }
+
+    .door-threshold[data-door="3"] .door-visual {
+      background-image:
+        linear-gradient(180deg, rgba(7,12,18,0.06) 0%, rgba(7,12,18,0.2) 35%, rgba(7,12,18,0.58) 100%),
+        var(--hero-image);
+      background-position: right center;
+    }
+
+    .door-copy {
+      position: relative;
+      z-index: 2;
     }
 
     .door-number {
@@ -246,9 +296,9 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       margin-bottom: var(--space-sm);
-      opacity: 0.6;
+      opacity: 0.7;
       position: relative;
-      z-index: 1;
+      z-index: 2;
       transition: color var(--transition-base);
     }
 
@@ -265,33 +315,37 @@
       margin-bottom: var(--space-xs);
       line-height: 1.2;
       position: relative;
-      z-index: 1;
+      z-index: 2;
       transition: color var(--transition-base);
+      text-shadow: 0 1px 10px rgba(0,0,0,0.24);
     }
 
     .door-subtitle {
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: var(--text-cream);
       line-height: 1.6;
       margin-bottom: var(--space-lg);
       position: relative;
-      z-index: 1;
-      transition: color var(--transition-base);
+      z-index: 2;
+      transition: color var(--transition-base), opacity var(--transition-base);
+      opacity: 0.82;
+      max-width: 95%;
+      text-shadow: 0 1px 14px rgba(0,0,0,0.28);
     }
 
     .door-threshold:hover .door-subtitle {
       color: var(--text-warm);
-      opacity: 0.9;
+      opacity: 0.96;
     }
 
     .door-indicator {
       width: 24px;
       height: 1px;
       background: var(--amber-dim);
-      opacity: 0.4;
+      opacity: 0.42;
       transition: all var(--transition-slow);
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .door-threshold:hover .door-indicator {
@@ -301,7 +355,6 @@
       box-shadow: 0 0 8px rgba(196, 149, 106, 0.3);
     }
 
-    /* Status states */
     .door-threshold[data-status="active"] {
       border-color: rgba(196, 149, 106, 0.35);
     }
@@ -312,18 +365,16 @@
 
     .door-threshold[data-status="preparing"] {
       cursor: default;
-      opacity: 0.65;
-      border-color: rgba(90, 107, 124, 0.2);
-    }
-
-    .door-threshold[data-status="preparing"]::before {
-      background: linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.015) 100%);
+      opacity: 0.72;
+      border-color: rgba(90, 107, 124, 0.28);
     }
 
     .door-threshold[data-status="preparing"]:hover {
-      transform: translateY(0) rotateX(2deg);
-      box-shadow: none;
-      border-color: rgba(90, 107, 124, 0.2);
+      transform: translateY(0) rotateX(0deg);
+      box-shadow:
+        0 10px 34px rgba(0, 0, 0, 0.34),
+        0 0 40px rgba(196,149,106,0.07);
+      border-color: rgba(90, 107, 124, 0.32);
     }
 
     .door-threshold[data-status="preparing"] .door-title::after {
@@ -340,12 +391,331 @@
       opacity: 0.7;
     }
 
-    /* Footer — minimal, like the door CTAs */
+    /* ---------- Door 1: cracks + opens ---------- */
+
+    .door-panels {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .door-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background-image:
+        linear-gradient(180deg, rgba(7,12,18,0.02) 0%, rgba(7,12,18,0.12) 35%, rgba(7,12,18,0.46) 100%),
+        var(--hero-image);
+      background-size: 300% 100%;
+      transition:
+        transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 700ms ease,
+        filter 500ms ease;
+      filter: brightness(0.92) saturate(0.92);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .door-panel--left {
+      left: 0;
+      background-position: left center;
+      transform-origin: left center;
+    }
+
+    .door-panel--right {
+      right: 0;
+      background-position: left center;
+      transform-origin: right center;
+    }
+
+    .door-crack {
+      position: absolute;
+      top: 8%;
+      bottom: 8%;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      z-index: 2;
+      opacity: 0.3;
+      background:
+        linear-gradient(180deg,
+          transparent 0%,
+          rgba(232, 221, 208, 0.8) 10%,
+          rgba(196, 149, 106, 0.92) 50%,
+          rgba(232, 221, 208, 0.82) 90%,
+          transparent 100%);
+      box-shadow:
+        0 0 10px rgba(196,149,106,0.28),
+        0 0 22px rgba(196,149,106,0.16);
+      transition: opacity 500ms ease, width 500ms ease, filter 500ms ease;
+    }
+
+    .door-crack::before,
+    .door-crack::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,149,106,0.85), transparent);
+      opacity: 0;
+      transition: opacity 400ms ease, transform 600ms ease;
+    }
+
+    .door-crack::before {
+      top: 24%;
+      transform: translateX(-50%) rotate(24deg) scaleX(0.35);
+    }
+
+    .door-crack::after {
+      bottom: 26%;
+      transform: translateX(-50%) rotate(-22deg) scaleX(0.35);
+    }
+
+    .door-threshold[data-door="1"]:hover .door-panel--left {
+      transform: translateX(-8%) rotateY(14deg);
+      box-shadow: -12px 0 26px rgba(0,0,0,0.34);
+      filter: brightness(1.02) saturate(1);
+    }
+
+    .door-threshold[data-door="1"]:hover .door-panel--right {
+      transform: translateX(8%) rotateY(-14deg);
+      box-shadow: 12px 0 26px rgba(0,0,0,0.34);
+      filter: brightness(1.02) saturate(1);
+    }
+
+    .door-threshold[data-door="1"]:hover .door-crack {
+      width: 5px;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 12px rgba(196,149,106,0.42));
+    }
+
+    .door-threshold[data-door="1"]:hover .door-crack::before,
+    .door-threshold[data-door="1"]:hover .door-crack::after {
+      opacity: 0.85;
+      transform: translateX(-50%) rotate(24deg) scaleX(1);
+    }
+
+    .door-threshold[data-door="1"]:hover .door-crack::after {
+      transform: translateX(-50%) rotate(-22deg) scaleX(1);
+    }
+
+    /* ---------- Door 2: willow branches grow leaves ---------- */
+
+    .willow-branches {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .branch {
+      position: absolute;
+      bottom: -2%;
+      width: 44%;
+      height: 94%;
+      opacity: 0.72;
+      transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 600ms ease;
+    }
+
+    .branch--left {
+      left: -4%;
+      border-left: 2px solid rgba(196,149,106,0.54);
+      border-radius: 65% 0 45% 0 / 78% 0 26% 0;
+      transform: scaleY(0.78) rotate(-6deg);
+      transform-origin: bottom left;
+    }
+
+    .branch--right {
+      right: -4%;
+      border-right: 2px solid rgba(196,149,106,0.54);
+      border-radius: 0 65% 0 45% / 0 78% 0 26%;
+      transform: scaleY(0.78) rotate(6deg);
+      transform-origin: bottom right;
+    }
+
+    .branch::before,
+    .branch::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 24px;
+      border-radius: 80% 20% 80% 20%;
+      background: rgba(182, 204, 144, 0);
+      box-shadow:
+        16px 42px 0 rgba(182, 204, 144, 0),
+        26px 84px 0 rgba(182, 204, 144, 0),
+        8px 132px 0 rgba(182, 204, 144, 0),
+        24px 182px 0 rgba(182, 204, 144, 0),
+        12px 232px 0 rgba(182, 204, 144, 0),
+        28px 276px 0 rgba(182, 204, 144, 0);
+      opacity: 0;
+      transform: scale(0.3);
+      transition:
+        opacity 500ms ease,
+        transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+        background 500ms ease,
+        box-shadow 500ms ease;
+    }
+
+    .branch--left::before {
+      top: 12%;
+      left: 10px;
+      transform-origin: center top;
+    }
+
+    .branch--left::after {
+      top: 22%;
+      left: 24px;
+      transform: scale(0.3) rotate(-14deg);
+      transform-origin: center top;
+    }
+
+    .branch--right::before {
+      top: 12%;
+      right: 10px;
+      transform: scale(0.3) rotate(180deg);
+      transform-origin: center top;
+    }
+
+    .branch--right::after {
+      top: 22%;
+      right: 24px;
+      transform: scale(0.3) rotate(194deg);
+      transform-origin: center top;
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--left,
+    .door-threshold[data-door="2"]:hover .branch--right {
+      opacity: 1;
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--left {
+      transform: scaleY(1.02) rotate(-2deg);
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--right {
+      transform: scaleY(1.02) rotate(2deg);
+    }
+
+    .door-threshold[data-door="2"]:hover .branch::before,
+    .door-threshold[data-door="2"]:hover .branch::after {
+      opacity: 0.95;
+      transform: scale(1);
+      background: rgba(182, 204, 144, 0.88);
+      box-shadow:
+        16px 42px 0 rgba(182, 204, 144, 0.82),
+        26px 84px 0 rgba(182, 204, 144, 0.78),
+        8px 132px 0 rgba(182, 204, 144, 0.8),
+        24px 182px 0 rgba(182, 204, 144, 0.78),
+        12px 232px 0 rgba(182, 204, 144, 0.82),
+        28px 276px 0 rgba(182, 204, 144, 0.76);
+      filter: drop-shadow(0 0 10px rgba(182, 204, 144, 0.22));
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--left::after {
+      transform: scale(1) rotate(-14deg);
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--right::before {
+      transform: scale(1) rotate(180deg);
+    }
+
+    .door-threshold[data-door="2"]:hover .branch--right::after {
+      transform: scale(1) rotate(194deg);
+    }
+
+    /* ---------- Door 3: silhouette + rotating faces ---------- */
+
+    .biometric-orbits {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .face-orbit {
+      position: absolute;
+      top: 18%;
+      right: 16%;
+      width: 88px;
+      height: 88px;
+      border: 1px dashed rgba(232,221,208,0);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 400ms ease, border-color 400ms ease;
+      transform-origin: center center;
+    }
+
+    .face-orbit--two {
+      width: 116px;
+      height: 116px;
+      top: 14%;
+      right: 11%;
+      animation-direction: reverse;
+    }
+
+    .face-orbit::before,
+    .face-orbit::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 28px;
+      border-radius: 48% 52% 42% 58% / 40% 46% 54% 60%;
+      background:
+        linear-gradient(180deg, rgba(232,221,208,0.95), rgba(184,123,79,0.72));
+      box-shadow:
+        0 0 12px rgba(232,221,208,0.12),
+        inset 0 0 6px rgba(255,255,255,0.18);
+      opacity: 0.92;
+    }
+
+    .face-orbit::before {
+      top: -10px;
+      left: 34px;
+    }
+
+    .face-orbit::after {
+      bottom: -12px;
+      left: 34px;
+      transform: rotate(180deg);
+    }
+
+    .face-orbit--two::before,
+    .face-orbit--two::after {
+      width: 14px;
+      height: 24px;
+      background:
+        linear-gradient(180deg, rgba(216,185,143,0.88), rgba(109,179,212,0.52));
+    }
+
+    .door-threshold[data-door="3"]:hover .face-orbit {
+      opacity: 0.92;
+      border-color: rgba(196,149,106,0.32);
+      animation: orbitSpin 6s linear infinite;
+    }
+
+    .door-threshold[data-door="3"]:hover .face-orbit--two {
+      animation-duration: 8s;
+    }
+
+    .door-threshold[data-door="3"]:hover .door-visual {
+      filter: saturate(1.04) brightness(1.02);
+    }
+
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+
     .lobby-footer {
       margin-top: var(--space-3xl);
       text-align: center;
       position: relative;
-      z-index: 1;
+      z-index: 2;
       animation: fadeIn 1.8s ease 0.6s both;
     }
 
@@ -355,7 +725,8 @@
       color: var(--text-slate);
       letter-spacing: 0.08em;
       line-height: 2;
-      opacity: 0.6;
+      opacity: 0.68;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.25);
     }
 
     .meta-link {
@@ -368,7 +739,6 @@
       text-shadow: 0 0 12px rgba(196, 149, 106, 0.2);
     }
 
-    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -385,25 +755,118 @@
       }
     }
 
-    /* Responsive */
+    /* ---------- Responsive: laptop / tablet / mobile ---------- */
+
+    @media (max-width: 1100px) {
+      .doors-container {
+        gap: var(--space-md);
+      }
+
+      .door-threshold {
+        padding: 1.5rem;
+      }
+    }
+
     @media (max-width: 768px) {
       .lobby {
         padding: var(--space-lg);
+        justify-content: flex-start;
+      }
+
+      .lobby::before {
+        background-position: center top;
+        opacity: 0.44;
+      }
+
+      .lobby-header {
+        margin-bottom: 2.25rem;
+      }
+
+      .concept-statement {
+        margin-bottom: 2.25rem;
       }
 
       .doors-container {
         grid-template-columns: 1fr;
-        max-width: 400px;
+        max-width: 460px;
         perspective: none;
       }
 
       .door-threshold {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 16 / 10;
         transform: none;
+        min-height: 260px;
       }
 
       .door-threshold:hover {
         transform: translateY(-4px);
+      }
+
+      .door-subtitle {
+        max-width: 100%;
+      }
+
+      .face-orbit {
+        top: 14%;
+        right: 14%;
+        width: 72px;
+        height: 72px;
+      }
+
+      .face-orbit::before,
+      .face-orbit::after {
+        left: 27px;
+      }
+
+      .face-orbit--two {
+        width: 96px;
+        height: 96px;
+        top: 11%;
+        right: 9%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .lobby {
+        padding: 1rem;
+      }
+
+      .lobby-header h1 {
+        font-size: clamp(1.8rem, 9vw, 2.4rem);
+      }
+
+      .lobby-header .subtitle {
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
+      }
+
+      .concept-statement {
+        font-size: 0.9rem;
+      }
+
+      .door-threshold {
+        padding: 1.15rem;
+        aspect-ratio: 4 / 3;
+        min-height: 280px;
+      }
+
+      .door-title {
+        font-size: 1.15rem;
+      }
+
+      .door-subtitle {
+        font-size: 0.78rem;
+        line-height: 1.55;
+      }
+
+      .branch {
+        width: 48%;
+      }
+    }
+
+    @media (hover: none) {
+      .door-threshold:hover {
+        transform: none;
       }
     }
 
@@ -411,6 +874,11 @@
       .lobby {
         min-height: auto;
         padding: 2rem;
+      }
+
+      .lobby::before,
+      .lobby::after {
+        display: none;
       }
 
       .doors-container {
@@ -444,30 +912,58 @@
 
     <section class="doors-container" aria-label="Portfolio case doors">
       <a href="door-1.html" class="door-threshold" data-status="active" data-door="1">
-        <div class="door-number">Door 01</div>
-        <h2 class="door-title">Aduhelm</h2>
-        <p class="door-subtitle">
-          Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling.
-        </p>
-        <div class="door-indicator"></div>
+        <div class="door-visual" aria-hidden="true"></div>
+
+        <div class="door-panels" aria-hidden="true">
+          <span class="door-panel door-panel--left"></span>
+          <span class="door-panel door-panel--right"></span>
+          <span class="door-crack"></span>
+        </div>
+
+        <div class="door-copy">
+          <div class="door-number">Door 01</div>
+          <h2 class="door-title">Aduhelm</h2>
+          <p class="door-subtitle">
+            Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling.
+          </p>
+          <div class="door-indicator"></div>
+        </div>
       </a>
 
       <a href="door-2.html" class="door-threshold" data-status="active" data-door="2">
-        <div class="door-number">Door 02</div>
-        <h2 class="door-title">KEYNOTE-991</h2>
-        <p class="door-subtitle">
-          Silent structural failure. Systems thinking showcase. When the monitoring architecture was built for a different kind of drug.
-        </p>
-        <div class="door-indicator"></div>
+        <div class="door-visual" aria-hidden="true"></div>
+
+        <div class="willow-branches" aria-hidden="true">
+          <span class="branch branch--left"></span>
+          <span class="branch branch--right"></span>
+        </div>
+
+        <div class="door-copy">
+          <div class="door-number">Door 02</div>
+          <h2 class="door-title">KEYNOTE-991</h2>
+          <p class="door-subtitle">
+            Silent structural failure. Systems thinking showcase. When the monitoring architecture was built for a different kind of drug.
+          </p>
+          <div class="door-indicator"></div>
+        </div>
       </a>
 
       <article class="door-threshold" data-status="preparing" data-door="3">
-        <div class="door-number">Door 03</div>
-        <h2 class="door-title">ADHD Biomarker</h2>
-        <p class="door-subtitle">
-          Frontier build. MetaVoxa DNA. Digital biomarker feasibility for adult ADHD.
-        </p>
-        <div class="door-indicator"></div>
+        <div class="door-visual" aria-hidden="true"></div>
+
+        <div class="biometric-orbits" aria-hidden="true">
+          <span class="face-orbit"></span>
+          <span class="face-orbit face-orbit--two"></span>
+        </div>
+
+        <div class="door-copy">
+          <div class="door-number">Door 03</div>
+          <h2 class="door-title">ADHD Biomarker</h2>
+          <p class="door-subtitle">
+            Frontier build. MetaVoxa DNA. Digital biomarker feasibility for adult ADHD.
+          </p>
+          <div class="door-indicator"></div>
+        </div>
       </article>
     </section>
 
