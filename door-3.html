@@ -3,75 +3,276 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Door 3 — ADHD Biomarker | Martha CRA Portfolio</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles/base.css">
-
+  <title>MetaVoxa CRA Portfolio — Door 3: ADHD Biomarker</title>
   <style>
-    .door-3 {
-      background: var(--bg-graphite);
-      min-height: 100vh;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0d1520;
+      color: #e8ddd0;
+      font-family: 'Georgia', serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #video-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    #video-stage iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #ui-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    .door-header {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .door-header.visible {
+      opacity: 1;
+    }
+    .door-header h1 {
+      font-size: 11px;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: rgba(232,221,208,0.4);
+      font-weight: 400;
+    }
+    .door-header h2 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #e8ddd0;
+      letter-spacing: 4px;
+      margin-top: 8px;
+    }
+
+    .door-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .door-footer.visible {
+      opacity: 1;
+    }
+
+    .pdf-access {
+      pointer-events: auto;
+    }
+    .pdf-access a {
+      color: rgba(232,221,208,0.35);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.6s ease;
+    }
+    .pdf-access a:hover {
+      color: #e8ddd0;
+    }
+
+    .door-nav {
+      display: flex;
+      gap: 20px;
+      pointer-events: auto;
+    }
+    .door-nav a {
+      color: rgba(232,221,208,0.35);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.6s ease;
+    }
+    .door-nav a:hover {
+      color: #e8ddd0;
+    }
+
+    #progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: #b87b4f;
+      width: 0%;
+      transition: width 0.1s linear;
+      z-index: 20;
+    }
+
+    #timer {
+      position: fixed;
+      bottom: 6px;
+      left: 24px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: rgba(232,221,208,0.2);
+      font-family: 'Courier New', monospace;
+      z-index: 20;
+    }
+
+    #start-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,21,32,0.85);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: var(--space-xl);
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 0.8s ease;
     }
-
-    .door-3 h1 {
-      font-family: var(--font-accent);
-      font-size: clamp(2rem, 5vw, 3rem);
-      color: var(--text-cream);
-      margin-bottom: var(--space-md);
+    #start-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
-
-    .door-3 .status {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--door3-olive);
-      letter-spacing: 0.15em;
+    #start-overlay h2 {
+      font-size: 14px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      margin-bottom: var(--space-lg);
+      color: rgba(232,221,208,0.6);
+      margin-bottom: 16px;
     }
-
-    .door-3 .description {
-      font-size: 1rem;
-      color: var(--text-muted);
-      max-width: 500px;
-      line-height: 1.6;
-      margin-bottom: var(--space-xl);
-    }
-
-    .door-3 .back-link {
-      color: var(--amber-dim);
-      text-decoration: none;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      transition: color var(--transition-fast);
-    }
-
-    .door-3 .back-link:hover {
-      color: var(--amber-intense);
-    }
-
-    .amber-line {
-      margin: var(--space-md) auto;
+    #start-overlay p {
+      font-size: 12px;
+      color: rgba(232,221,208,0.35);
+      font-style: italic;
     }
   </style>
-<base target="_blank">
 </head>
-<body class="door-3">
-  <main>
-    <p class="status">In Preparation</p>
-    <h1>Door 3 — ADHD Biomarker</h1>
-    <div class="amber-line"></div>
-    <p class="description">Frontier build. MetaVoxa DNA. Digital biomarker feasibility for adult ADHD — from signal to structure. Warm ivory. Soft stone. Gentle living systems.</p>
-    <a href="index.html" class="back-link">← Return to Lobby</a>
-  </main>
+<body>
+
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1201268648?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Finale"></iframe></div><script src="https://player.vimeo.com/api/player.js"></>
+
+  <div id="ui-layer">
+    <div class="door-header" id="door-header">
+      <h1>Door 03</h1>
+      <h2>ADHD BIOMARKER</h2>
+    </div>
+
+    <div class="door-footer" id="door-footer">
+      <div class="pdf-access">
+        <a href="adhd-biomarker-protocol.pdf" target="_blank">View Protocol PDF</a>
+      </div>
+      <div class="door-nav">
+        <a href="door-2.html">← Previous Door</a>
+        <a href="index.html">Lobby</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="progress-bar"></div>
+  <div id="timer">00:00 / 05:00</div>
+
+  <div id="start-overlay" onclick="startPresentation()">
+    <h2>Click to Begin</h2>
+    <p>Full-screen video with spoken narration</p>
+  </div>
+
+  <script>
+    const TOTAL_DURATION = 300; // 5:00
+    let elapsed = 0;
+    let isPlaying = false;
+    let animationId;
+
+    const iframe = document.querySelector('#video-stage iframe');
+    const progressBar = document.getElementById('progress-bar');
+    const timer = document.getElementById('timer');
+    const doorHeader = document.getElementById('door-header');
+    const doorFooter = document.getElementById('door-footer');
+    const startOverlay = document.getElementById('start-overlay');
+
+    function startPresentation() {
+      startOverlay.classList.add('hidden');
+      
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+
+      setTimeout(() => {
+        doorHeader.classList.add('visible');
+        doorFooter.classList.add('visible');
+      }, 500);
+
+      iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+
+      isPlaying = true;
+      animate();
+    }
+
+    function animate() {
+      if (!isPlaying) return;
+
+      elapsed += 0.1;
+      if (elapsed > TOTAL_DURATION) {
+        elapsed = TOTAL_DURATION;
+        isPlaying = false;
+      }
+
+      const pct = (elapsed / TOTAL_DURATION) * 100;
+      progressBar.style.width = pct + '%';
+
+      const mins = Math.floor(elapsed / 60);
+      const secs = Math.floor(elapsed % 60);
+      timer.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 05:00`;
+
+      if (elapsed > 10) {
+        doorHeader.classList.remove('visible');
+      }
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying = !isPlaying;
+        if (isPlaying) animate();
+      }
+      if (e.code === 'ArrowRight') {
+        elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
+      }
+      if (e.code === 'ArrowLeft') {
+        elapsed = Math.max(elapsed - 10, 0);
+      }
+      if (e.code === 'KeyR') {
+        elapsed = 0;
+        isPlaying = false;
+        iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+        startOverlay.classList.remove('hidden');
+        doorHeader.classList.remove('visible');
+        doorFooter.classList.remove('visible');
+        progressBar.style.width = '0%';
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        isPlaying = false;
+      }
+    });
+  </script>
 </body>
 </html>
