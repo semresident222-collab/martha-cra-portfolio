@@ -49,9 +49,7 @@
       opacity: 0;
       transition: opacity 1s ease;
     }
-    .door-header.visible {
-      opacity: 1;
-    }
+    .door-header.visible { opacity: 1; }
     .door-header h1 {
       font-size: 11px;
       letter-spacing: 8px;
@@ -74,13 +72,9 @@
       opacity: 0;
       transition: opacity 1s ease;
     }
-    .door-footer.visible {
-      opacity: 1;
-    }
+    .door-footer.visible { opacity: 1; }
 
-    .pdf-access {
-      pointer-events: auto;
-    }
+    .pdf-access { pointer-events: auto; }
     .pdf-access a {
       color: rgba(232,221,208,0.35);
       text-decoration: none;
@@ -89,9 +83,7 @@
       text-transform: uppercase;
       transition: color 0.6s ease;
     }
-    .pdf-access a:hover {
-      color: #e8ddd0;
-    }
+    .pdf-access a:hover { color: #e8ddd0; }
 
     .door-nav {
       display: flex;
@@ -106,9 +98,7 @@
       text-transform: uppercase;
       transition: color 0.6s ease;
     }
-    .door-nav a:hover {
-      color: #e8ddd0;
-    }
+    .door-nav a:hover { color: #e8ddd0; }
 
     #progress-bar {
       position: fixed;
@@ -164,8 +154,16 @@
 </head>
 <body>
 
-<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1201268648?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Finale"></iframe></div><script src="https://player.vimeo.com/api/player.js"></>
+  <!-- Video Stage -->
+  <div id="video-stage">
+    <iframe
+      src="https://player.vimeo.com/video/1201268648?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0&muted=1&background=1"
+      allow="autoplay; fullscreen; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+  </div>
 
+  <!-- UI Layer -->
   <div id="ui-layer">
     <div class="door-header" id="door-header">
       <h1>Door 03</h1>
@@ -174,6 +172,7 @@
 
     <div class="door-footer" id="door-footer">
       <div class="pdf-access">
+        <!-- REPLACE adhd-biomarker-protocol.pdf WITH YOUR ACTUAL PDF FILENAME -->
         <a href="adhd-biomarker-protocol.pdf" target="_blank">View Protocol PDF</a>
       </div>
       <div class="door-nav">
@@ -192,10 +191,9 @@
   </div>
 
   <script>
-    const TOTAL_DURATION = 300; // 5:00
+    const TOTAL_DURATION = 300;
     let elapsed = 0;
     let isPlaying = false;
-    let animationId;
 
     const iframe = document.querySelector('#video-stage iframe');
     const progressBar = document.getElementById('progress-bar');
@@ -206,43 +204,32 @@
 
     function startPresentation() {
       startOverlay.classList.add('hidden');
-      
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       }
-
       setTimeout(() => {
         doorHeader.classList.add('visible');
         doorFooter.classList.add('visible');
       }, 500);
-
       iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-
       isPlaying = true;
       animate();
     }
 
     function animate() {
       if (!isPlaying) return;
-
       elapsed += 0.1;
       if (elapsed > TOTAL_DURATION) {
         elapsed = TOTAL_DURATION;
         isPlaying = false;
       }
-
       const pct = (elapsed / TOTAL_DURATION) * 100;
       progressBar.style.width = pct + '%';
-
       const mins = Math.floor(elapsed / 60);
       const secs = Math.floor(elapsed % 60);
       timer.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} / 05:00`;
-
-      if (elapsed > 10) {
-        doorHeader.classList.remove('visible');
-      }
-
-      animationId = requestAnimationFrame(animate);
+      if (elapsed > 10) doorHeader.classList.remove('visible');
+      requestAnimationFrame(animate);
     }
 
     document.addEventListener('keydown', (e) => {
@@ -251,12 +238,8 @@
         isPlaying = !isPlaying;
         if (isPlaying) animate();
       }
-      if (e.code === 'ArrowRight') {
-        elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
-      }
-      if (e.code === 'ArrowLeft') {
-        elapsed = Math.max(elapsed - 10, 0);
-      }
+      if (e.code === 'ArrowRight') elapsed = Math.min(elapsed + 10, TOTAL_DURATION);
+      if (e.code === 'ArrowLeft') elapsed = Math.max(elapsed - 10, 0);
       if (e.code === 'KeyR') {
         elapsed = 0;
         isPlaying = false;
@@ -269,9 +252,7 @@
     });
 
     document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        isPlaying = false;
-      }
+      if (!document.fullscreenElement) isPlaying = false;
     });
   </script>
 </body>
