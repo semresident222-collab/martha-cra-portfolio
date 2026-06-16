@@ -27,13 +27,6 @@
       --amber-border: rgba(196, 149, 106, 0.35);
       --amber-glow: rgba(196, 149, 106, 0.12);
       --amber-dim: #a97d56;
-      --amber-deep: #8a6a4a;
-
-      --copper: #b87b4f;
-      --copper-dim: #8a5a3a;
-
-      --clinical-blue: #6db3d4;
-      --clinical-dim: #4a7a96;
 
       --font-body: "Inter", sans-serif;
       --font-accent: "IBM Plex Sans", sans-serif;
@@ -44,7 +37,6 @@
       --space-md: 1rem;
       --space-lg: 1.5rem;
       --space-xl: 2rem;
-      --space-2xl: 3rem;
       --space-3xl: 5rem;
 
       --transition-fast: 150ms ease;
@@ -90,7 +82,7 @@
       background:
         radial-gradient(ellipse at 20% 0%, rgba(196, 149, 106, 0.06) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 100%, rgba(109, 179, 212, 0.05) 0%, transparent 50%),
-        linear-gradient(180deg, rgba(8, 14, 20, 0.75) 0%, rgba(8, 14, 20, 0.92) 100%),
+        linear-gradient(180deg, rgba(8, 14, 20, 0.78) 0%, rgba(8, 14, 20, 0.94) 100%),
         var(--bg-deep);
     }
 
@@ -99,11 +91,11 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(7, 12, 18, 0.44) 0%, rgba(7, 12, 18, 0.72) 100%),
+        linear-gradient(180deg, rgba(7, 12, 18, 0.44) 0%, rgba(7, 12, 18, 0.74) 100%),
         var(--hero-image) center center / cover no-repeat;
       transform: scale(1.02);
       opacity: 0.48;
-      z-index: -2;
+      z-index: 0;
       pointer-events: none;
       animation: breathe 10s ease-in-out infinite;
     }
@@ -117,13 +109,19 @@
         linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
       background-size: 60px 60px;
       mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-      z-index: -1;
+      z-index: 1;
       pointer-events: none;
     }
 
     @keyframes breathe {
-      0%, 100% { opacity: 0.4; transform: scale(1.02); }
-      50% { opacity: 0.54; transform: scale(1.035); }
+      0%, 100% {
+        opacity: 0.4;
+        transform: scale(1.02);
+      }
+      50% {
+        opacity: 0.54;
+        transform: scale(1.035);
+      }
     }
 
     .lobby-header {
@@ -197,7 +195,11 @@
       justify-content: flex-end;
       padding: var(--space-xl);
       cursor: pointer;
-      transition: all var(--transition-slow);
+      transition:
+        opacity 800ms ease,
+        transform 800ms ease,
+        border-color var(--transition-base),
+        box-shadow var(--transition-base);
       overflow: hidden;
       text-decoration: none;
       opacity: 0;
@@ -211,6 +213,11 @@
       isolation: isolate;
     }
 
+    .door-threshold.is-visible {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+
     .door-threshold::before {
       content: "";
       position: absolute;
@@ -218,7 +225,7 @@
       background:
         linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 35%, rgba(196, 149, 106, 0.08) 100%);
       opacity: 0.75;
-      z-index: 0;
+      z-index: 1;
       pointer-events: none;
       transition: opacity var(--transition-slow);
     }
@@ -237,7 +244,7 @@
       opacity: 1;
     }
 
-    .door-threshold:hover {
+    .door-threshold.is-visible:hover {
       border-color: rgba(196, 149, 106, 0.52);
       box-shadow:
         0 16px 56px rgba(0, 0, 0, 0.52),
@@ -254,7 +261,10 @@
       overflow: hidden;
       background-repeat: no-repeat;
       background-size: 300% 100%;
-      transition: transform var(--transition-slow), filter var(--transition-slow), opacity var(--transition-slow);
+      transition:
+        transform var(--transition-slow),
+        filter var(--transition-slow),
+        opacity var(--transition-slow);
       filter: saturate(0.92) brightness(0.9);
     }
 
@@ -299,7 +309,7 @@
       opacity: 0.7;
       position: relative;
       z-index: 2;
-      transition: color var(--transition-base);
+      transition: color var(--transition-base), opacity var(--transition-base);
     }
 
     .door-threshold:hover .door-number {
@@ -365,11 +375,15 @@
 
     .door-threshold[data-status="preparing"] {
       cursor: default;
-      opacity: 0.72;
+      opacity: 0;
       border-color: rgba(90, 107, 124, 0.28);
     }
 
-    .door-threshold[data-status="preparing"]:hover {
+    .door-threshold[data-status="preparing"].is-visible {
+      opacity: 0.72;
+    }
+
+    .door-threshold[data-status="preparing"].is-visible:hover {
       transform: translateY(0) rotateX(0deg);
       box-shadow:
         0 10px 34px rgba(0, 0, 0, 0.34),
@@ -391,160 +405,157 @@
       opacity: 0.7;
     }
 
-    }
     /* ---------- Integrated hover system: no crayon layers ---------- */
 
-.door-visual::before,
-.door-visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity 650ms ease,
-    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 650ms ease;
-}
+    .door-visual::before,
+    .door-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition:
+        opacity 650ms ease,
+        transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 650ms ease;
+    }
 
-/* Door 1 — pressure cracks, not sliding panels */
+    /* Door 1 — pressure cracks, not sliding panels */
 
-.door-threshold[data-door="1"] .door-visual::before {
-  background:
-    linear-gradient(112deg, transparent 0 47%, rgba(232,221,208,0.75) 48%, rgba(196,149,106,0.95) 49%, transparent 51%),
-    linear-gradient(72deg, transparent 0 48%, rgba(196,149,106,0.55) 49%, transparent 51%),
-    linear-gradient(138deg, transparent 0 48%, rgba(196,149,106,0.45) 49%, transparent 51%);
-  background-size:
-    58% 42%,
-    40% 28%,
-    36% 24%;
-  background-position:
-    50% 41%,
-    52% 31%,
-    47% 54%;
-  background-repeat: no-repeat;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 8px rgba(196,149,106,0.35));
-}
+    .door-threshold[data-door="1"] .door-visual::before {
+      background:
+        linear-gradient(112deg, transparent 0 47%, rgba(232,221,208,0.75) 48%, rgba(196,149,106,0.95) 49%, transparent 51%),
+        linear-gradient(72deg, transparent 0 48%, rgba(196,149,106,0.55) 49%, transparent 51%),
+        linear-gradient(138deg, transparent 0 48%, rgba(196,149,106,0.45) 49%, transparent 51%);
+      background-size:
+        58% 42%,
+        40% 28%,
+        36% 24%;
+      background-position:
+        50% 41%,
+        52% 31%,
+        47% 54%;
+      background-repeat: no-repeat;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 8px rgba(196,149,106,0.35));
+    }
 
-.door-threshold[data-door="1"] .door-visual::after {
-  inset: 18% 42% 20% 42%;
-  background:
-    linear-gradient(180deg, transparent, rgba(232,221,208,0.65), rgba(196,149,106,0.95), rgba(232,221,208,0.55), transparent);
-  filter: blur(1px) drop-shadow(0 0 14px rgba(196,149,106,0.45));
-  transform: scaleY(0.45);
-}
+    .door-threshold[data-door="1"] .door-visual::after {
+      inset: 18% 42% 20% 42%;
+      background:
+        linear-gradient(180deg, transparent, rgba(232,221,208,0.65), rgba(196,149,106,0.95), rgba(232,221,208,0.55), transparent);
+      filter: blur(1px) drop-shadow(0 0 14px rgba(196,149,106,0.45));
+      transform: scaleY(0.45);
+    }
 
-.door-threshold[data-door="1"]:hover .door-visual {
-  transform: scale(1.018);
-  filter: saturate(1.03) brightness(1.04) contrast(1.04);
-}
+    .door-threshold[data-door="1"]:hover .door-visual {
+      transform: scale(1.018);
+      filter: saturate(1.03) brightness(1.04) contrast(1.04);
+    }
 
-.door-threshold[data-door="1"]:hover .door-visual::before {
-  opacity: 0.85;
-  transform: scale(1.03);
-}
+    .door-threshold[data-door="1"]:hover .door-visual::before {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
 
-.door-threshold[data-door="1"]:hover .door-visual::after {
-  opacity: 0.78;
-  transform: scaleY(1);
-}
+    .door-threshold[data-door="1"]:hover .door-visual::after {
+      opacity: 0.78;
+      transform: scaleY(1);
+    }
 
-/* Door 2 — branches awaken inside the existing arch */
+    /* Door 2 — existing branches wake up */
 
-.door-threshold[data-door="2"] .door-visual::before {
-  background:
-    radial-gradient(ellipse at 50% 38%, rgba(196,149,106,0.24), transparent 42%),
-    radial-gradient(ellipse at 50% 52%, rgba(182,204,144,0.16), transparent 36%);
-  mix-blend-mode: screen;
-  filter: blur(2px);
-  transform: scale(0.96);
-}
+    .door-threshold[data-door="2"] .door-visual::before {
+      background:
+        radial-gradient(ellipse at 50% 38%, rgba(196,149,106,0.24), transparent 42%),
+        radial-gradient(ellipse at 50% 52%, rgba(182,204,144,0.16), transparent 36%);
+      mix-blend-mode: screen;
+      filter: blur(2px);
+      transform: scale(0.96);
+    }
 
-.door-threshold[data-door="2"] .door-visual::after {
-  inset: 8% 18% 22% 18%;
-  background:
-    radial-gradient(ellipse at 35% 28%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
-    radial-gradient(ellipse at 42% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
-    radial-gradient(ellipse at 58% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
-    radial-gradient(ellipse at 66% 30%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
-    radial-gradient(ellipse at 31% 44%, rgba(182,204,144,0.5) 0 2px, transparent 3px),
-    radial-gradient(ellipse at 69% 45%, rgba(182,204,144,0.5) 0 2px, transparent 3px);
-  filter: blur(0.4px) drop-shadow(0 0 8px rgba(182,204,144,0.2));
-  transform: scale(0.88);
-}
+    .door-threshold[data-door="2"] .door-visual::after {
+      inset: 8% 18% 22% 18%;
+      background:
+        radial-gradient(ellipse at 35% 28%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 42% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 58% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 66% 30%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 31% 44%, rgba(182,204,144,0.5) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 69% 45%, rgba(182,204,144,0.5) 0 2px, transparent 3px);
+      filter: blur(0.4px) drop-shadow(0 0 8px rgba(182,204,144,0.2));
+      transform: scale(0.88);
+    }
 
-.door-threshold[data-door="2"]:hover .door-visual {
-  transform: scale(1.018);
-  filter: saturate(1.05) brightness(1.05);
-}
+    .door-threshold[data-door="2"]:hover .door-visual {
+      transform: scale(1.018);
+      filter: saturate(1.05) brightness(1.05);
+    }
 
-.door-threshold[data-door="2"]:hover .door-visual::before {
-  opacity: 0.95;
-  transform: scale(1);
-}
+    .door-threshold[data-door="2"]:hover .door-visual::before {
+      opacity: 0.95;
+      transform: scale(1);
+    }
 
-.door-threshold[data-door="2"]:hover .door-visual::after {
-  opacity: 0.85;
-  transform: scale(1);
-}
+    .door-threshold[data-door="2"]:hover .door-visual::after {
+      opacity: 0.85;
+      transform: scale(1);
+    }
 
-/* Door 3 — dual face reflection inside the glass */
+    /* Door 3 — dual face reflection inside the glass */
 
-.door-threshold[data-door="3"] .door-visual::before {
-  inset: 14% 18% 38% 38%;
-  background:
-    radial-gradient(ellipse at 42% 45%, rgba(232,221,208,0.38) 0 12%, transparent 28%),
-    radial-gradient(ellipse at 60% 45%, rgba(109,179,212,0.22) 0 12%, transparent 30%);
-  mix-blend-mode: screen;
-  filter: blur(5px);
-  transform: translateX(-4px) rotate(-4deg);
-}
+    .door-threshold[data-door="3"] .door-visual::before {
+      inset: 14% 18% 38% 38%;
+      background:
+        radial-gradient(ellipse at 42% 45%, rgba(232,221,208,0.38) 0 12%, transparent 28%),
+        radial-gradient(ellipse at 60% 45%, rgba(109,179,212,0.22) 0 12%, transparent 30%);
+      mix-blend-mode: screen;
+      filter: blur(5px);
+      transform: translateX(-4px) rotate(-4deg);
+    }
 
-.door-threshold[data-door="3"] .door-visual::after {
-  inset: 16% 19% 42% 40%;
-  background:
-    radial-gradient(ellipse at 39% 42%, rgba(216,185,143,0.42) 0 10%, transparent 24%),
-    radial-gradient(ellipse at 61% 42%, rgba(232,221,208,0.32) 0 10%, transparent 24%);
-  mix-blend-mode: screen;
-  filter: blur(3px);
-  transform: translateX(5px) rotate(4deg);
-}
+    .door-threshold[data-door="3"] .door-visual::after {
+      inset: 16% 19% 42% 40%;
+      background:
+        radial-gradient(ellipse at 39% 42%, rgba(216,185,143,0.42) 0 10%, transparent 24%),
+        radial-gradient(ellipse at 61% 42%, rgba(232,221,208,0.32) 0 10%, transparent 24%);
+      mix-blend-mode: screen;
+      filter: blur(3px);
+      transform: translateX(5px) rotate(4deg);
+    }
 
-.door-threshold[data-door="3"]:hover .door-visual {
-  transform: scale(1.015);
-  filter: saturate(1.04) brightness(1.04);
-}
+    .door-threshold[data-door="3"]:hover .door-visual {
+      transform: scale(1.015);
+      filter: saturate(1.04) brightness(1.04);
+    }
 
-.door-threshold[data-door="3"]:hover .door-visual::before {
-  opacity: 0.78;
-  animation: faceReflectionOne 4.8s ease-in-out infinite;
-}
+    .door-threshold[data-door="3"]:hover .door-visual::before {
+      opacity: 0.78;
+      animation: faceReflectionOne 4.8s ease-in-out infinite;
+    }
 
-.door-threshold[data-door="3"]:hover .door-visual::after {
-  opacity: 0.72;
-  animation: faceReflectionTwo 5.4s ease-in-out infinite;
-}
+    .door-threshold[data-door="3"]:hover .door-visual::after {
+      opacity: 0.72;
+      animation: faceReflectionTwo 5.4s ease-in-out infinite;
+    }
 
-@keyframes faceReflectionOne {
-  0%, 100% {
-    transform: translateX(-5px) rotate(-4deg);
-  }
-  50% {
-    transform: translateX(6px) rotate(4deg);
-  }
-}
+    @keyframes faceReflectionOne {
+      0%, 100% {
+        transform: translateX(-5px) rotate(-4deg);
+      }
+      50% {
+        transform: translateX(6px) rotate(4deg);
+      }
+    }
 
-@keyframes faceReflectionTwo {
-  0%, 100% {
-    transform: translateX(6px) rotate(4deg);
-  }
-  50% {
-    transform: translateX(-5px) rotate(-4deg);
-  }
-}
-
-    /* Footer */
+    @keyframes faceReflectionTwo {
+      0%, 100% {
+        transform: translateX(6px) rotate(4deg);
+      }
+      50% {
+        transform: translateX(-5px) rotate(-4deg);
+      }
+    }
 
     .lobby-footer {
       margin-top: var(--space-3xl);
@@ -592,76 +603,143 @@
 
     /* ---------- Responsive: laptop / tablet / mobile ---------- */
 
-   @media (max-width: 768px) {
-  .lobby::before {
-    background-position: center top;
-    opacity: 0.32;
-  }
+    @media (max-width: 1100px) {
+      .doors-container {
+        gap: var(--space-md);
+      }
 
-  .doors-container {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    gap: 1.25rem;
-  }
+      .door-threshold {
+        padding: 1.5rem;
+      }
+    }
 
-  .door-threshold {
-    aspect-ratio: 16 / 10;
-    min-height: 260px;
-    padding: 1.35rem;
-  }
+    @media (max-width: 768px) {
+      .lobby {
+        padding: var(--space-lg);
+        justify-content: flex-start;
+      }
 
-  .door-visual {
-    background-size: 300% 100%;
-  }
+      .lobby::before {
+        background-position: center top;
+        opacity: 0.32;
+      }
 
-  .door-threshold[data-door="1"] .door-visual {
-    background-position: left center;
-  }
+      .lobby-header {
+        margin-bottom: 2.25rem;
+      }
 
-  .door-threshold[data-door="2"] .door-visual {
-    background-position: center center;
-  }
+      .concept-statement {
+        margin-bottom: 2.25rem;
+      }
 
-  .door-threshold[data-door="3"] .door-visual {
-    background-position: right center;
-  }
+      .doors-container {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        gap: 1.25rem;
+        perspective: none;
+      }
 
-  .door-visual::before,
-  .door-visual::after {
-    display: none;
-  }
+      .door-threshold {
+        aspect-ratio: 16 / 10;
+        min-height: 260px;
+        padding: 1.35rem;
+        transform: none;
+      }
 
-  .door-title {
-    font-size: 1.25rem;
-  }
+      .door-threshold.is-visible {
+        transform: none;
+      }
 
-  .door-subtitle {
-    font-size: 0.82rem;
-    line-height: 1.55;
-  }
-}
-     @media (hover: none) {
-  .door-visual::before,
-  .door-visual::after {
-    display: none;
-  }
+      .door-visual {
+        background-size: 300% 100%;
+      }
 
-  .door-threshold:hover {
-    transform: none;
-  }
-}
-     .lobby::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(8, 14, 20, 0.42), rgba(8, 14, 20, 0.82)),
-    var(--hero-image) center center / cover no-repeat;
-  pointer-events: none;
-  animation: breathe 8s ease-in-out infinite;
-  opacity: 0.7;
-  z-index: 0;
-}
+      .door-threshold[data-door="1"] .door-visual {
+        background-position: left center;
+      }
+
+      .door-threshold[data-door="2"] .door-visual {
+        background-position: center center;
+      }
+
+      .door-threshold[data-door="3"] .door-visual {
+        background-position: right center;
+      }
+
+      .door-visual::before,
+      .door-visual::after {
+        display: none;
+      }
+
+      .door-title {
+        font-size: 1.25rem;
+      }
+
+      .door-subtitle {
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      .door-threshold.is-visible:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .lobby {
+        padding: 1rem;
+      }
+
+      .lobby-header h1 {
+        font-size: clamp(1.8rem, 9vw, 2.4rem);
+      }
+
+      .lobby-header .subtitle {
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
+      }
+
+      .concept-statement {
+        font-size: 0.9rem;
+      }
+
+      .door-threshold {
+        aspect-ratio: 4 / 3;
+        min-height: 280px;
+        padding: 1.15rem;
+      }
+
+      .door-title {
+        font-size: 1.15rem;
+      }
+
+      .door-subtitle {
+        font-size: 0.78rem;
+        line-height: 1.55;
+      }
+    }
+
+    @media (hover: none) {
+      .door-visual::before,
+      .door-visual::after {
+        display: none;
+      }
+
+      .door-threshold.is-visible:hover {
+        transform: none;
+      }
+    }
+
+    @media print {
+      .lobby {
+        min-height: auto;
+        padding: 2rem;
+      }
+
+      .lobby::before,
+      .lobby::after {
+        display: none;
+      }
 
       .doors-container {
         grid-template-columns: repeat(3, 1fr);
@@ -694,17 +772,17 @@
 
     <section class="doors-container" aria-label="Portfolio case doors">
       <a href="door-1.html" class="door-threshold" data-status="active" data-door="1">
-  <div class="door-visual" aria-hidden="true"></div>
+        <div class="door-visual" aria-hidden="true"></div>
 
-  <div class="door-copy">
-    <div class="door-number">Door 01</div>
-    <h2 class="door-title">Aduhelm</h2>
-    <p class="door-subtitle">
-      Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling.
-    </p>
-    <div class="door-indicator"></div>
-  </div>
-</a>
+        <div class="door-copy">
+          <div class="door-number">Door 01</div>
+          <h2 class="door-title">Aduhelm</h2>
+          <p class="door-subtitle">
+            Governance collapse. Scandal autopsy. The architecture of accelerated approval and its unravelling.
+          </p>
+          <div class="door-indicator"></div>
+        </div>
+      </a>
 
       <a href="door-2.html" class="door-threshold" data-status="active" data-door="2">
         <div class="door-visual" aria-hidden="true"></div>
@@ -721,11 +799,6 @@
 
       <article class="door-threshold" data-status="preparing" data-door="3">
         <div class="door-visual" aria-hidden="true"></div>
-
-        <div class="biometric-orbits" aria-hidden="true">
-          <span class="face-orbit"></span>
-          <span class="face-orbit face-orbit--two"></span>
-        </div>
 
         <div class="door-copy">
           <div class="door-number">Door 03</div>
@@ -756,10 +829,7 @@
 
       doors.forEach((door, index) => {
         setTimeout(() => {
-          door.style.transition =
-            "opacity 800ms ease, transform 800ms ease, border-color 300ms ease, box-shadow 300ms ease";
-          door.style.opacity = "1";
-          door.style.transform = "translateY(0) rotateX(0deg)";
+          door.classList.add("is-visible");
         }, 300 + index * 200);
       });
     }
