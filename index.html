@@ -15,7 +15,6 @@
       --hero-image: url("./metavoxa-3doors-hero.png");
 
       --bg-deep: #0d1520;
-      --bg-void: #080e14;
       --bg-surface: #111820;
 
       --text-cream: #e8ddd0;
@@ -82,7 +81,7 @@
       background:
         radial-gradient(ellipse at 20% 0%, rgba(196, 149, 106, 0.06) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 100%, rgba(109, 179, 212, 0.05) 0%, transparent 50%),
-        linear-gradient(180deg, rgba(8, 14, 20, 0.78) 0%, rgba(8, 14, 20, 0.94) 100%),
+        linear-gradient(180deg, rgba(8, 14, 20, 0.8) 0%, rgba(8, 14, 20, 0.96) 100%),
         var(--bg-deep);
     }
 
@@ -91,10 +90,10 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(7, 12, 18, 0.44) 0%, rgba(7, 12, 18, 0.74) 100%),
+        linear-gradient(180deg, rgba(7, 12, 18, 0.5) 0%, rgba(7, 12, 18, 0.82) 100%),
         var(--hero-image) center center / cover no-repeat;
       transform: scale(1.02);
-      opacity: 0.48;
+      opacity: 0.46;
       z-index: 0;
       pointer-events: none;
       animation: breathe 10s ease-in-out infinite;
@@ -118,8 +117,9 @@
         opacity: 0.4;
         transform: scale(1.02);
       }
+
       50% {
-        opacity: 0.54;
+        opacity: 0.52;
         transform: scale(1.035);
       }
     }
@@ -183,7 +183,6 @@
       width: 100%;
       position: relative;
       z-index: 2;
-      perspective: 1200px;
     }
 
     .door-threshold {
@@ -195,27 +194,26 @@
       justify-content: flex-end;
       padding: var(--space-xl);
       cursor: pointer;
-      transition:
-        opacity 800ms ease,
-        transform 800ms ease,
-        border-color var(--transition-base),
-        box-shadow var(--transition-base);
       overflow: hidden;
       text-decoration: none;
       opacity: 0;
-      transform: translateY(24px) rotateX(2deg);
-      transform-origin: center bottom;
+      transform: translateY(24px);
       background:
         linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(7, 12, 18, 0.26) 30%, rgba(7, 12, 18, 0.82) 100%);
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.03),
         0 8px 30px rgba(0, 0, 0, 0.26);
       isolation: isolate;
+      transition:
+        opacity 800ms ease,
+        transform 800ms ease,
+        border-color var(--transition-base),
+        box-shadow var(--transition-base);
     }
 
     .door-threshold.is-visible {
       opacity: 1;
-      transform: translateY(0) rotateX(0deg);
+      transform: translateY(0);
     }
 
     .door-threshold::before {
@@ -227,7 +225,6 @@
       opacity: 0.75;
       z-index: 1;
       pointer-events: none;
-      transition: opacity var(--transition-slow);
     }
 
     .door-threshold::after {
@@ -240,19 +237,6 @@
       pointer-events: none;
     }
 
-    .door-threshold:hover::before {
-      opacity: 1;
-    }
-
-    .door-threshold.is-visible:hover {
-      border-color: rgba(196, 149, 106, 0.52);
-      box-shadow:
-        0 16px 56px rgba(0, 0, 0, 0.52),
-        0 0 60px var(--amber-glow),
-        inset 0 0 40px rgba(196, 149, 106, 0.04);
-      transform: translateY(-6px) rotateX(0deg);
-    }
-
     .door-visual {
       position: absolute;
       inset: 0;
@@ -261,16 +245,7 @@
       overflow: hidden;
       background-repeat: no-repeat;
       background-size: 300% 100%;
-      transition:
-        transform var(--transition-slow),
-        filter var(--transition-slow),
-        opacity var(--transition-slow);
       filter: saturate(0.92) brightness(0.9);
-    }
-
-    .door-threshold:hover .door-visual {
-      transform: scale(1.02);
-      filter: saturate(1.04) brightness(0.98);
     }
 
     .door-threshold[data-door="1"] .door-visual {
@@ -306,15 +281,9 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       margin-bottom: var(--space-sm);
-      opacity: 0.7;
+      opacity: 0.75;
       position: relative;
       z-index: 2;
-      transition: color var(--transition-base), opacity var(--transition-base);
-    }
-
-    .door-threshold:hover .door-number {
-      color: var(--amber-intense);
-      opacity: 1;
     }
 
     .door-title {
@@ -326,7 +295,6 @@
       line-height: 1.2;
       position: relative;
       z-index: 2;
-      transition: color var(--transition-base);
       text-shadow: 0 1px 10px rgba(0,0,0,0.24);
     }
 
@@ -337,15 +305,9 @@
       margin-bottom: var(--space-lg);
       position: relative;
       z-index: 2;
-      transition: color var(--transition-base), opacity var(--transition-base);
       opacity: 0.82;
       max-width: 95%;
       text-shadow: 0 1px 14px rgba(0,0,0,0.28);
-    }
-
-    .door-threshold:hover .door-subtitle {
-      color: var(--text-warm);
-      opacity: 0.96;
     }
 
     .door-indicator {
@@ -353,24 +315,12 @@
       height: 1px;
       background: var(--amber-dim);
       opacity: 0.42;
-      transition: all var(--transition-slow);
       position: relative;
       z-index: 2;
     }
 
-    .door-threshold:hover .door-indicator {
-      width: 48px;
-      opacity: 1;
-      background: var(--amber-intense);
-      box-shadow: 0 0 8px rgba(196, 149, 106, 0.3);
-    }
-
     .door-threshold[data-status="active"] {
       border-color: rgba(196, 149, 106, 0.35);
-    }
-
-    .door-threshold[data-status="active"] .door-number {
-      opacity: 0.8;
     }
 
     .door-threshold[data-status="preparing"] {
@@ -381,14 +331,6 @@
 
     .door-threshold[data-status="preparing"].is-visible {
       opacity: 0.72;
-    }
-
-    .door-threshold[data-status="preparing"].is-visible:hover {
-      transform: translateY(0) rotateX(0deg);
-      box-shadow:
-        0 10px 34px rgba(0, 0, 0, 0.34),
-        0 0 40px rgba(196,149,106,0.07);
-      border-color: rgba(90, 107, 124, 0.32);
     }
 
     .door-threshold[data-status="preparing"] .door-title::after {
@@ -403,158 +345,6 @@
       font-weight: 400;
       vertical-align: middle;
       opacity: 0.7;
-    }
-
-    /* ---------- Integrated hover system: no crayon layers ---------- */
-
-    .door-visual::before,
-    .door-visual::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      transition:
-        opacity 650ms ease,
-        transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
-        filter 650ms ease;
-    }
-
-    /* Door 1 — pressure cracks, not sliding panels */
-
-    .door-threshold[data-door="1"] .door-visual::before {
-      background:
-        linear-gradient(112deg, transparent 0 47%, rgba(232,221,208,0.75) 48%, rgba(196,149,106,0.95) 49%, transparent 51%),
-        linear-gradient(72deg, transparent 0 48%, rgba(196,149,106,0.55) 49%, transparent 51%),
-        linear-gradient(138deg, transparent 0 48%, rgba(196,149,106,0.45) 49%, transparent 51%);
-      background-size:
-        58% 42%,
-        40% 28%,
-        36% 24%;
-      background-position:
-        50% 41%,
-        52% 31%,
-        47% 54%;
-      background-repeat: no-repeat;
-      mix-blend-mode: screen;
-      filter: drop-shadow(0 0 8px rgba(196,149,106,0.35));
-    }
-
-    .door-threshold[data-door="1"] .door-visual::after {
-      inset: 18% 42% 20% 42%;
-      background:
-        linear-gradient(180deg, transparent, rgba(232,221,208,0.65), rgba(196,149,106,0.95), rgba(232,221,208,0.55), transparent);
-      filter: blur(1px) drop-shadow(0 0 14px rgba(196,149,106,0.45));
-      transform: scaleY(0.45);
-    }
-
-    .door-threshold[data-door="1"]:hover .door-visual {
-      transform: scale(1.018);
-      filter: saturate(1.03) brightness(1.04) contrast(1.04);
-    }
-
-    .door-threshold[data-door="1"]:hover .door-visual::before {
-      opacity: 0.85;
-      transform: scale(1.03);
-    }
-
-    .door-threshold[data-door="1"]:hover .door-visual::after {
-      opacity: 0.78;
-      transform: scaleY(1);
-    }
-
-    /* Door 2 — existing branches wake up */
-
-    .door-threshold[data-door="2"] .door-visual::before {
-      background:
-        radial-gradient(ellipse at 50% 38%, rgba(196,149,106,0.24), transparent 42%),
-        radial-gradient(ellipse at 50% 52%, rgba(182,204,144,0.16), transparent 36%);
-      mix-blend-mode: screen;
-      filter: blur(2px);
-      transform: scale(0.96);
-    }
-
-    .door-threshold[data-door="2"] .door-visual::after {
-      inset: 8% 18% 22% 18%;
-      background:
-        radial-gradient(ellipse at 35% 28%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 42% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 58% 22%, rgba(182,204,144,0.58) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 66% 30%, rgba(182,204,144,0.72) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 31% 44%, rgba(182,204,144,0.5) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 69% 45%, rgba(182,204,144,0.5) 0 2px, transparent 3px);
-      filter: blur(0.4px) drop-shadow(0 0 8px rgba(182,204,144,0.2));
-      transform: scale(0.88);
-    }
-
-    .door-threshold[data-door="2"]:hover .door-visual {
-      transform: scale(1.018);
-      filter: saturate(1.05) brightness(1.05);
-    }
-
-    .door-threshold[data-door="2"]:hover .door-visual::before {
-      opacity: 0.95;
-      transform: scale(1);
-    }
-
-    .door-threshold[data-door="2"]:hover .door-visual::after {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-
-    /* Door 3 — dual face reflection inside the glass */
-
-    .door-threshold[data-door="3"] .door-visual::before {
-      inset: 14% 18% 38% 38%;
-      background:
-        radial-gradient(ellipse at 42% 45%, rgba(232,221,208,0.38) 0 12%, transparent 28%),
-        radial-gradient(ellipse at 60% 45%, rgba(109,179,212,0.22) 0 12%, transparent 30%);
-      mix-blend-mode: screen;
-      filter: blur(5px);
-      transform: translateX(-4px) rotate(-4deg);
-    }
-
-    .door-threshold[data-door="3"] .door-visual::after {
-      inset: 16% 19% 42% 40%;
-      background:
-        radial-gradient(ellipse at 39% 42%, rgba(216,185,143,0.42) 0 10%, transparent 24%),
-        radial-gradient(ellipse at 61% 42%, rgba(232,221,208,0.32) 0 10%, transparent 24%);
-      mix-blend-mode: screen;
-      filter: blur(3px);
-      transform: translateX(5px) rotate(4deg);
-    }
-
-    .door-threshold[data-door="3"]:hover .door-visual {
-      transform: scale(1.015);
-      filter: saturate(1.04) brightness(1.04);
-    }
-
-    .door-threshold[data-door="3"]:hover .door-visual::before {
-      opacity: 0.78;
-      animation: faceReflectionOne 4.8s ease-in-out infinite;
-    }
-
-    .door-threshold[data-door="3"]:hover .door-visual::after {
-      opacity: 0.72;
-      animation: faceReflectionTwo 5.4s ease-in-out infinite;
-    }
-
-    @keyframes faceReflectionOne {
-      0%, 100% {
-        transform: translateX(-5px) rotate(-4deg);
-      }
-      50% {
-        transform: translateX(6px) rotate(4deg);
-      }
-    }
-
-    @keyframes faceReflectionTwo {
-      0%, 100% {
-        transform: translateX(6px) rotate(4deg);
-      }
-      50% {
-        transform: translateX(-5px) rotate(-4deg);
-      }
     }
 
     .lobby-footer {
@@ -595,13 +385,12 @@
         opacity: 0;
         transform: translateY(-24px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-
-    /* ---------- Responsive: laptop / tablet / mobile ---------- */
 
     @media (max-width: 1100px) {
       .doors-container {
@@ -615,39 +404,50 @@
 
     @media (max-width: 768px) {
       .lobby {
-        padding: var(--space-lg);
+        min-height: auto;
+        padding: 1.5rem 1rem 3rem;
         justify-content: flex-start;
       }
 
       .lobby::before {
         background-position: center top;
-        opacity: 0.32;
+        opacity: 0.28;
       }
 
       .lobby-header {
-        margin-bottom: 2.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .lobby-header h1 {
+        font-size: clamp(1.85rem, 8vw, 2.45rem);
+      }
+
+      .lobby-header .subtitle {
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
       }
 
       .concept-statement {
-        margin-bottom: 2.25rem;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        max-width: 92%;
       }
 
       .doors-container {
         grid-template-columns: 1fr;
-        max-width: 420px;
-        gap: 1.25rem;
-        perspective: none;
+        max-width: 100%;
+        gap: 1rem;
       }
 
       .door-threshold {
-        aspect-ratio: 16 / 10;
-        min-height: 260px;
-        padding: 1.35rem;
-        transform: none;
+        aspect-ratio: 16 / 9;
+        min-height: 220px;
+        padding: 1.15rem;
+        transform: translateY(18px);
       }
 
       .door-threshold.is-visible {
-        transform: none;
+        transform: translateY(0);
       }
 
       .door-visual {
@@ -666,67 +466,39 @@
         background-position: right center;
       }
 
-      .door-visual::before,
-      .door-visual::after {
-        display: none;
-      }
-
       .door-title {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
       }
 
-      .door-subtitle {
-        font-size: 0.82rem;
-        line-height: 1.55;
-      }
-
-      .door-threshold.is-visible:hover {
-        transform: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .lobby {
-        padding: 1rem;
-      }
-
-      .lobby-header h1 {
-        font-size: clamp(1.8rem, 9vw, 2.4rem);
-      }
-
-      .lobby-header .subtitle {
-        font-size: 0.68rem;
-        letter-spacing: 0.18em;
-      }
-
-      .concept-statement {
-        font-size: 0.9rem;
-      }
-
-      .door-threshold {
-        aspect-ratio: 4 / 3;
-        min-height: 280px;
-        padding: 1.15rem;
-      }
-
-      .door-title {
-        font-size: 1.15rem;
+      .door-number {
+        font-size: 0.6rem;
+        margin-bottom: 0.55rem;
       }
 
       .door-subtitle {
         font-size: 0.78rem;
-        line-height: 1.55;
+        line-height: 1.5;
+        max-width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      .lobby-footer {
+        margin-top: 2rem;
       }
     }
 
-    @media (hover: none) {
-      .door-visual::before,
-      .door-visual::after {
-        display: none;
+    @media (max-width: 420px) {
+      .door-threshold {
+        min-height: 210px;
+        padding: 1rem;
       }
 
-      .door-threshold.is-visible:hover {
-        transform: none;
+      .door-title {
+        font-size: 1.1rem;
+      }
+
+      .door-subtitle {
+        font-size: 0.75rem;
       }
     }
 
