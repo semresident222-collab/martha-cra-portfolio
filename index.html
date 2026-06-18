@@ -24,8 +24,13 @@
 
       --amber-intense: #c4956a;
       --amber-border: rgba(196, 149, 106, 0.35);
-      --amber-glow: rgba(196, 149, 106, 0.12);
+      --amber-border-strong: rgba(216, 185, 143, 0.58);
+      --amber-glow: rgba(196, 149, 106, 0.16);
+      --amber-glow-strong: rgba(196, 149, 106, 0.28);
       --amber-dim: #a97d56;
+
+      --glass-dark: rgba(7, 12, 18, 0.52);
+      --glass-deep: rgba(7, 12, 18, 0.82);
 
       --font-body: "Inter", sans-serif;
       --font-accent: "IBM Plex Sans", sans-serif;
@@ -68,6 +73,11 @@
       text-decoration: none;
     }
 
+    a:focus-visible {
+      outline: 1px solid var(--amber-intense);
+      outline-offset: 5px;
+    }
+
     .lobby {
       min-height: 100vh;
       display: flex;
@@ -90,7 +100,7 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(7, 12, 18, 0.5) 0%, rgba(7, 12, 18, 0.82) 100%),
+        linear-gradient(180deg, rgba(7, 12, 18, 0.5) 0%, rgba(7, 12, 18, 0.84) 100%),
         var(--hero-image) center center / cover no-repeat;
       transform: scale(1.02);
       opacity: 0.46;
@@ -186,6 +196,9 @@
     }
 
     .door-threshold {
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+
       position: relative;
       aspect-ratio: 2 / 3;
       border: 1px solid var(--amber-border);
@@ -208,7 +221,9 @@
         opacity 800ms ease,
         transform 800ms ease,
         border-color var(--transition-base),
-        box-shadow var(--transition-base);
+        box-shadow var(--transition-base),
+        filter var(--transition-base);
+      will-change: transform;
     }
 
     .door-threshold.is-visible {
@@ -221,10 +236,16 @@
       position: absolute;
       inset: 0;
       background:
+        radial-gradient(
+          circle at var(--mouse-x) var(--mouse-y),
+          rgba(216, 185, 143, 0.16),
+          transparent 27%
+        ),
         linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 35%, rgba(196, 149, 106, 0.08) 100%);
-      opacity: 0.75;
+      opacity: 0;
       z-index: 1;
       pointer-events: none;
+      transition: opacity var(--transition-base);
     }
 
     .door-threshold::after {
@@ -233,7 +254,7 @@
       inset: 0;
       border: 1px solid rgba(255,255,255,0.02);
       box-shadow: inset 0 0 0 1px rgba(196,149,106,0.06);
-      z-index: 3;
+      z-index: 5;
       pointer-events: none;
     }
 
@@ -246,6 +267,33 @@
       background-repeat: no-repeat;
       background-size: 300% 100%;
       filter: saturate(0.92) brightness(0.9);
+      transform: scale(1);
+      transition:
+        transform 900ms ease,
+        filter 600ms ease,
+        opacity 600ms ease;
+    }
+
+    .door-visual::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        linear-gradient(
+          115deg,
+          transparent 0%,
+          transparent 38%,
+          rgba(232, 221, 208, 0.08) 48%,
+          rgba(196, 149, 106, 0.14) 50%,
+          transparent 61%,
+          transparent 100%
+        );
+      transform: translateX(-70%) rotate(0.001deg);
+      opacity: 0;
+      transition:
+        transform 900ms ease,
+        opacity 350ms ease;
+      mix-blend-mode: screen;
     }
 
     .door-threshold[data-door="1"] .door-visual {
@@ -271,7 +319,9 @@
 
     .door-copy {
       position: relative;
-      z-index: 2;
+      z-index: 3;
+      transform: translateY(0);
+      transition: transform var(--transition-base);
     }
 
     .door-number {
@@ -284,6 +334,9 @@
       opacity: 0.75;
       position: relative;
       z-index: 2;
+      transition:
+        color var(--transition-base),
+        opacity var(--transition-base);
     }
 
     .door-title {
@@ -296,6 +349,9 @@
       position: relative;
       z-index: 2;
       text-shadow: 0 1px 10px rgba(0,0,0,0.24);
+      transition:
+        color var(--transition-base),
+        text-shadow var(--transition-base);
     }
 
     .door-subtitle {
@@ -308,6 +364,7 @@
       opacity: 0.82;
       max-width: 95%;
       text-shadow: 0 1px 14px rgba(0,0,0,0.28);
+      transition: opacity var(--transition-base);
     }
 
     .door-indicator {
@@ -317,34 +374,86 @@
       opacity: 0.42;
       position: relative;
       z-index: 2;
+      transition:
+        width var(--transition-base),
+        opacity var(--transition-base),
+        background var(--transition-base),
+        box-shadow var(--transition-base);
     }
 
     .door-threshold[data-status="active"] {
       border-color: rgba(196, 149, 106, 0.35);
     }
 
-    .door-threshold[data-status="preparing"] {
-      cursor: default;
-      opacity: 0;
-      border-color: rgba(90, 107, 124, 0.28);
+    .doors-container:hover .door-threshold.is-visible {
+      filter: brightness(0.82) saturate(0.92);
     }
 
-    .door-threshold[data-status="preparing"].is-visible {
-      opacity: 0.72;
+    .doors-container:hover .door-threshold.is-visible:hover {
+      filter: brightness(1) saturate(1);
     }
 
-    .door-threshold[data-status="preparing"] .door-title::after {
-      content: "Preparing";
-      display: inline-block;
-      margin-left: 0.6rem;
-      font-family: var(--font-mono);
-      font-size: 0.5rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-slate);
-      font-weight: 400;
-      vertical-align: middle;
-      opacity: 0.7;
+    .door-threshold:hover,
+    .door-threshold:focus-visible {
+      transform: translateY(-8px);
+      border-color: var(--amber-border-strong);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 18px 60px rgba(0, 0, 0, 0.42),
+        0 0 42px rgba(196, 149, 106, 0.09);
+    }
+
+    .door-threshold:hover::before,
+    .door-threshold:focus-visible::before {
+      opacity: 1;
+    }
+
+    .door-threshold:hover .door-visual,
+    .door-threshold:focus-visible .door-visual {
+      transform: scale(1.045);
+      filter: saturate(1.03) brightness(0.98) contrast(1.04);
+    }
+
+    .door-threshold:hover .door-visual::after,
+    .door-threshold:focus-visible .door-visual::after {
+      opacity: 1;
+      transform: translateX(70%) rotate(0.001deg);
+    }
+
+    .door-threshold:hover .door-copy,
+    .door-threshold:focus-visible .door-copy {
+      transform: translateY(-4px);
+    }
+
+    .door-threshold:hover .door-number,
+    .door-threshold:focus-visible .door-number {
+      color: var(--amber-intense);
+      opacity: 1;
+    }
+
+    .door-threshold:hover .door-title,
+    .door-threshold:focus-visible .door-title {
+      color: #f1e4d4;
+      text-shadow:
+        0 1px 14px rgba(0,0,0,0.36),
+        0 0 24px rgba(196,149,106,0.12);
+    }
+
+    .door-threshold:hover .door-subtitle,
+    .door-threshold:focus-visible .door-subtitle {
+      opacity: 0.95;
+    }
+
+    .door-threshold:hover .door-indicator,
+    .door-threshold:focus-visible .door-indicator {
+      width: 64px;
+      opacity: 0.95;
+      background: var(--amber-intense);
+      box-shadow: 0 0 18px rgba(196, 149, 106, 0.28);
+    }
+
+    .door-threshold:active {
+      transform: translateY(-4px) scale(0.995);
     }
 
     .lobby-footer {
@@ -367,10 +476,13 @@
 
     .meta-link {
       color: var(--amber-dim);
-      transition: color var(--transition-fast);
+      transition:
+        color var(--transition-fast),
+        text-shadow var(--transition-fast);
     }
 
-    .meta-link:hover {
+    .meta-link:hover,
+    .meta-link:focus-visible {
       color: var(--amber-intense);
       text-shadow: 0 0 12px rgba(196, 149, 106, 0.2);
     }
@@ -403,6 +515,10 @@
     }
 
     @media (max-width: 768px) {
+      html {
+        scroll-behavior: auto;
+      }
+
       .lobby {
         min-height: auto;
         padding: 1.5rem 1rem 3rem;
@@ -412,6 +528,7 @@
       .lobby::before {
         background-position: center top;
         opacity: 0.28;
+        animation: none;
       }
 
       .lobby-header {
@@ -439,6 +556,10 @@
         gap: 1rem;
       }
 
+      .doors-container:hover .door-threshold.is-visible {
+        filter: none;
+      }
+
       .door-threshold {
         aspect-ratio: 16 / 9;
         min-height: 220px;
@@ -450,8 +571,23 @@
         transform: translateY(0);
       }
 
+      .door-threshold:hover,
+      .door-threshold:focus-visible {
+        transform: translateY(0);
+      }
+
+      .door-threshold:hover .door-copy,
+      .door-threshold:focus-visible .door-copy {
+        transform: translateY(0);
+      }
+
       .door-visual {
         background-size: 300% 100%;
+      }
+
+      .door-threshold:hover .door-visual,
+      .door-threshold:focus-visible .door-visual {
+        transform: scale(1.015);
       }
 
       .door-threshold[data-door="1"] .door-visual {
@@ -502,6 +638,27 @@
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      .lobby::before {
+        animation: none;
+      }
+
+      .door-threshold,
+      .door-threshold:hover,
+      .door-threshold:focus-visible {
+        transform: none;
+      }
+    }
+
     @media print {
       .lobby {
         min-height: auto;
@@ -543,7 +700,7 @@
     </p>
 
     <section class="doors-container" aria-label="Portfolio case doors">
-      <a href="door-1.html" class="door-threshold" data-status="active" data-door="1">
+      <a href="door-1.html" class="door-threshold" data-status="active" data-door="1" aria-label="Open Door 01: Aduhelm">
         <div class="door-visual" aria-hidden="true"></div>
 
         <div class="door-copy">
@@ -556,7 +713,7 @@
         </div>
       </a>
 
-      <a href="door-2.html" class="door-threshold" data-status="active" data-door="2">
+      <a href="door-2.html" class="door-threshold" data-status="active" data-door="2" aria-label="Open Door 02: KEYNOTE-991">
         <div class="door-visual" aria-hidden="true"></div>
 
         <div class="door-copy">
@@ -569,7 +726,7 @@
         </div>
       </a>
 
-      <article class="door-threshold" data-status="preparing" data-door="3">
+      <a href="door-3.html" class="door-threshold" data-status="active" data-door="3" aria-label="Open Door 03: ADHD Biomarker">
         <div class="door-visual" aria-hidden="true"></div>
 
         <div class="door-copy">
@@ -580,7 +737,7 @@
           </p>
           <div class="door-indicator"></div>
         </div>
-      </article>
+      </a>
     </section>
 
     <footer class="lobby-footer">
@@ -588,7 +745,6 @@
         Rescue, Audit, Build.<br />
         Past, Present, Future.<br />
         Failure, Scandal, Frontier.<br />
-        <a href="https://metavoxa.com" class="meta-link">MetaVoxa</a>
       </p>
     </footer>
   </main>
@@ -606,7 +762,30 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", initLobbyDoors);
+    function initDoorInspectionLight() {
+      const doors = document.querySelectorAll(".door-threshold");
+
+      doors.forEach((door) => {
+        door.addEventListener("pointermove", (event) => {
+          const rect = door.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+          door.style.setProperty("--mouse-x", `${x}%`);
+          door.style.setProperty("--mouse-y", `${y}%`);
+        });
+
+        door.addEventListener("pointerleave", () => {
+          door.style.setProperty("--mouse-x", "50%");
+          door.style.setProperty("--mouse-y", "50%");
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initLobbyDoors();
+      initDoorInspectionLight();
+    });
   </script>
 </body>
 </html>
